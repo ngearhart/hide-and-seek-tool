@@ -1,5 +1,5 @@
 <template>
-  <HelloWorld />
+  <Map />
 </template>
 
 <script lang="ts" setup>
