@@ -28,7 +28,7 @@
       class="text-caption text-disabled"
       style="position: absolute; right: 16px;"
     >
-      &copy; 2025-{{ (new Date()).getFullYear() }} <span class="d-none d-sm-inline-block">Noah G</span>
+      &copy; {{ (new Date()).getFullYear() }} <span class="d-none d-sm-inline-block">Noah G</span>
       —
       <a
         class="text-decoration-none on-surface"
@@ -36,7 +36,7 @@
         rel="noopener noreferrer"
         target="_blank"
       >
-        Open Source Under GNU GPL v3 License 
+        GNU GPL v3 License
       </a>
     </div>
   </v-footer>
