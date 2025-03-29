@@ -31,8 +31,13 @@ const checkboxes = reactive([
     checked: false,
   },
   {
+    label: "Station circles",
+    checked: false,
+  },
+  {
     label: "Airports",
     checked: false,
+    key: "airports",
   },
   {
     label: "Parks",
@@ -78,6 +83,7 @@ const updateMap = async() => {
     newLayers.push("OpenRailwayMap");
   }
 
+  store.$state.mapMarkers = checkboxes.filter(checkbox => checkbox.checked && checkbox.key).map(checkbox => checkbox.key!);
   store.$state.mapLayers = newLayers;
 };
 

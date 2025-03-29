@@ -59,7 +59,19 @@ const buildMap = () => {
                 Jawg_Sunny.addTo(localMapVal);
             }
         });
+
+        store.$state.mapMarkers.forEach(marker => {
+            markers[marker].forEach(m => m.addTo(localMapVal));
+        })
     }
+}
+
+const markers: {[key: string]: L.Marker<any>[]} = {
+    airports: [
+        L.marker([38.9495915,-77.4529647]).bindPopup("IAD"),
+        L.marker([38.8522923,-77.0478586]).bindPopup("DCA"),
+        L.marker([39.1798251,-76.6740408]).bindPopup("BWI"),
+    ]
 }
 
 onMounted(() => {
