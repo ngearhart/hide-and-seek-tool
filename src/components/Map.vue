@@ -129,32 +129,32 @@ const addRadar = (hit: boolean, lat: number, long: number, meters: number) => {
             [lat + 1, long - offset],
             [lat + 1, long - offset - 1],
             [lat - 1, long - offset - 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
         // east
         L.polygon([
             [lat - 1, long + offset],
             [lat + 1, long + offset],
             [lat + 1, long + offset + 1],
             [lat - 1, long + offset + 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
         // north
         L.polygon([
-            [lat + offset / 1.3, long - 1],
-            [lat + offset / 1.3, long + 1],
-            [lat + offset + 1, long + 1],
-            [lat + offset + 1, long - 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+            [lat + offset / 1.28, long - offset],
+            [lat + offset / 1.28, long + offset],
+            [lat + offset + 1, long + offset],
+            [lat + offset + 1, long - offset],
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', stroke: false }).addTo(localMap.value!);
         // south
         L.polygon([
-            [lat - offset / 1.3, long - 1],
-            [lat - offset / 1.3, long + 1],
-            [lat - offset - 1, long + 1],
-            [lat - offset - 1, long - 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+            [lat - offset / 1.28, long - offset],
+            [lat - offset / 1.28, long + offset],
+            [lat - offset - 1, long + offset],
+            [lat - offset - 1, long - offset],
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
     } else {
         console.log("Adding radar miss");
         L.circle([lat, long], {
-            color: 'black',
+            stroke: false,
             fillColor: 'black',
             fillOpacity: OVERLAY_OPACITY,
             radius: meters,
