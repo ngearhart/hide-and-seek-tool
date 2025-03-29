@@ -14,9 +14,11 @@
   "dependencies": {
     "@mdi/font": "7.4.47",
     "core-js": "^3.37.1",
+    "firebase": "^11.5.0",
     "leaflet": "^1.9.4",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
+    "vuefire": "^3.2.1",
     "vuetify": "^3.6.14"
   },
   "devDependencies": {

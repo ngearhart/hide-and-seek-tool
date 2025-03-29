@@ -25,6 +25,10 @@
       </v-tabs>
       <v-spacer></v-spacer>
 
+      <div v-if="user" style="margin-right: 10px;">
+        Logged in as {{ user.providerData[0].displayName }}
+      </div>
+
       <v-avatar
         class="hidden-sm-and-down"
         color="grey-darken-1"
@@ -40,6 +44,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useCurrentUserMock } from '@/firebase/mock';
+
+
+const user = useCurrentUserMock();
 
 let links = [
       'Map',
