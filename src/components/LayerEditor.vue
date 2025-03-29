@@ -42,31 +42,38 @@ const checkboxes = reactive([
   {
     label: "Parks",
     checked: false,
+    key: "parks",
   },
   {
     label: "Museums",
     checked: false,
+    key: "museums",
   },
   {
     label: "Movie Theaters",
     checked: false,
+    key: "theaters",
   },
   {
     label: "Hospitals",
     checked: false,
+    key: "hospitals",
   },
   {
     label: "Libraries",
     checked: false,
+    key: "libraries",
   },
   {
     label: "Zoos",
     checked: false,
+    key: "zoos",
   },
   {
     label: "Aquariums",
     checked: false,
-    note: "Note: There is only 1 aquarium in the DMV"
+    note: "Note: There is only 1 aquarium in the DMV",
+    key: "aquariums",
   },
 ]);
 
@@ -99,6 +106,8 @@ onMounted(() => {
   if (store.$state.mapLayers.includes("OpenRailwayMap")) {
     checkboxes.find(item => item.label == "Rail lines")!.checked = true;
   }
+
+  store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
 });
 
 </script>
