@@ -1,7 +1,24 @@
 {
-  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
   "rules": {
-    ".read": false,
-    ".write": false
+    ".write": "true",
+    ".read": "true"
   }
 }
+
+// {
+//   /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+//   "rules": {
+//     "users": {
+//       "$uid": {
+//         ".write": "$uid === auth.uid || $uid == '1wjds6prFGcoHULVaJbSlP9TI0O2'",
+//         ".read": "$uid === auth.uid || $uid == '1wjds6prFGcoHULVaJbSlP9TI0O2'"
+//       }
+//     },
+//     "games": {
+//       "$slug": {
+//         ".write": "auth !== null && root.child('users/'+auth.uid+'/currentGameId').exists() && $slug === root.child('users/'+auth.uid+'/currentGameId').val()",
+//         ".read": "auth !== null && root.child('users/'+auth.uid+'/currentGameId').exists() && $slug === root.child('users/'+auth.uid+'/currentGameId').val()"
+//       }
+//     }
+//   }
+// }

@@ -12,6 +12,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@kyvg/vue3-notification": "^3.4.1",
     "@mdi/font": "7.4.47",
     "core-js": "^3.37.1",
     "firebase": "^11.5.0",
