@@ -63,7 +63,7 @@ const createNewGame = async () => {
   });
 
   await set(gamesDbRef.value, {
-    created: new Date().toISOString()
+    created: new Date().toUTCString()
   })
 
   console.log("Starting new game " + gameCodeEntered.value);

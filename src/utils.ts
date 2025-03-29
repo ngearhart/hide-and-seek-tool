@@ -2,9 +2,18 @@ export type UserRecord = {
     currentGameId: string
 };
 
+type RadarEntry = {
+    lat: number,
+    long: number,
+    meters: number,
+    hit: boolean,
+    created: string,
+};
+
 export type GameRecord = {
     id: string
-    created: string
+    created: string,
+    radarEntries: RadarEntry[]
 };
 
 // From https://catalog.data.gov/dataset/metro-stations-regional

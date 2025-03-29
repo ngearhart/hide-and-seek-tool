@@ -25,6 +25,7 @@ const emit = defineEmits<{
   (e: 'hitFail', lat: number, long: number, meters: number): void
 }>();
 
+
 const radarSize = shallowRef('0.25mile');
 const wasHit = shallowRef(false);
 const loading = shallowRef(false);

@@ -11,9 +11,20 @@ import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
 import { metroStationsGeoJSON } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
+import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
+import { useDatabaseObject } from 'vuefire';
+
+import { useCurrentUserMock } from '@/firebase/mock';
+import type { GameRecord, UserRecord } from '@/utils';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
+
+const user = useCurrentUserMock();
+const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
+const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
+const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
 store.$subscribe(() => {
     buildMap();
@@ -105,7 +116,25 @@ const locate = () => {
 };
 
 
-const addRadar = (hit: boolean, lat: number, long: number, meters: number) => {
+const addRadar = async(hit: boolean, lat: number, long: number, meters: number) => {
+    const newEntries = gamesObj.value?.radarEntries ?? [];
+    newEntries.push({
+        lat: lat,
+        long: long,
+        hit: hit,
+        meters: meters,
+        created: new Date().toUTCString()
+    });
+
+    await set(
+        gamesDbRef.value, {
+            radarEntries: newEntries,
+            ...gamesObj.value
+        }
+    );
+};
+
+const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
     if (hit) {
         console.log("Adding radar hit");
         const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -161,6 +190,18 @@ const addRadar = (hit: boolean, lat: number, long: number, meters: number) => {
         }).addTo(localMap.value!);
     }
 };
+
+watch(gamesObj, () => {
+    refreshRadar();
+});
+
+const refreshRadar = () => {
+    if (gamesObj.value?.radarEntries && gamesObj.value!.radarEntries.length > 0) {
+        gamesObj.value!.radarEntries.forEach(radarEntry => {
+            displayRadar(radarEntry.hit, radarEntry.lat, radarEntry.long, radarEntry.meters);
+        });
+    }
+}
 
 const markers: { [key: string]: L.Marker<any>[] } = {
     airports: [
@@ -348,7 +389,7 @@ const markers: { [key: string]: L.Marker<any>[] } = {
     ],
 }
 
-onMounted(() => {
+onMounted(async() => {
     localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
