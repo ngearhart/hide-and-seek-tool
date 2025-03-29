@@ -1,10 +1,13 @@
 <template>
   <v-fab
     :absolute="true" :color="open ? '' : 'primary'" location="right bottom"
-    size="large" variant="outlined" extended :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'">
+    size="large" extended :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'">
     Edit Map
     <v-speed-dial v-model="open" location="top center" transition="slide-y-reverse-transition" activator="parent">
-      
+      <v-btn key="4" color="orange-darken-4" prepend-icon="mdi-pin" @click="$emit('locate')">
+        Locate
+      </v-btn>
+  
       <v-btn key="4" color="cyan-darken-4" prepend-icon="mdi-radar">
         Radar
       </v-btn>

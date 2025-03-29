@@ -93,6 +93,7 @@ const updateMap = async() => {
 
   store.$state.mapMarkers = checkboxes.filter(checkbox => checkbox.checked && checkbox.key).map(checkbox => checkbox.key!);
   store.$state.mapLayers = newLayers;
+  store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
 };
 
 onMounted(() => {
@@ -109,6 +110,7 @@ onMounted(() => {
   }
 
   store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
+  checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
 });
 
 </script>

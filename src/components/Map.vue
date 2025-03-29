@@ -1,14 +1,16 @@
 <template>
-    <MapActionButton />
+    <MapActionButton @locate="locate" />
     <div id="map" style="width: 100%; height: 100%"></div>
 </template>
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import L, { type LatLngTuple, type LeafletEvent } from 'leaflet';
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
+import { metroStationsGeoJSON } from '@/utils';
+import { notify } from '@kyvg/vue3-notification';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -63,8 +65,41 @@ const buildMap = () => {
         store.$state.mapMarkers.forEach(marker => {
             markers[marker].forEach(m => m.addTo(localMapVal));
         })
+
+        if (store.$state.enableStationCircles) {
+            metroStationsGeoJSON.features.forEach(station => {
+                L.marker([station.geometry.coordinates[1], station.geometry.coordinates[0]]).bindPopup(station.properties.NAME).addTo(localMapVal);
+                L.circle([station.geometry.coordinates[1], station.geometry.coordinates[0]], {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.2,
+                    radius: 804.672, // half mile in meters
+                }).addTo(localMapVal);
+            });
+        }
     }
 }
+
+const onLocationFound = (e: any) => {
+    var radius = e.accuracy;
+
+    L.marker(e.latlng).addTo(localMap.value!)
+         .bindPopup("You are within " + radius + " meters from this point"); //.openPopup();
+
+    L.circle(e.latlng, {radius: radius}).addTo(localMap.value!);
+};
+
+const onLocationError = () => {
+    notify({
+        type: 'error',
+        title: "Error",
+        text: "Could not locate you"
+    })
+}
+
+const locate = () => {
+    localMap.value!.locate({setView: true, maxZoom: 16});
+};
 
 const markers: {[key: string]: L.Marker<any>[]} = {
     airports: [
@@ -254,7 +289,9 @@ const markers: {[key: string]: L.Marker<any>[]} = {
 
 onMounted(() => {
     localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);
-
+    localMap.value.on('locationfound', onLocationFound);
+    localMap.value.on('locationerror', onLocationError);
+    L.control.scale().addTo(localMap.value);
     buildMap();
 
     // map.locate({setView: true, maxZoom: 16});
