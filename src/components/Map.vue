@@ -19,6 +19,9 @@ store.$subscribe(() => {
     buildMap();
 });
 
+
+const OVERLAY_OPACITY = 0.6;
+
 const buildMap = () => {
     if (localMap) {
         console.info("Rebuilding map with layers " + store.$state.mapLayers)
@@ -101,27 +104,59 @@ const locate = () => {
     localMap.value!.locate({ setView: true, maxZoom: 16 });
 };
 
+
 const addRadar = (hit: boolean, lat: number, long: number, meters: number) => {
     if (hit) {
         console.log("Adding radar hit");
         const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
         svgElement.setAttribute('viewBox', "0 0 100 100");
-        svgElement.innerHTML = '<mask id="circle-mask"><rect width="100" height="100" fill="white"/><circle cx="50" cy="50" r="10" fill="black"/></mask><rect width="100" height="100" fill="black" opacity="0.9" mask="url(#circle-mask)"/>';
+        svgElement.innerHTML = `<mask id="circle-mask"><rect width="100" height="100" fill="white"/><circle cx="50" cy="50" r="10" fill="black"/></mask><rect width="100" height="100" fill="black" opacity="${OVERLAY_OPACITY}" mask="url(#circle-mask)"/>`;
         // 0.093 SVG units per mile
         // 1609.344 meters per mile
         const offset = 0.095 * meters / 1609.344;
+        console.log(offset);
         const svgElementBounds: LatLngBoundsExpression = [
             [ lat - offset, long - offset ],
             [ lat + offset, long + offset ]
         ];
         L.svgOverlay(svgElement, svgElementBounds).addTo(localMap.value!);
+
+        // also add extra squares
+        // west
+        L.polygon([
+            [lat - 1, long - offset],
+            [lat + 1, long - offset],
+            [lat + 1, long - offset - 1],
+            [lat - 1, long - offset - 1],
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+        // east
+        L.polygon([
+            [lat - 1, long + offset],
+            [lat + 1, long + offset],
+            [lat + 1, long + offset + 1],
+            [lat - 1, long + offset + 1],
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+        // north
+        L.polygon([
+            [lat + offset, long - 1],
+            [lat + offset, long + 1],
+            [lat + offset + 1, long + 1],
+            [lat + offset + 1, long - 1],
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
+        // south
+        L.polygon([
+            [lat - offset, long - 1],
+            [lat - offset, long + 1],
+            [lat - offset - 1, long + 1],
+            [lat - offset - 1, long - 1],
+        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
     } else {
         console.log("Adding radar miss");
         L.circle([lat, long], {
-            // color: 'black',
+            color: 'black',
             fillColor: 'black',
-            fillOpacity: 0.9,
+            fillOpacity: OVERLAY_OPACITY,
             radius: meters,
         }).addTo(localMap.value!);
     }

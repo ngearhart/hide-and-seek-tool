@@ -3,6 +3,11 @@
     :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'">
     Edit Map
     <v-speed-dial v-model="open" location="top center" transition="slide-y-reverse-transition" activator="parent">
+
+      <v-btn key="4" color="purple-darken-4" prepend-icon="mdi-history">
+        History
+      </v-btn>
+
       <v-btn key="4" color="orange-darken-4" prepend-icon="mdi-pin" @click="$emit('locate')">
         Locate
       </v-btn>
