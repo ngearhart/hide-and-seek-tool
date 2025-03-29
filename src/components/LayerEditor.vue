@@ -40,11 +40,6 @@ const checkboxes = reactive([
     key: "airports",
   },
   {
-    label: "Parks",
-    checked: false,
-    key: "parks",
-  },
-  {
     label: "Museums",
     checked: false,
     key: "museums",
@@ -74,6 +69,12 @@ const checkboxes = reactive([
     checked: false,
     note: "Note: There is only 1 aquarium in the DMV",
     key: "aquariums",
+  },
+  {
+    label: "Parks",
+    checked: false,
+    key: "parks",
+    note: "Note: There are too many - none entered",
   },
 ]);
 
