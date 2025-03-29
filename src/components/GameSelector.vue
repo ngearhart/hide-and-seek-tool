@@ -40,7 +40,7 @@ const gameCodeEntered = ref('');
 
 const user = useCurrentUserMock();
 
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user?.uid));
+const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);

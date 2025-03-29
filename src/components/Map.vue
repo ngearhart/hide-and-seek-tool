@@ -47,7 +47,7 @@ const buildMap = () => {
                     minZoom: 0,
                     maxZoom: 22,
                     accessToken: '2mOYvuNmhK7nVC5H0StYF6OmHWF3cfdnzxDcuNNh4iq3K8IoslHbtI5PmSsbgLPV'
-                });
+                } as any);
                 Jawg_Matrix.addTo(localMapVal);
             } else if (layer == "Jawg.Sunny") {
                 var Jawg_Sunny = L.tileLayer('https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
@@ -55,7 +55,7 @@ const buildMap = () => {
                     minZoom: 0,
                     maxZoom: 22,
                     accessToken: '2mOYvuNmhK7nVC5H0StYF6OmHWF3cfdnzxDcuNNh4iq3K8IoslHbtI5PmSsbgLPV'
-                });
+                } as any);
                 Jawg_Sunny.addTo(localMapVal);
             }
         });

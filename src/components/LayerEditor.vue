@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="300" v-model="model" transition="dialog-bottom-transition">
+  <v-dialog max-width="300" v-model="model as any" transition="dialog-bottom-transition">
     <v-card title="Choose Map Layers">
       <v-card-text>
         <v-radio-group label="Background style" v-model="mapStyle" v-on:click="updateMap">
