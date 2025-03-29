@@ -4,6 +4,7 @@ const useCurrentUserMock = () => {
     if (window.location.origin == "http://localhost:3000") {
         return reactive({
             uid: "1wjds6prFGcoHULVaJbSlP9TI0O2",
+            photoURL: "",
             providerData: [{
                 displayName: "Noah Gearhart"
             }]
@@ -17,6 +18,7 @@ const getCurrentUserMock = async() => {
     if (window.location.origin == "http://localhost:3000") {
         return reactive({
             uid: "1wjds6prFGcoHULVaJbSlP9TI0O2",
+            photoURL: "",
             providerData: [{
                 displayName: "Noah Gearhart"
             }]

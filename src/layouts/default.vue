@@ -33,7 +33,12 @@
         class="hidden-sm-and-down"
         color="grey-darken-1"
         size="32"
-      ></v-avatar>
+      >
+        <v-img
+          alt="Your avatar"
+          :src="user?.photoURL ?? ''"
+        ></v-img>
+      </v-avatar>
     </v-app-bar>
 
     <v-main>
