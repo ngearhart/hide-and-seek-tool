@@ -10,7 +10,9 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     GameSelector: typeof import('./components/GameSelector.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    LayerEditor: typeof import('./components/LayerEditor.vue')['default']
     Map: typeof import('./components/Map.vue')['default']
+    MapActionButton: typeof import('./components/MapActionButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

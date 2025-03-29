@@ -1,8 +1,12 @@
 // Utilities
 import { defineStore } from 'pinia'
 
-export const useAppStore = defineStore('app', {
+export const useStore = defineStore('app', {
   state: () => ({
-    //
+    mapLayers: [
+      "CartoDB_DarkMatter",
+      "OpenRailwayMap"
+    ]
   }),
+  persist: true
 })
