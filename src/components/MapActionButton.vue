@@ -1,17 +1,16 @@
 <template>
-  <v-fab
-    :absolute="true" :color="open ? '' : 'primary'" location="right bottom"
-    size="large" extended :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'">
+  <v-fab :absolute="true" :color="open ? '' : 'primary'" location="right bottom" size="large" extended
+    :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'">
     Edit Map
     <v-speed-dial v-model="open" location="top center" transition="slide-y-reverse-transition" activator="parent">
       <v-btn key="4" color="orange-darken-4" prepend-icon="mdi-pin" @click="$emit('locate')">
         Locate
       </v-btn>
-  
-      <v-btn key="4" color="cyan-darken-4" prepend-icon="mdi-radar">
+
+      <v-btn key="4" color="cyan-darken-4" prepend-icon="mdi-radar" @click="radarIsOpen = true">
         Radar
       </v-btn>
-  
+
       <v-btn key="4" color="success" prepend-icon="mdi-thermometer">
         Thermometer
       </v-btn>
@@ -20,7 +19,7 @@
         Draw
       </v-btn>
 
-      <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" v-on:click="layerEditorIsOpen = true">
+      <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true">
         Layers
       </v-btn>
 
@@ -28,14 +27,22 @@
         Reset
       </v-btn>
     </v-speed-dial>
-    <layer-editor v-model="layerEditorIsOpen"/>
+    <layer-editor v-model="layerEditorIsOpen" />
+    <radar v-model="radarIsOpen" 
+        @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
+        @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)"/>
   </v-fab>
 </template>
-<script setup>
+<script lang="ts" setup>
 import { shallowRef } from 'vue'
 
+defineEmits<{
+  (e: 'radar', hit: boolean, lat: number, long: number, meters: number): void
+  (e: 'locate'): void
+}>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)
+const radarIsOpen = shallowRef(false)
 
 </script>
 <style scoped>

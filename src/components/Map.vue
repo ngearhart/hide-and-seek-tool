@@ -1,11 +1,11 @@
 <template>
-    <MapActionButton @locate="locate" />
+    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"/>
     <div id="map" style="width: 100%; height: 100%"></div>
 </template>
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L, { type LatLngTuple, type LeafletEvent } from 'leaflet';
+import L, { type LatLngBoundsExpression, type LatLngTuple, type LeafletEvent } from 'leaflet';
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
@@ -84,9 +84,9 @@ const onLocationFound = (e: any) => {
     var radius = e.accuracy;
 
     L.marker(e.latlng).addTo(localMap.value!)
-         .bindPopup("You are within " + radius + " meters from this point"); //.openPopup();
+        .bindPopup("You are within " + radius + " meters from this point"); //.openPopup();
 
-    L.circle(e.latlng, {radius: radius}).addTo(localMap.value!);
+    L.circle(e.latlng, { radius: radius }).addTo(localMap.value!);
 };
 
 const onLocationError = () => {
@@ -98,14 +98,40 @@ const onLocationError = () => {
 }
 
 const locate = () => {
-    localMap.value!.locate({setView: true, maxZoom: 16});
+    localMap.value!.locate({ setView: true, maxZoom: 16 });
 };
 
-const markers: {[key: string]: L.Marker<any>[]} = {
+const addRadar = (hit: boolean, lat: number, long: number, meters: number) => {
+    if (hit) {
+        console.log("Adding radar hit");
+        const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+        svgElement.setAttribute('viewBox', "0 0 100 100");
+        svgElement.innerHTML = '<mask id="circle-mask"><rect width="100" height="100" fill="white"/><circle cx="50" cy="50" r="10" fill="black"/></mask><rect width="100" height="100" fill="black" opacity="0.9" mask="url(#circle-mask)"/>';
+        // 0.093 SVG units per mile
+        // 1609.344 meters per mile
+        const offset = 0.095 * meters / 1609.344;
+        const svgElementBounds: LatLngBoundsExpression = [
+            [ lat - offset, long - offset ],
+            [ lat + offset, long + offset ]
+        ];
+        L.svgOverlay(svgElement, svgElementBounds).addTo(localMap.value!);
+    } else {
+        console.log("Adding radar miss");
+        L.circle([lat, long], {
+            // color: 'black',
+            fillColor: 'black',
+            fillOpacity: 0.9,
+            radius: meters,
+        }).addTo(localMap.value!);
+    }
+};
+
+const markers: { [key: string]: L.Marker<any>[] } = {
     airports: [
-        L.marker([38.9495915,-77.4529647]).bindPopup("IAD"),
-        L.marker([38.8522923,-77.0478586]).bindPopup("DCA"),
-        L.marker([39.1798251,-76.6740408]).bindPopup("BWI"),
+        L.marker([38.9495915, -77.4529647]).bindPopup("IAD"),
+        L.marker([38.8522923, -77.0478586]).bindPopup("DCA"),
+        L.marker([39.1798251, -76.6740408]).bindPopup("BWI"),
     ],
     parks: [
         // L.marker([38.895821860390896, -77.03668592865829]).bindPopup("The President's Park"),
@@ -276,7 +302,7 @@ const markers: {[key: string]: L.Marker<any>[]} = {
         L.marker([39.0980217281643, -77.15885389789618]).bindPopup("Rockville Library"),
     ],
     zoos: [
-        L.marker([38.9294104,-77.050833]).bindPopup("National Zoo"),
+        L.marker([38.9294104, -77.050833]).bindPopup("National Zoo"),
         L.marker([38.85993941148608, -77.12435888676154]).bindPopup("Willow Pond"),
         L.marker([38.972233345299124, -77.31244360799393]).bindPopup("NOVA Wild"),
         L.marker([39.084451949150115, -77.59311057326165]).bindPopup("Leesburg Animal Park"),
