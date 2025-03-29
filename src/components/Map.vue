@@ -139,15 +139,15 @@ const addRadar = (hit: boolean, lat: number, long: number, meters: number) => {
         ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
         // north
         L.polygon([
-            [lat + offset, long - 1],
-            [lat + offset, long + 1],
+            [lat + offset / 1.3, long - 1],
+            [lat + offset / 1.3, long + 1],
             [lat + offset + 1, long + 1],
             [lat + offset + 1, long - 1],
         ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
         // south
         L.polygon([
-            [lat - offset, long - 1],
-            [lat - offset, long + 1],
+            [lat - offset / 1.3, long - 1],
+            [lat - offset / 1.3, long + 1],
             [lat - offset - 1, long + 1],
             [lat - offset - 1, long - 1],
         ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black' }).addTo(localMap.value!);
