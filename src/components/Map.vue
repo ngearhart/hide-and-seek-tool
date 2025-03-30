@@ -229,8 +229,10 @@ const displayThermometer = (lat: number, long: number, angle: number, hotter: bo
 };
 
 watch(gamesObj, () => {
+    buildMap();
     refreshRadar();
     refreshThermometer();
+    refreshPolygons();
 });
 
 const refreshRadar = () => {
@@ -245,6 +247,14 @@ const refreshThermometer = () => {
     if (gamesObj.value?.thermometerEntries && gamesObj.value!.thermometerEntries.length > 0) {
         gamesObj.value!.thermometerEntries.forEach(themometerEntry => {
             displayThermometer(themometerEntry.lat, themometerEntry.long, themometerEntry.angle, themometerEntry.hotter);
+        });
+    }
+}
+
+const refreshPolygons = () => {
+    if (gamesObj.value?.polygonEntries && gamesObj.value!.polygonEntries.length > 0) {
+        gamesObj.value!.polygonEntries.forEach(polygonEntry => {
+            L.polygon(polygonEntry.points).addTo(localMap.value!);
         });
     }
 }
@@ -464,7 +474,23 @@ onMounted(async() => {
             layer.bindPopup('A popup!');
         }
 
-        drawnItems.addLayer(layer);
+        console.log(e);
+        if (e.type == "draw:created" && e.layerType == "polygon") {
+            const newEntries = gamesObj.value?.polygonEntries ?? [];
+            newEntries.push({
+                points: e.layer.editing.latlngs,
+                created: new Date().toUTCString()
+            });
+    
+            set(
+                gamesDbRef.value, {
+                    polygonEntries: newEntries,
+                    ...gamesObj.value
+                }
+            );
+        }
+
+        // drawnItems.addLayer(layer);
     });
 
     buildMap();

@@ -36,8 +36,11 @@ import type { VueDatabaseDocumentData } from 'vuefire';
   
     const events = computed(() => {
         const result: HistoryEvent[] = [];
-        if (props.gamesDbObj && props.gamesDbObj.radarEntries.length > 0) {
+        if (props.gamesDbObj && props.gamesDbObj.radarEntries?.length > 0) {
             result.push(...props.gamesDbObj.radarEntries.map(radarObj => ({type: "radar", created: radarObj.created, text: `Radar ${radarObj.hit ? 'Hit' : 'Miss'}`})));
+        }
+        if (props.gamesDbObj && props.gamesDbObj.polygonEntries?.length > 0) {
+            result.push(...props.gamesDbObj.polygonEntries.map(polygon => ({type: "polygon", created: polygon.created, text: "Polygon"})));
         }
         return result;
     });
@@ -59,15 +62,21 @@ import type { VueDatabaseDocumentData } from 'vuefire';
             await set(
                 props.gamesDbRef, newObj
             );
+        } else if (itemType == "polygon") {
+            const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
+            newObj.polygonEntries = newObj.polygonEntries.filter(item => new Date(item.created).getTime() != itemTimestamp);
+            await set(
+                props.gamesDbRef, newObj
+            );
         }
         model.value = false;
         notify({
             title: "Success",
-            text: "YOU NEED TO REFRESH THE PAGE",
+            text: "History deleted",
         })
         
-        await new Promise(r => setTimeout(r, 2000));
-        window.location.reload();
+        // await new Promise(r => setTimeout(r, 2000));
+        // window.location.reload();
     };
 
   </script>
