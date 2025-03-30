@@ -456,8 +456,8 @@ onMounted(async() => {
         draw: {
             polyline: false,
             polygon: true,
-            circle: true,
-            marker: true
+            circle: false,
+            marker: false
         },
         edit: {
             featureGroup: drawnItems,
@@ -467,12 +467,12 @@ onMounted(async() => {
     localMap.value.addControl(drawControl);
 
     localMap.value.on(L.Draw.Event.CREATED, function (e) {
-        var type = e.layerType,
-                layer = e.layer;
+        // var type = e.layerType,
+        //         layer = e.layer;
 
-        if (type === 'marker') {
-            layer.bindPopup('A popup!');
-        }
+        // if (type === 'marker') {
+        //     layer.bindPopup('A popup!');
+        // }
 
         console.log(e);
         if (e.type == "draw:created" && e.layerType == "polygon") {
