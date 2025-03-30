@@ -4,7 +4,7 @@
     Edit Map
     <v-speed-dial v-model="open" location="top center" transition="slide-y-reverse-transition" activator="parent">
 
-      <v-btn key="4" color="purple-darken-4" prepend-icon="mdi-history">
+      <v-btn key="4" color="purple-darken-4" prepend-icon="mdi-history" @click="historyIsOpen = true">
         History
       </v-btn>
 
@@ -36,9 +36,19 @@
     <radar v-model="radarIsOpen" 
         @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
         @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)"/>
+    <history :games-db-ref="gamesDbRef" :games-db-obj="gamesDbObj" v-model="historyIsOpen" />
   </v-fab>
 </template>
 <script lang="ts" setup>
+  import type { GameRecord } from '@/utils';
+import type { DatabaseReference } from 'firebase/database';
+import type { VueDatabaseDocumentData } from 'vuefire';
+
+  const props = defineProps<{
+    gamesDbRef: DatabaseReference,
+    gamesDbObj: VueDatabaseDocumentData<GameRecord | null> | undefined
+  }>();
+
 import { shallowRef } from 'vue'
 
 defineEmits<{
@@ -48,6 +58,7 @@ defineEmits<{
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)
 const radarIsOpen = shallowRef(false)
+const historyIsOpen = shallowRef(false)
 
 </script>
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"/>
+    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)" :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"/>
     <div id="map" style="width: 100%; height: 100%"></div>
 </template>
 
