@@ -16,7 +16,7 @@
         Radar
       </v-btn>
 
-      <v-btn key="4" color="success" prepend-icon="mdi-thermometer">
+      <v-btn key="4" color="success" prepend-icon="mdi-thermometer" @click="thermometerIsOpen = true">
         Thermometer
       </v-btn>
 
@@ -37,6 +37,7 @@
         @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
         @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)"/>
     <history :games-db-ref="gamesDbRef" :games-db-obj="gamesDbObj" v-model="historyIsOpen" />
+    <thermometer v-model="thermometerIsOpen" @submit="(lat: number, long: number, angle: number, hotter: boolean) => $emit('thermometer', lat, long, angle, hotter)"/>
   </v-fab>
 </template>
 <script lang="ts" setup>
@@ -53,12 +54,14 @@ import { shallowRef } from 'vue'
 
 defineEmits<{
   (e: 'radar', hit: boolean, lat: number, long: number, meters: number): void
+  (e: 'thermometer', lat: number, long: number, angle: number, hotter: boolean): void
   (e: 'locate'): void
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)
 const radarIsOpen = shallowRef(false)
 const historyIsOpen = shallowRef(false)
+const thermometerIsOpen = shallowRef(false)
 
 </script>
 <style scoped>

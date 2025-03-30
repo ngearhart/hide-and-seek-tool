@@ -1,5 +1,5 @@
 <template>
-    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)" :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"/>
+    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)" :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"/>
     <div id="map" style="width: 100%; height: 100%"></div>
 </template>
 
@@ -17,9 +17,13 @@ import { useDatabaseObject } from 'vuefire';
 import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 
+import 'leaflet-draw';
+import '../styles/leaflet.draw.css';
+
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
 
+const drawnItems = reactive(new L.FeatureGroup());
 const user = useCurrentUserMock();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
@@ -91,6 +95,9 @@ const buildMap = () => {
                 }).addTo(localMapVal);
             });
         }
+
+        
+        localMapVal.addLayer(drawnItems as any);
     }
 }
 
@@ -113,6 +120,25 @@ const onLocationError = () => {
 
 const locate = () => {
     localMap.value!.locate({ setView: true, maxZoom: 16 });
+};
+
+
+const addThermometer = async(lat: number, long: number, angle: number, hotter: boolean) => {
+    const newEntries = gamesObj.value?.thermometerEntries ?? [];
+    newEntries.push({
+        lat: lat,
+        long: long,
+        hotter: hotter,
+        angle: angle,
+        created: new Date().toUTCString()
+    });
+
+    await set(
+        gamesDbRef.value, {
+            thermometerEntries: newEntries,
+            ...gamesObj.value
+        }
+    );
 };
 
 
@@ -191,14 +217,34 @@ const displayRadar = (hit: boolean, lat: number, long: number, meters: number) =
     }
 };
 
+const displayThermometer = (lat: number, long: number, angle: number, hotter: boolean) => {
+    // // If angle = 0 and hotter
+    // const a = 0;
+    // L.polygon([
+    //     [lat - 1 * Math.sin(a), long],
+    //     [lat + 1 * Math.sin(a), long],
+    //     [lat + 1 * Math.sin(a), long + 1 * Math.cos(a)],
+    //     [lat - 1 * Math.sin(a), long + 1 * Math.cos(a)],
+    // ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
+};
+
 watch(gamesObj, () => {
     refreshRadar();
+    refreshThermometer();
 });
 
 const refreshRadar = () => {
     if (gamesObj.value?.radarEntries && gamesObj.value!.radarEntries.length > 0) {
         gamesObj.value!.radarEntries.forEach(radarEntry => {
             displayRadar(radarEntry.hit, radarEntry.lat, radarEntry.long, radarEntry.meters);
+        });
+    }
+}
+
+const refreshThermometer = () => {
+    if (gamesObj.value?.thermometerEntries && gamesObj.value!.thermometerEntries.length > 0) {
+        gamesObj.value!.thermometerEntries.forEach(themometerEntry => {
+            displayThermometer(themometerEntry.lat, themometerEntry.long, themometerEntry.angle, themometerEntry.hotter);
         });
     }
 }
@@ -394,6 +440,33 @@ onMounted(async() => {
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     L.control.scale().addTo(localMap.value);
+
+    var drawControl = new L.Control.Draw({
+        position: 'topright',
+        draw: {
+            polyline: false,
+            polygon: true,
+            circle: true,
+            marker: true
+        },
+        edit: {
+            featureGroup: drawnItems,
+            remove: true
+        }
+    });
+    localMap.value.addControl(drawControl);
+
+    localMap.value.on(L.Draw.Event.CREATED, function (e) {
+        var type = e.layerType,
+                layer = e.layer;
+
+        if (type === 'marker') {
+            layer.bindPopup('A popup!');
+        }
+
+        drawnItems.addLayer(layer);
+    });
+
     buildMap();
 
     // map.locate({setView: true, maxZoom: 16});

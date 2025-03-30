@@ -17,9 +17,11 @@
     "core-js": "^3.37.1",
     "firebase": "^11.5.0",
     "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
     "pinia-plugin-persistedstate": "^4.2.0",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
+    "vue-angle": "^1.0.3",
     "vuefire": "^3.2.1",
     "vuetify": "^3.6.14"
   },

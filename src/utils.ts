@@ -10,10 +10,19 @@ type RadarEntry = {
     created: string,
 };
 
+type ThermometerEntry = {
+    lat: number,
+    long: number,
+    angle: number,
+    hotter: boolean,
+    created: string,
+};
+
 export type GameRecord = {
     id: string
     created: string,
     radarEntries: RadarEntry[]
+    thermometerEntries: ThermometerEntry[]
 };
 
 // From https://catalog.data.gov/dataset/metro-stations-regional
