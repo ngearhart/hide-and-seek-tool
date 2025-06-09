@@ -451,7 +451,7 @@ onMounted(async() => {
     localMap.value.on('locationerror', onLocationError);
     L.control.scale().addTo(localMap.value);
 
-    var drawControl = new L.Control.Draw({
+    var drawControl = new (L.Control as any).Draw({
         position: 'topright',
         draw: {
             polyline: false,
@@ -466,7 +466,7 @@ onMounted(async() => {
     });
     localMap.value.addControl(drawControl);
 
-    localMap.value.on(L.Draw.Event.CREATED, function (e) {
+    localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
         // var type = e.layerType,
         //         layer = e.layer;
 
@@ -475,7 +475,7 @@ onMounted(async() => {
         // }
 
         console.log(e);
-        if (e.type == "draw:created" && e.layerType == "polygon") {
+        if (e.type == "draw:created" && (e as any).layerType == "polygon") {
             const newEntries = gamesObj.value?.polygonEntries ?? [];
             newEntries.push({
                 points: e.layer.editing.latlngs,
