@@ -91,7 +91,7 @@ const buildMap = () => {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.2,
-                    radius: 804.672, // half mile in meters
+                    radius: 402.336, // quarter mile in meters
                 }).addTo(localMapVal);
             });
         }
