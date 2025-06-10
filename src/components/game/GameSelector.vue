@@ -14,12 +14,13 @@
           </v-row>
           <v-row align="center" justify="center">
             <v-col cols="12" md="12">
-              <v-btn block color="primary" v-on:click="createNewGame">+ Create a new game</v-btn>
+              <v-btn block color="primary" v-on:click="launchGameCreatorDialog">+ Create a new game</v-btn>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
     </v-card>
+    <GameCreator v-model="isGameCreatorOpen" @submit="createNewGame"></GameCreator>
   </v-dialog>
 </template>
 
@@ -36,6 +37,7 @@ const { notify }  = useNotification()
 // const games = ref(getDatabase(), 'games');
 
 const isDialogOpen = ref(false);
+const isGameCreatorOpen = ref(false);
 const gameCodeEntered = ref('');
 
 const user = useCurrentUserMock();
@@ -54,25 +56,40 @@ const generateSlug = () => {
     return slug;
 }
 
-const createNewGame = async () => {
-  // Create game ID
-  gameCodeEntered.value = generateSlug();
+const launchGameCreatorDialog = () => {
+  isGameCreatorOpen.value = true;
+}
 
-  await set(userRecordDbRef.value, {
-    currentGameId: gameCodeEntered.value
-  });
+const createNewGame = async (teams) => {
+  try {
+    // Create game ID
+    gameCodeEntered.value = generateSlug();
 
-  await set(gamesDbRef.value, {
-    created: new Date().toUTCString()
-  })
+    console.log("Current user:");
+    console.log(user);
 
-  console.log("Starting new game " + gameCodeEntered.value);
-  isDialogOpen.value = false;
+    await set(userRecordDbRef.value, {
+      currentGameId: gameCodeEntered.value
+    });
   
-  notify({
-    title: "Started game",
-    text: "Successfully started game!",
-  })
+    await set(gamesDbRef.value, {
+      created: new Date().toUTCString(),
+      teams: teams.map(team => team.name)
+    })
+  
+    console.log("Starting new game " + gameCodeEntered.value);
+    isDialogOpen.value = false;
+    
+    notify({
+      title: "Started game",
+      text: "Successfully started game!",
+    })
+  } catch (e) {
+    console.error(e);
+    await set(userRecordDbRef.value, {
+      currentGameId: null
+    });
+  }
 }
 
 const joinGame = async() => {
