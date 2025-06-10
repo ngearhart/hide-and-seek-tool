@@ -9,8 +9,9 @@
 
       <v-spacer></v-spacer>
 
-      <v-tabs align-tabs="center" color="grey-darken-2">
-        <v-tab v-for="link in links" :key="link" :text="link"></v-tab>
+      <v-tabs align-tabs="center" color="grey-darken-2" v-model="currentTab">
+        <v-tab v-for="link in links" :key="link" :text="link" :value="link">
+        </v-tab>
       </v-tabs>
       <v-spacer></v-spacer>
 
@@ -54,6 +55,7 @@ import type { UserRecord } from '@/utils';
 import { Notifications } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
 import { useDatabaseObject } from 'vuefire';
+import { useRoute, useRouter } from 'vue-router'
 
 import { useNotification } from "@kyvg/vue3-notification";
 
@@ -63,6 +65,9 @@ const user = useCurrentUserMock();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 
+const route = useRoute()
+const router = useRouter()
+const currentTab = ref('');
 
 
 let links = [
@@ -83,4 +88,18 @@ const exitGame = async() => {
   await new Promise(r => setTimeout(r, 1000));
   window.location.reload();
 }
+
+onMounted(() => {
+  if (route.name != '/') {
+    currentTab.value = route.name.substring(1, 2).toUpperCase() + route.name.substring(2);
+  }
+});
+
+const redirect = (link) => {
+  console.log(link)
+  router.push('/' + (link === 'Map' ? '' : link.toLowerCase()));
+};
+
+watch(currentTab, redirect);
+
 </script>

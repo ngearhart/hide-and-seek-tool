@@ -18,5 +18,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Thermometer: typeof import('./components/Thermometer.vue')['default']
+    Timer: typeof import('./components/Timer.vue')['default']
+    TimerView: typeof import('./components/TimerView.vue')['default']
   }
 }
