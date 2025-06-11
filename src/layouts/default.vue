@@ -33,7 +33,13 @@
             Current game code: {{ userRecordObj?.currentGameId }}
           </v-list-item>
           <v-list-item>
-            <v-btn color="primary" v-on:click="exitGame">Exit game</v-btn>
+            Team: {{ userRecordObj?.teamName }}
+          </v-list-item>
+          <v-list-item>
+            <v-btn color="primary" v-on:click="switchTeam" prepend-icon="mdi-swap-horizontal" block>Change team</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn color="red" v-on:click="exitGame" prepend-icon="mdi-close" block>Exit game</v-btn>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -84,6 +90,20 @@ const exitGame = async() => {
   notify({
     title: "Notice",
     text: "Leaving game..."
+  })
+  await new Promise(r => setTimeout(r, 1000));
+  window.location.reload();
+}
+
+// This is a little bit of a hack but whatever.
+const switchTeam = async() => {
+  await set(userRecordDbRef.value, {
+    currentGameId: userRecordObj.value?.currentGameId,
+    teamName: null
+  });
+  notify({
+    title: "Notice",
+    text: "Switching teams..."
   })
   await new Promise(r => setTimeout(r, 1000));
   window.location.reload();
