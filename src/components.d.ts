@@ -18,6 +18,7 @@ declare module 'vue' {
     Radar: typeof import('./components/Radar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TeamJoiner: typeof import('./components/game/TeamJoiner.vue')['default']
     TeamSelector: typeof import('./components/game/TeamSelector.vue')['default']
     Thermometer: typeof import('./components/Thermometer.vue')['default']
     Timer: typeof import('./components/Timer.vue')['default']

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="600" v-model="isDialogOpen" transition="dialog-bottom-transition">
+  <v-dialog max-width="600" v-model="isDialogOpen" transition="dialog-bottom-transition" persistent>
     <v-card title="Welcome to Hide & Seek Live!">
       <v-card-text>
         <v-container >
@@ -22,6 +22,7 @@
     </v-card>
     <GameCreator v-model="isGameCreatorOpen" @submit="createNewGame"></GameCreator>
   </v-dialog>
+  <TeamJoiner v-model="isTeamJoinerOpen" @submit="joinTeam"></TeamJoiner>
 </template>
 
 <script lang="ts" setup>
@@ -38,6 +39,7 @@ const { notify }  = useNotification()
 
 const isDialogOpen = ref(false);
 const isGameCreatorOpen = ref(false);
+const isTeamJoinerOpen = ref(false);
 const gameCodeEntered = ref('');
 
 const user = useCurrentUserMock();
@@ -65,8 +67,8 @@ const createNewGame = async (teams) => {
     // Create game ID
     gameCodeEntered.value = generateSlug();
 
-    console.log("Current user:");
-    console.log(user);
+    console.debug("Current user:");
+    console.debug(user);
 
     await set(userRecordDbRef.value, {
       currentGameId: gameCodeEntered.value
@@ -74,7 +76,7 @@ const createNewGame = async (teams) => {
   
     await set(gamesDbRef.value, {
       created: new Date().toUTCString(),
-      teams: teams.map(team => team.name)
+      teams: teams.map(team => ({ name: team.name }))
     })
   
     console.log("Starting new game " + gameCodeEntered.value);
@@ -84,6 +86,8 @@ const createNewGame = async (teams) => {
       title: "Started game",
       text: "Successfully started game!",
     })
+
+    isTeamJoinerOpen.value = true;
   } catch (e) {
     console.error(e);
     await set(userRecordDbRef.value, {
@@ -115,7 +119,12 @@ const joinGame = async() => {
         title: "Joined game",
         text: "Successfully joined",
       })
+      isTeamJoinerOpen.value = true;
       return
+    } else {
+      await set(userRecordDbRef.value, {
+        currentGameId: null
+      });
     }
   } catch {}
   notify({
@@ -125,13 +134,38 @@ const joinGame = async() => {
   })
 }
 
+const joinTeam = async(team: string) => {
+  await set(userRecordDbRef.value, {
+    currentGameId: gameCodeEntered.value,
+    teamName: team
+  });
+
+  isTeamJoinerOpen.value = false;
+  notify({
+    title: "Joined team",
+    text: "Successfully joined " + team,
+  })
+}
+
 onMounted(async () => {
+  console.log('Startup - checking if user is in game')
   const userRef = await get(
     userRecordDbRef.value
   );
   if (!userRef.exists() || !userRef.val().currentGameId?.length) {
-    isDialogOpen.value = true
+    console.log('Startup - User not in game. Launching join game dialog.')
+    isDialogOpen.value = true;
+    return;
   }
+  console.log('Startup - user is in game. Checking if user on team')
+  
+  // Check for team membership, in edge case where user is in game but not on a team
+  if (!userRef.val().teamName?.length) {
+    console.log('Startup - User not on a team. Launching team join dialog.')
+    isTeamJoinerOpen.value = true;
+    return;
+  }
+  console.log('Startup - user is all good to go.')
 });
 
 </script>

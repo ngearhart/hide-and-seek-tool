@@ -1,7 +1,8 @@
 import type { LatLng } from "leaflet";
 
 export type UserRecord = {
-    currentGameId: string
+    currentGameId: string,
+    teamName: string,
 };
 
 type RadarEntry = {
@@ -25,12 +26,17 @@ type PolygonDrawingEntry = {
     created: string,
 }
 
+type Team = {
+    name: string
+}
+
 export type GameRecord = {
     id: string
     created: string,
     radarEntries: RadarEntry[]
     thermometerEntries: ThermometerEntry[]
     polygonEntries: PolygonDrawingEntry[]
+    teams: Team[]
 };
 
 // From https://catalog.data.gov/dataset/metro-stations-regional
