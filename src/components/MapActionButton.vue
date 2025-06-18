@@ -39,7 +39,7 @@
       </v-btn>
     </v-speed-dial>
     <layer-editor v-model="layerEditorIsOpen" />
-    <find-closest v-model="findClosestIsOpen" @find-closest="key => $emit('findClosest', key)"/>
+    <find-closest v-model="findClosestIsOpen" @find-closest="(key: string, type: string) => { findClosestIsOpen = false; $emit('findClosest', key, type) }"/>
     <radar v-model="radarIsOpen" 
         @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
         @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)"/>
@@ -64,7 +64,7 @@ defineEmits<{
   (e: 'thermometer', lat: number, long: number, angle: number, hotter: boolean): void
   (e: 'locate'): void
   (e: 'showPinDrop'): void
-  (e: 'findClosest', type: string): void
+  (e: 'findClosest', key: string, type: string): void
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)

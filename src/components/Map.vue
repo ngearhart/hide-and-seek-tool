@@ -21,6 +21,13 @@
             </v-card-text>
         </v-card>
     </v-dialog>
+        <v-dialog max-width="500" v-model="findClosestDialog">
+        <v-card title="Distance">
+            <v-card-text>
+                Your closest {{ findClosestResult.type }}, {{ findClosestResult.name }}, is roughly {{ findClosestResult.distance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }} miles from you.
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -29,7 +36,7 @@ import L, { type LatLngBoundsExpression, type LatLngTuple, type LeafletEvent } f
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
-import { distance, metroStationsGeoJSON, staticMarkers } from '@/utils';
+import { distance, metroStationsGeoJSON, staticMarkers, staticMarkersIncludingMetroStations } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useDatabaseObject } from 'vuefire';
@@ -54,9 +61,13 @@ const droppingPin = shallowRef(false);
 const locating = shallowRef(false);
 const locatingPinToMeasureLatLng = ref<number[] | null>(null);
 const locatingPinToMeasureName = ref<string | null>(null);
-const locatingClosestType = ref<string | null>(null);
+const locatingClosestType = ref<{key: string, type: string} | null>(null);
 const calculatedDistanceDialog = shallowRef(false);
 const calculatedDistance = shallowRef(0);
+
+const findClosestDialog = shallowRef(false);
+const findClosestResult = ref({name: "", type: "", distance: 0})
+
 
 store.$subscribe(() => {
     buildMap();
@@ -157,9 +168,18 @@ const onLocationFound = (e: any) => {
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
-        for (let marker of getMarkers()[locatingClosestType.value]) {
-
+        for (let marker of (staticMarkersIncludingMetroStations as any)[locatingClosestType.value.key]) {
+            let d = distance(e.latlng.lat, e.latlng.lng, marker.latlng[0], marker.latlng[1])
+            if (d < minDistanceMiles) {
+                minDistanceMiles = d
+                minDistanceName = marker.name
+            }
         }
+        findClosestResult.value.distance = minDistanceMiles
+        findClosestResult.value.name = minDistanceName
+        findClosestResult.value.type = locatingClosestType.value.type
+        findClosestDialog.value = true
+        locatingClosestType.value = null
     }
 };
 
@@ -334,8 +354,8 @@ const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locate()
 }
 
-const findClosest = (key: string) => {
-    locatingClosestType.value = key
+const findClosest = (key: string, type: string) => {
+    locatingClosestType.value = { key: key, type: type }
     locate()
 }
 

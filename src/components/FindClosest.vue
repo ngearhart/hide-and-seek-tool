@@ -2,7 +2,7 @@
   <v-dialog max-width="500" v-model="model as any" transition="dialog-bottom-transition">
     <v-card title="Choose Which Resource To Find Closest">
       <v-card-text>
-        <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;" @click="$emit('findClosest', checkbox.key)">
+        <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;" @click="$emit('findClosest', checkbox.key, checkbox.label)">
           {{ checkbox.label }}
         </v-btn>
       </v-card-text>
@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 
 defineEmits<{
-  (e: 'findClosest', type: string): void
+  (e: 'findClosest', key: string, type: string): void
 }>();
 
 
@@ -21,32 +21,36 @@ const model = defineModel()
 
 const checkboxes = reactive([
   {
-    label: "Metro stations",
+    label: "Metro station",
     key: "metro_stations",
   },
   {
-    label: "Airports",
+    label: "Airport",
     key: "airports",
   },
   {
-    label: "Museums",
+    label: "Museum",
     key: "museums",
   },
   {
-    label: "Movie Theaters",
+    label: "Movie Theater",
     key: "theaters",
   },
   {
-    label: "Hospitals",
+    label: "Hospital",
     key: "hospitals",
   },
   {
-    label: "Libraries",
+    label: "Library",
     key: "libraries",
   },
   {
-    label: "Zoos",
+    label: "Zoo",
     key: "zoos",
+  },
+  {
+    label: "Aquarium",
+    key: "aquariums",
   },
 ]);
 

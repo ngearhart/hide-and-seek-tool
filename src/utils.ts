@@ -347,6 +347,13 @@ export const staticMarkers: Markers = {
     ],
 }
 
+export const staticMarkersIncludingMetroStations = {
+    metro_stations: metroStationsGeoJSON.features.forEach(station => 
+        ({ latlng: [station.geometry.coordinates[1], station.geometry.coordinates[0]], name: station.properties.NAME })
+    ),
+    ...staticMarkers
+}
+
 
 // From https://stackoverflow.com/a/60465578
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
