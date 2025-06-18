@@ -20,10 +20,13 @@
         Thermometer
       </v-btn>
 
-      <v-btn key="4" color="info" prepend-icon="mdi-draw">
+      <!-- <v-btn key="4" color="info" prepend-icon="mdi-draw">
         Draw
+      </v-btn> -->
+      <v-btn key="4" color="info" prepend-icon="mdi-pin" @click="$emit('showPinDrop')">
+        Drop Pin
       </v-btn>
-
+      
       <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true">
         Layers
       </v-btn>
@@ -56,6 +59,7 @@ defineEmits<{
   (e: 'radar', hit: boolean, lat: number, long: number, meters: number): void
   (e: 'thermometer', lat: number, long: number, angle: number, hotter: boolean): void
   (e: 'locate'): void
+  (e: 'showPinDrop'): void
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)

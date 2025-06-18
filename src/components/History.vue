@@ -42,6 +42,9 @@ import type { VueDatabaseDocumentData } from 'vuefire';
         if (props.gamesDbObj && props.gamesDbObj.polygonEntries?.length > 0) {
             result.push(...props.gamesDbObj.polygonEntries.map(polygon => ({type: "polygon", created: polygon.created, text: "Polygon"})));
         }
+        if (props.gamesDbObj && props.gamesDbObj.customPins?.length > 0) {
+          result.push(...props.gamesDbObj.customPins.map(customPin => ({type: "customPin", created: customPin.created, text: "Custom Pin"})))
+        }
         return result;
     });
 
@@ -68,8 +71,14 @@ import type { VueDatabaseDocumentData } from 'vuefire';
             await set(
                 props.gamesDbRef, newObj
             );
+        } else if (itemType == "customPin") {
+            const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
+            newObj.customPins = newObj.customPins.filter(item => new Date(item.created).getTime() != itemTimestamp);
+            await set(
+                props.gamesDbRef, newObj
+            );
         }
-        model.value = false;
+        // model.value = false;
         notify({
             title: "Success",
             text: "History deleted",

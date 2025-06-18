@@ -1,6 +1,26 @@
 <template>
-    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)" :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"/>
+    <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"
+        :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
+        @show-pin-drop="droppingPin = true" />
     <div id="map" style="width: 100%; height: 100%"></div>
+    <v-snackbar v-model="droppingPin" color="white">
+        Tap on the map to drop a pin
+        <template v-slot:actions>
+            <v-btn color="pink" variant="text" @click="droppingPin = false">
+                Cancel
+            </v-btn>
+        </template>
+    </v-snackbar>
+    <v-snackbar v-model="locating" color="white">
+        Locating <v-progress-circular indeterminate></v-progress-circular>
+    </v-snackbar>
+    <v-dialog max-width="500" v-model="calculatedDistanceDialog">
+        <v-card title="Distance">
+            <v-card-text>
+                You are roughly {{ calculatedDistance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }} miles from the selected pin, {{ locatingPinToMeasureName }}.
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -9,7 +29,7 @@ import L, { type LatLngBoundsExpression, type LatLngTuple, type LeafletEvent } f
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
-import { metroStationsGeoJSON } from '@/utils';
+import { distance, metroStationsGeoJSON } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useDatabaseObject } from 'vuefire';
@@ -29,6 +49,13 @@ const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as 
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
+
+const droppingPin = shallowRef(false);
+const locating = shallowRef(false);
+const locatingPinToMeasureLatLng = ref<number[] | null>(null);
+const locatingPinToMeasureName = ref<string | null>(null);
+const calculatedDistanceDialog = shallowRef(false);
+const calculatedDistance = shallowRef(0);
 
 store.$subscribe(() => {
     buildMap();
@@ -80,6 +107,8 @@ const buildMap = () => {
             }
         });
 
+        // Dynamically get markers, needed for loading custom markers.
+        let markers = getMarkers();
         store.$state.mapMarkers.forEach(marker => {
             markers[marker].forEach(m => m.addTo(localMapVal));
         })
@@ -96,7 +125,7 @@ const buildMap = () => {
             });
         }
 
-        
+
         localMapVal.addLayer(drawnItems as any);
     }
 }
@@ -108,6 +137,21 @@ const onLocationFound = (e: any) => {
         .bindPopup("You are within " + radius + " meters from this point"); //.openPopup();
 
     L.circle(e.latlng, { radius: radius }).addTo(localMap.value!);
+    locating.value = false
+    notify({
+        type: 'success',
+        title: "Success",
+        text: "Located you"
+    })
+
+    if (locatingPinToMeasureLatLng.value != null) {
+        calculatedDistance.value = distance(
+            locatingPinToMeasureLatLng.value[0], locatingPinToMeasureLatLng.value[1],
+            e.latlng.lat, e.latlng.lng
+        )
+        calculatedDistanceDialog.value = true
+        locatingPinToMeasureLatLng.value = null
+    }
 };
 
 const onLocationError = () => {
@@ -116,14 +160,16 @@ const onLocationError = () => {
         title: "Error",
         text: "Could not locate you"
     })
+    locating.value = false
 }
 
 const locate = () => {
+    locating.value = true
     localMap.value!.locate({ setView: true, maxZoom: 16 });
 };
 
 
-const addThermometer = async(lat: number, long: number, angle: number, hotter: boolean) => {
+const addThermometer = async (lat: number, long: number, angle: number, hotter: boolean) => {
     const newEntries = gamesObj.value?.thermometerEntries ?? [];
     newEntries.push({
         lat: lat,
@@ -135,14 +181,14 @@ const addThermometer = async(lat: number, long: number, angle: number, hotter: b
 
     await set(
         gamesDbRef.value, {
-            thermometerEntries: newEntries,
-            ...gamesObj.value
-        }
+        thermometerEntries: newEntries,
+        ...gamesObj.value
+    }
     );
 };
 
 
-const addRadar = async(hit: boolean, lat: number, long: number, meters: number) => {
+const addRadar = async (hit: boolean, lat: number, long: number, meters: number) => {
     const newEntries = gamesObj.value?.radarEntries ?? [];
     newEntries.push({
         lat: lat,
@@ -154,9 +200,9 @@ const addRadar = async(hit: boolean, lat: number, long: number, meters: number) 
 
     await set(
         gamesDbRef.value, {
-            radarEntries: newEntries,
-            ...gamesObj.value
-        }
+        radarEntries: newEntries,
+        ...gamesObj.value
+    }
     );
 };
 
@@ -172,8 +218,8 @@ const displayRadar = (hit: boolean, lat: number, long: number, meters: number) =
         const offset = 0.095 * meters / 1609.344;
         console.log(offset);
         const svgElementBounds: LatLngBoundsExpression = [
-            [ lat - offset, long - offset ],
-            [ lat + offset, long + offset ]
+            [lat - offset, long - offset],
+            [lat + offset, long + offset]
         ];
         L.svgOverlay(svgElement, svgElementBounds).addTo(localMap.value!);
 
@@ -259,7 +305,25 @@ const refreshPolygons = () => {
     }
 }
 
-const markers: { [key: string]: L.Marker<any>[] } = {
+// I know this is gross but this is the leaflet canonical way.
+const getPopupFor = (latLng: L.LatLngExpression, name: string) => L.popup().setContent(`
+  <div class="popup-container">
+    <h4 class="popup-title">${name}</h4>
+    <div class="v-btn v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+      <button>Measure distance from me</button>
+    </div>
+  </div>
+`)
+
+const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
+    locatingPinToMeasureLatLng.value = [
+        lat, long
+    ]
+    locatingPinToMeasureName.value = name
+    locate()
+}
+
+const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
     airports: [
         L.marker([38.9495915, -77.4529647]).bindPopup("IAD"),
         L.marker([38.8522923, -77.0478586]).bindPopup("DCA"),
@@ -443,12 +507,38 @@ const markers: { [key: string]: L.Marker<any>[] } = {
     aquariums: [
         L.marker([38.96757050634614, -77.13891161559403]).bindPopup("Glen Echo Park Aquarium"),
     ],
+    custom: gamesObj.value?.customPins?.map(pin =>
+        L.marker([pin.lat, pin.long]).bindPopup(getPopupFor([pin.lat, pin.long], "Custom Pin"))
+    ) ?? []
+})
+
+const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
+    if (droppingPin.value) {
+        const newEntries = gamesObj.value?.customPins ?? [];
+        newEntries.push({
+            lat: e.latlng.lat,
+            long: e.latlng.lng,
+            created: new Date().toUTCString()
+        });
+        set(
+            gamesDbRef.value, {
+            customPins: newEntries,
+            ...gamesObj.value
+        });
+        droppingPin.value = false
+        notify({
+            type: 'success',
+            title: "Success",
+            text: "Added pin"
+        })
+    }
 }
 
-onMounted(async() => {
+onMounted(async () => {
     localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
+    localMap.value.on('click', onMapClick);
     L.control.scale().addTo(localMap.value);
 
     var drawControl = new (L.Control as any).Draw({
@@ -481,12 +571,12 @@ onMounted(async() => {
                 points: e.layer.editing.latlngs,
                 created: new Date().toUTCString()
             });
-    
+
             set(
                 gamesDbRef.value, {
-                    polygonEntries: newEntries,
-                    ...gamesObj.value
-                }
+                polygonEntries: newEntries,
+                ...gamesObj.value
+            }
             );
         }
 
@@ -508,6 +598,8 @@ onMounted(async() => {
     // }
 
     // map.on('locationfound', onLocationFound);
+
+    (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo
 })
 
 </script>

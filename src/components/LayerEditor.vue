@@ -76,6 +76,11 @@ const checkboxes = reactive([
     key: "parks",
     note: "Note: There are too many - none entered",
   },
+  {
+    label: "Custom pins",
+    checked: false,
+    key: "custom"
+  },
 ]);
 
 const updateMap = async() => {

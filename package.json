@@ -22,6 +22,7 @@
     "roboto-fontface": "*",
     "vue": "^3.4.31",
     "vue-angle": "^1.0.3",
+    "vue-timer-hook": "^1.0.84",
     "vuefire": "^3.2.1",
     "vuetify": "^3.6.14"
   },
