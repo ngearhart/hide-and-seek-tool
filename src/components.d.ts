@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    copy: typeof import('./components/LayerEditor copy.vue')['default']
+    FindClosest: typeof import('./components/FindClosest.vue')['default']
     GameCreator: typeof import('./components/game/GameCreator.vue')['default']
     GameSelector: typeof import('./components/game/GameSelector.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']

@@ -20,6 +20,9 @@
         Thermometer
       </v-btn>
 
+      <v-btn key="4" color="red-darken-2" prepend-icon="mdi-radius" @click="findClosestIsOpen = true">
+        Find Closest
+      </v-btn>
       <!-- <v-btn key="4" color="info" prepend-icon="mdi-draw">
         Draw
       </v-btn> -->
@@ -36,6 +39,7 @@
       </v-btn>
     </v-speed-dial>
     <layer-editor v-model="layerEditorIsOpen" />
+    <find-closest v-model="findClosestIsOpen" @find-closest="key => $emit('findClosest', key)"/>
     <radar v-model="radarIsOpen" 
         @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
         @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)"/>
@@ -60,12 +64,14 @@ defineEmits<{
   (e: 'thermometer', lat: number, long: number, angle: number, hotter: boolean): void
   (e: 'locate'): void
   (e: 'showPinDrop'): void
+  (e: 'findClosest', type: string): void
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)
 const radarIsOpen = shallowRef(false)
 const historyIsOpen = shallowRef(false)
 const thermometerIsOpen = shallowRef(false)
+const findClosestIsOpen = shallowRef(false)
 
 </script>
 <style scoped>
