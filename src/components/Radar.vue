@@ -5,6 +5,9 @@
         <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
       </template>
       <v-card-text>
+        <div style="padding-bottom: 1em;">
+          This will show on all devices.
+        </div>
         <v-select label="Radar Size" :items="radarSizeOptions" v-model="radarSize"></v-select>
         <v-checkbox label="Radar was a hit" v-model="wasHit"></v-checkbox>
         <!-- <v-alert icon="mdi-alert" text="Make sure you have location permissions enabled for this website." color="warning" density="compact"></v-alert> -->
@@ -24,7 +27,6 @@ const emit = defineEmits<{
   (e: 'hitSuccess', lat: number, long: number, meters: number): void
   (e: 'hitFail', lat: number, long: number, meters: number): void
 }>();
-
 
 const radarSize = shallowRef('0.25mile');
 const wasHit = shallowRef(false);
@@ -79,7 +81,6 @@ const submit = async() => {
     } else {
       emit('hitFail', position.coords.latitude, position.coords.longitude, distance);
     }
-    // TODO: FIREBASE
     loading.value = false;
     model.value = false;
     notify({

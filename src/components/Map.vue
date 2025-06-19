@@ -28,6 +28,7 @@
             </v-card-text>
         </v-card>
     </v-dialog>
+    <radar v-model="shouldShowPinRadarDialog" @hit-fail="(lat, lng, meters) => onPinRadar(false, 0, 0, meters)" @hit-success="(lat, lng, meters) => onPinRadar(true, 0, 0, meters)"></radar>
 </template>
 
 <script lang="ts" setup>
@@ -64,6 +65,9 @@ const locatingPinToMeasureName = ref<string | null>(null);
 const locatingClosestType = ref<{key: string, type: string} | null>(null);
 const calculatedDistanceDialog = shallowRef(false);
 const calculatedDistance = shallowRef(0);
+
+const shouldShowPinRadarDialog = shallowRef(false);
+const pinRadarLatLng = ref<number[] | null>(null);
 
 const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({name: "", type: "", distance: 0})
@@ -142,13 +146,15 @@ const buildMap = () => {
     }
 }
 
+const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {
+    if (pinRadarLatLng.value != null) {
+        addRadar(success, pinRadarLatLng.value[0], pinRadarLatLng.value[1], distance)
+    }
+}
+
 const onLocationFound = (e: any) => {
     var radius = e.accuracy;
 
-    L.marker(e.latlng).addTo(localMap.value!)
-        .bindPopup("You are within " + radius + " meters from this point"); //.openPopup();
-
-    L.circle(e.latlng, { radius: radius }).addTo(localMap.value!);
     locating.value = false
     notify({
         type: 'success',
@@ -164,7 +170,6 @@ const onLocationFound = (e: any) => {
         calculatedDistanceDialog.value = true
         locatingPinToMeasureLatLng.value = null
     }
-
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
@@ -180,6 +185,11 @@ const onLocationFound = (e: any) => {
         findClosestResult.value.type = locatingClosestType.value.type
         findClosestDialog.value = true
         locatingClosestType.value = null
+    } else {
+        L.marker(e.latlng).addTo(localMap.value!)
+            .bindPopup("You are within " + radius + " meters from this point"); //.openPopup();
+
+        L.circle(e.latlng, { radius: radius }).addTo(localMap.value!);
     }
 };
 
@@ -338,8 +348,11 @@ const refreshPolygons = () => {
 const getPopupFor = (latLng: L.LatLngExpression, name: string) => L.popup().setContent(`
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
-    <div class="v-btn v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+    <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
       <button>Measure distance from me</button>
+    </div>
+    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-error v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
+      <button>Add radar</button>
     </div>
   </div>
 `)
@@ -352,6 +365,11 @@ const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     ]
     locatingPinToMeasureName.value = name
     locate()
+}
+
+const startPinRadar = (lat: number, long: number) => {
+    pinRadarLatLng.value = [lat, long]
+    shouldShowPinRadarDialog.value = true
 }
 
 const findClosest = (key: string, type: string) => {
@@ -392,6 +410,11 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             title: "Success",
             text: "Added pin"
         })
+
+        // Auto enable custom pins (clearer UI)
+        if (!store.$state.mapMarkers.includes("custom")) {
+            store.$state.mapMarkers.push("custom");
+        }
     }
 }
 
@@ -460,7 +483,8 @@ onMounted(async () => {
 
     // map.on('locationfound', onLocationFound);
 
-    (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo
+    (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
+    (window as any)["startPinRadar"] = startPinRadar;
 })
 
 </script>

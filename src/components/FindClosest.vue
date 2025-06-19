@@ -2,6 +2,9 @@
   <v-dialog max-width="500" v-model="model as any" transition="dialog-bottom-transition">
     <v-card title="Choose Which Resource To Find Closest">
       <v-card-text>
+        <div style="padding-bottom: 1em;">
+          This will only show on your device and will not notify the other team(s).
+        </div>
         <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;" @click="$emit('findClosest', checkbox.key, checkbox.label)">
           {{ checkbox.label }}
         </v-btn>

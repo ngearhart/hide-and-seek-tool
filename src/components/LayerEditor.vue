@@ -2,6 +2,9 @@
   <v-dialog max-width="300" v-model="model as any" transition="dialog-bottom-transition">
     <v-card title="Choose Map Layers">
       <v-card-text>
+        <div style="padding-bottom: 1em;">
+          This will only apply to your device.
+        </div>
         <v-radio-group label="Background style" v-model="mapStyle" v-on:click="updateMap">
           <v-radio label="Dark" value="dark"></v-radio> <!-- Jawg.Matrix or Jawg.Dark -->
           <v-radio label="Light" value="light"></v-radio> <!-- Jawg.Sunny  -->
@@ -101,21 +104,27 @@ const updateMap = async() => {
   store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
 };
 
-onMounted(() => {
-  if (store.$state.mapLayers.includes("Jawg.Matrix")) {
-    mapStyle.value = "dark";
-  } else if (store.$state.mapLayers.includes("Jawg.Sunny")) {
-    mapStyle.value = "light";
-  } else if (store.$state.mapLayers.includes("Esri_WorldImagery")) {
-    mapStyle.value = "terrain";
-  }
+// Refresh on every view - store could be edited elsewhere.
+watch(model, () => {
+  if (model.value) {
+    if (store.$state.mapLayers.includes("Jawg.Matrix")) {
+      mapStyle.value = "dark";
+    } else if (store.$state.mapLayers.includes("Jawg.Sunny")) {
+      mapStyle.value = "light";
+    } else if (store.$state.mapLayers.includes("Esri_WorldImagery")) {
+      mapStyle.value = "terrain";
+    }
 
-  if (store.$state.mapLayers.includes("OpenRailwayMap")) {
-    checkboxes.find(item => item.label == "Rail lines")!.checked = true;
-  }
+    if (store.$state.mapLayers.includes("OpenRailwayMap")) {
+      checkboxes.find(item => item.label == "Rail lines")!.checked = true;
+    }
 
-  store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
-  checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
-});
+    store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
+    checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
+  }
+})
+
+// onMounted(() => {
+// });
 
 </script>
