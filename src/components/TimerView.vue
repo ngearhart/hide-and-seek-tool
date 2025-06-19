@@ -12,7 +12,7 @@
     </v-row>
     <v-row align="center" justify="center" v-for="team in teams" :key="team.name">
         <v-col cols="12" md="12">
-            <v-btn block color="primary" @click="submit(team.name)">Start Stopwatch for team {{ team.name }}</v-btn>
+            <v-btn block color="primary" @click="$emit('submit', team.name)">Start Stopwatch for team {{ team.name }}</v-btn>
         </v-col>
     </v-row>
   </v-container>

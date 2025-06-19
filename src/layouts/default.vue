@@ -115,7 +115,7 @@ onMounted(() => {
   }
 });
 
-const redirect = (link) => {
+const redirect = (link: any) => {
   router.push('/' + (link === 'Map' ? '' : link.toLowerCase()));
 };
 

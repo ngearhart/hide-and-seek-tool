@@ -62,7 +62,7 @@ const launchGameCreatorDialog = () => {
   isGameCreatorOpen.value = true;
 }
 
-const createNewGame = async (teams) => {
+const createNewGame = async (teams: { name: string }[]) => {
   try {
     // Create game ID
     gameCodeEntered.value = generateSlug();

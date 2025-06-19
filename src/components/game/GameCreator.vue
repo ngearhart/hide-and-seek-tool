@@ -1,10 +1,10 @@
 <template>
   <v-dialog max-width="600" v-model="isDialogOpen" transition="dialog-bottom-transition">
     <v-card title="Game Creator" :disabled="loading" :loading="loading">
+      <template v-slot:loader="{ isActive }">
+        <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
+      </template>
       <v-form @submit.prevent="submit">
-        <template v-slot:loader="{ isActive }">
-          <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
-        </template>
         <v-card-text>
           <v-container>
             <v-row align="center" justify="center" v-for="team in teams" :key="team.id">
@@ -44,22 +44,22 @@
 <script lang="ts" setup>
 
 const emit = defineEmits<{
-  (e: 'submit', teams: { id: int, name: string }[]): void
+  (e: 'submit', teams: { id: number, name: string }[]): void
 }>();
 
-const isDialogOpen = defineModel()
+const isDialogOpen = defineModel<boolean>()
 const teams = ref([{id: 0, name: ''}, {id: 1, name: ''}]);
 const loading = ref(false);
 
 const rules = [
-    value => {
+    (value: string | null) => {
       if (value) return true
       return 'Team name must not be empty'
     },
   ]
 
 
-const rmTeam = (id) => {
+const rmTeam = (id: number) => {
   const newTeams = [];
   for (const team of teams.value) {
     if (team.id != id) {
@@ -72,8 +72,8 @@ const rmTeam = (id) => {
   teams.value = newTeams;
 }
 
-const submit = (e) => {
-  e.then(r => {
+const submit = (e: any) => {
+  e.then((r: { valid: boolean }) => {
     if (r.valid) {
       loading.value = true;
       emit('submit', teams.value);

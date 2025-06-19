@@ -1,11 +1,11 @@
 <template>
     <v-dialog max-width="600" v-model="isDialogOpen" transition="dialog-bottom-transition" persistent>
         <v-card title="Join a Team" :disabled="loading" :loading="loading">
+            <template v-slot:loader="{ isActive }">
+                <v-progress-linear :active="isActive" color="deep-purple" height="4"
+                    indeterminate></v-progress-linear>
+            </template>
             <v-form @submit.prevent="submit">
-                <template v-slot:loader="{ isActive }">
-                    <v-progress-linear :active="isActive" color="deep-purple" height="4"
-                        indeterminate></v-progress-linear>
-                </template>
                 <v-card-text>
                     <v-container>
                         <v-row align="center" justify="center">
@@ -43,7 +43,7 @@ const teams = computed(() => gamesObj.value?.teams);
 const isDialogOpen = defineModel<boolean>();
 const loading = ref(false);
 
-const submit = (name: string) => {
+const submit = (name: any) => {
     loading.value = true;
     emit('submit', name);
 };

@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
-    copy: typeof import('./components/LayerEditor copy.vue')['default']
     FindClosest: typeof import('./components/FindClosest.vue')['default']
     GameCreator: typeof import('./components/game/GameCreator.vue')['default']
     GameSelector: typeof import('./components/game/GameSelector.vue')['default']
@@ -21,9 +20,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TeamJoiner: typeof import('./components/game/TeamJoiner.vue')['default']
-    TeamSelector: typeof import('./components/game/TeamSelector.vue')['default']
     Thermometer: typeof import('./components/Thermometer.vue')['default']
-    Timer: typeof import('./components/Timer.vue')['default']
     TimerView: typeof import('./components/TimerView.vue')['default']
   }
 }
