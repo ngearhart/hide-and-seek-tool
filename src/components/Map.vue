@@ -133,7 +133,7 @@ const buildMap = () => {
             metroStationsGeoJSON.features.forEach(station => {
                 let latlng: L.LatLngExpression = [station.geometry.coordinates[1], station.geometry.coordinates[0]];
                 L.marker(latlng).bindPopup(getPopupFor(
-                    latlng, station.properties.NAME
+                    latlng, station.properties.NAME, `Lines: ${station.properties.LINE}`
                 )).addTo(localMapVal);
                 L.circle(latlng, {
                     color: 'red',
@@ -348,9 +348,10 @@ const refreshPolygons = () => {
 }
 
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor = (latLng: L.LatLngExpression, name: string) => L.popup().setContent(`
+const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(`
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
+    ${ subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
       <button>Measure distance from me</button>
     </div>
