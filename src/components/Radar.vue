@@ -1,13 +1,13 @@
 <template>
-  <v-dialog max-width="300" v-model="model as any" transition="dialog-bottom-transition">
-    <v-card title="Create Radar Overlay" :disabled="loading" :loading="loading">
+  <v-dialog max-width="400" v-model="model as any" transition="dialog-bottom-transition">
+    <v-card title="Create Radar" :subtitle="'Create a Radar Overlay Around ' + postTitle" :disabled="loading" :loading="loading">
       <template v-slot:loader="{ isActive }">
         <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
       </template>
       <v-card-text>
-        <div style="padding-bottom: 1em;">
+        <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
           This will show on all devices.
-        </div>
+        </v-alert>
         <v-select label="Radar Size" :items="radarSizeOptions" v-model="radarSize"></v-select>
         <v-checkbox label="Radar was a hit" v-model="wasHit"></v-checkbox>
         <!-- <v-alert icon="mdi-alert" text="Make sure you have location permissions enabled for this website." color="warning" density="compact"></v-alert> -->
@@ -21,6 +21,10 @@
 
 <script lang="ts" setup>
 import { notify } from '@kyvg/vue3-notification';
+
+defineProps<{
+  postTitle: string,
+}>();
 
 const model = defineModel()
 const emit = defineEmits<{

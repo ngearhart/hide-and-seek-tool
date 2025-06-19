@@ -16,9 +16,9 @@
         Radar
       </v-btn>
 
-      <v-btn key="4" color="success" prepend-icon="mdi-thermometer" @click="thermometerIsOpen = true">
+      <!-- <v-btn key="4" color="success" prepend-icon="mdi-thermometer" @click="thermometerIsOpen = true">
         Thermometer
-      </v-btn>
+      </v-btn> -->
 
       <v-btn key="4" color="red-darken-2" prepend-icon="mdi-radius" @click="findClosestIsOpen = true">
         Find Closest
@@ -29,7 +29,7 @@
       <v-btn key="4" color="info" prepend-icon="mdi-pin" @click="$emit('showPinDrop')">
         Drop Pin
       </v-btn>
-      
+
       <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true">
         Layers
       </v-btn>
@@ -39,23 +39,25 @@
       </v-btn>
     </v-speed-dial>
     <layer-editor v-model="layerEditorIsOpen" />
-    <find-closest v-model="findClosestIsOpen" @find-closest="(key: string, type: string) => { findClosestIsOpen = false; $emit('findClosest', key, type) }"/>
-    <radar v-model="radarIsOpen" 
-        @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
-        @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)"/>
+    <find-closest v-model="findClosestIsOpen"
+      @find-closest="(key: string, type: string) => { findClosestIsOpen = false; $emit('findClosest', key, type) }" />
+    <radar v-model="radarIsOpen" post-title="Your Current Location"
+      @hit-success="(lat: number, long: number, meters: number) => $emit('radar', true, lat, long, meters)"
+      @hit-fail="(lat: number, long: number, meters: number) => $emit('radar', false, lat, long, meters)" />
     <history :games-db-ref="gamesDbRef" :games-db-obj="gamesDbObj" v-model="historyIsOpen" />
-    <thermometer v-model="thermometerIsOpen" @submit="(lat: number, long: number, angle: number, hotter: boolean) => $emit('thermometer', lat, long, angle, hotter)"/>
+    <thermometer v-model="thermometerIsOpen"
+      @submit="(lat: number, long: number, angle: number, hotter: boolean) => $emit('thermometer', lat, long, angle, hotter)" />
   </v-fab>
 </template>
 <script lang="ts" setup>
-  import type { GameRecord } from '@/utils';
+import type { GameRecord } from '@/utils';
 import type { DatabaseReference } from 'firebase/database';
 import type { VueDatabaseDocumentData } from 'vuefire';
 
-  const props = defineProps<{
-    gamesDbRef: DatabaseReference,
-    gamesDbObj: VueDatabaseDocumentData<GameRecord | null> | undefined
-  }>();
+const props = defineProps<{
+  gamesDbRef: DatabaseReference,
+  gamesDbObj: VueDatabaseDocumentData<GameRecord | null> | undefined
+}>();
 
 import { shallowRef } from 'vue'
 

@@ -1,17 +1,22 @@
 <template>
-  <v-dialog max-width="300" v-model="model as any" transition="dialog-bottom-transition">
+  <v-dialog max-width="350" v-model="model as any" transition="dialog-bottom-transition">
     <v-card title="Choose Map Layers">
       <v-card-text>
-        <div style="padding-bottom: 1em;">
+        <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
           This will only apply to your device.
-        </div>
+        </v-alert>
         <v-radio-group label="Background style" v-model="mapStyle" v-on:click="updateMap">
           <v-radio label="Dark" value="dark"></v-radio> <!-- Jawg.Matrix or Jawg.Dark -->
           <v-radio label="Light" value="light"></v-radio> <!-- Jawg.Sunny  -->
           <v-radio label="Terrain" value="terrain"></v-radio> <!-- Esri_WorldImagery  -->
         </v-radio-group>
-        <v-checkbox :label="checkbox.label" v-model="checkbox.checked" v-for="checkbox in checkboxes" density="compact" v-on:click="updateMap"
-          :messages="checkbox.note ?? ''" hide-details="auto"></v-checkbox>
+        <div>
+          <v-label>
+            Markers
+          </v-label>
+          <v-checkbox :label="checkbox.label" v-model="checkbox.checked" v-for="checkbox in checkboxes" density="compact" v-on:click="updateMap"
+            :messages="checkbox.note ?? ''" hide-details="auto" :disabled="checkbox.key === 'parks'"></v-checkbox>
+        </div>
       </v-card-text>
     </v-card>
   </v-dialog>

@@ -1,10 +1,10 @@
 <template>
   <v-dialog max-width="500" v-model="model as any" transition="dialog-bottom-transition">
-    <v-card title="Choose Which Resource To Find Closest">
+    <v-card title="Choose a Resource" subtitle="Choose Which to Find Closest to Your Location">
       <v-card-text>
-        <div style="padding-bottom: 1em;">
+        <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
           This will only show on your device and will not notify the other team(s).
-        </div>
+        </v-alert>
         <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;" @click="$emit('findClosest', checkbox.key, checkbox.label)">
           {{ checkbox.label }}
         </v-btn>

@@ -5,9 +5,9 @@
           <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
         </template>
         <v-card-text>
-          <div style="padding-bottom: 1em;">
-            This will clear added overlays from everyone's devices.
-          </div>
+          <v-alert style="margin-bottom: 1em;" icon="$warning" density="compact">
+              This will clear added overlays from everyone's devices.
+          </v-alert>
           <v-list :items="listItems" @click:select="deleteEvent"></v-list>
         </v-card-text>
       </v-card>

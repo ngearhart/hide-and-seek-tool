@@ -17,18 +17,23 @@
     <v-dialog max-width="500" v-model="calculatedDistanceDialog">
         <v-card title="Distance">
             <v-card-text>
-                You are roughly {{ calculatedDistance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }} miles from the selected pin, {{ locatingPinToMeasureName }}.
+                You are roughly {{ calculatedDistance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }}
+                miles
+                from the selected pin, {{ locatingPinToMeasureName }}.
             </v-card-text>
         </v-card>
     </v-dialog>
-        <v-dialog max-width="500" v-model="findClosestDialog">
+    <v-dialog max-width="500" v-model="findClosestDialog">
         <v-card title="Distance">
             <v-card-text>
-                Your closest {{ findClosestResult.type }}, {{ findClosestResult.name }}, is roughly {{ findClosestResult.distance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }} miles from you.
+                Your closest {{ findClosestResult.type }}, {{ findClosestResult.name }}, is roughly {{
+                    findClosestResult.distance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }} miles from you.
             </v-card-text>
         </v-card>
     </v-dialog>
-    <radar v-model="shouldShowPinRadarDialog" @hit-fail="(lat, lng, meters) => onPinRadar(false, 0, 0, meters)" @hit-success="(lat, lng, meters) => onPinRadar(true, 0, 0, meters)"></radar>
+    <radar post-title="Pin" v-model="shouldShowPinRadarDialog"
+        @hit-fail="(lat, lng, meters) => onPinRadar(false, 0, 0, meters)"
+        @hit-success="(lat, lng, meters) => onPinRadar(true, 0, 0, meters)"></radar>
 </template>
 
 <script lang="ts" setup>
@@ -62,7 +67,7 @@ const droppingPin = shallowRef(false);
 const locating = shallowRef(false);
 const locatingPinToMeasureLatLng = ref<number[] | null>(null);
 const locatingPinToMeasureName = ref<string | null>(null);
-const locatingClosestType = ref<{key: string, type: string} | null>(null);
+const locatingClosestType = ref<{ key: string, type: string } | null>(null);
 const calculatedDistanceDialog = shallowRef(false);
 const calculatedDistance = shallowRef(0);
 
@@ -70,15 +75,25 @@ const shouldShowPinRadarDialog = shallowRef(false);
 const pinRadarLatLng = ref<number[] | null>(null);
 
 const findClosestDialog = shallowRef(false);
-const findClosestResult = ref({name: "", type: "", distance: 0})
+const findClosestResult = ref({ name: "", type: "", distance: 0 })
+
+const OVERLAY_OPACITY = 0.6;
 
 
 store.$subscribe(() => {
     buildMap();
+    refreshRadar();
+    refreshThermometer();
+    refreshPolygons();
 });
 
+watch(gamesObj, () => {
+    buildMap();
+    refreshRadar();
+    refreshThermometer();
+    refreshPolygons();
+});
 
-const OVERLAY_OPACITY = 0.6;
 
 const buildMap = () => {
     if (localMap) {
@@ -207,7 +222,7 @@ const onLocationError = () => {
 
 const locate = () => {
     locating.value = true
-    localMap.value!.locate({ setView: true, maxZoom: 16 });
+    localMap.value!.locate({ setView: locatingPinToMeasureLatLng.value == null && locatingClosestType.value == null, maxZoom: 16 });
 };
 
 
@@ -316,13 +331,6 @@ const displayThermometer = (lat: number, long: number, angle: number, hotter: bo
     // ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
 };
 
-watch(gamesObj, () => {
-    buildMap();
-    refreshRadar();
-    refreshThermometer();
-    refreshPolygons();
-});
-
 const refreshRadar = () => {
     if (gamesObj.value?.radarEntries && gamesObj.value!.radarEntries.length > 0) {
         gamesObj.value!.radarEntries.forEach(radarEntry => {
@@ -351,12 +359,15 @@ const refreshPolygons = () => {
 const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(`
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
-    ${ subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
+    ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
       <button>Measure distance from me</button>
     </div>
     <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-error v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
       <button>Add radar</button>
+    </div>
+    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
+      <button>Add boundary line</button>
     </div>
   </div>
 `)
