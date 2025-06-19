@@ -34,6 +34,9 @@
     <radar post-title="Pin" v-model="shouldShowPinRadarDialog"
         @hit-fail="(lat, lng, meters) => onPinRadar(false, 0, 0, meters)"
         @hit-success="(lat, lng, meters) => onPinRadar(true, 0, 0, meters)"></radar>
+    <BoundaryLine post-title="Pin" v-model="shouldShowBoundaryLineDialog"
+        @submit="(lat, lng, degrees) => addBoundaryLine(boundaryLineLatLng![0], boundaryLineLatLng![1], degrees)">
+    </BoundaryLine>
 </template>
 
 <script lang="ts" setup>
@@ -42,7 +45,7 @@ import L, { type LatLngBoundsExpression, type LatLngTuple, type LeafletEvent } f
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
-import { distance, metroStationsGeoJSON, staticMarkers, staticMarkersIncludingMetroStations } from '@/utils';
+import { distance, metroStationsGeoJSON, rotatePoint, staticMarkers, staticMarkersIncludingMetroStations } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useDatabaseObject } from 'vuefire';
@@ -74,6 +77,9 @@ const calculatedDistance = shallowRef(0);
 const shouldShowPinRadarDialog = shallowRef(false);
 const pinRadarLatLng = ref<number[] | null>(null);
 
+const shouldShowBoundaryLineDialog = shallowRef(false);
+const boundaryLineLatLng = ref<number[] | null>(null);
+
 const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({ name: "", type: "", distance: 0 })
 
@@ -85,6 +91,7 @@ store.$subscribe(() => {
     refreshRadar();
     refreshThermometer();
     refreshPolygons();
+    refreshBoundaryLines();
 });
 
 watch(gamesObj, () => {
@@ -92,6 +99,7 @@ watch(gamesObj, () => {
     refreshRadar();
     refreshThermometer();
     refreshPolygons();
+    refreshBoundaryLines();
 });
 
 
@@ -263,6 +271,23 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
     );
 };
 
+const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
+    const newEntries = gamesObj.value?.boundaryLineEntries ?? [];
+    newEntries.push({
+        lat: lat,
+        long: long,
+        degrees: degrees,
+        created: new Date().toUTCString()
+    });
+
+    await set(
+        gamesDbRef.value, {
+        boundaryLineEntries: newEntries,
+        ...gamesObj.value
+    }
+    );
+}
+
 const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
     if (hit) {
         console.log("Adding radar hit");
@@ -355,6 +380,66 @@ const refreshPolygons = () => {
     }
 }
 
+const refreshBoundaryLines = () => {
+    if (gamesObj.value?.boundaryLineEntries && gamesObj.value!.boundaryLineEntries.length > 0) {
+        // So sorry for this garbage implementation
+        gamesObj.value!.boundaryLineEntries.forEach(boundaryLine => {
+            if ((boundaryLine.degrees - 45) % 90 === 0) {
+                const a = boundaryLine.degrees;
+                let delta = 0.2;
+                let x = boundaryLine.lat;
+                let y = boundaryLine.long;
+                let midPoint = [x, y];
+                let offsetPointEast = [x, y + delta];
+                let offsetPointNorth = [x + delta, y];
+                let offsetPointWest = [x, y - delta];
+                let offsetPointSouth = [x - delta, y];
+                L.polygon([
+                    // // [boundaryLine.lat, boundaryLine.long],
+                    // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long],
+                    // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long + 1 * Math.cos(a)],
+                    // // [boundaryLine.lat, boundaryLine.long + 1 * Math.cos(a)],
+                    
+                    // // [x, y],
+                    // // [x + Math.cos(a) + Math.sin(a), y],
+                    // // [x + Math.cos(a) + Math.sin(a), y + Math.cos(a) - Math.sin(a)],
+                    // // [x, y + Math.cos(a) - Math.sin(a)],
+                    // [x, y],
+                    rotatePoint(offsetPointEast, midPoint, a),
+                    rotatePoint(offsetPointNorth, midPoint, a),
+                    // rotatePoint(offsetPointWest, midPoint, a),
+                    rotatePoint(offsetPointSouth, midPoint, a),
+
+                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
+            } else if (boundaryLine.degrees === 0) {
+                L.rectangle([
+                    [boundaryLine.lat - 1, boundaryLine.long],
+                    [boundaryLine.lat + 1, boundaryLine.long + 1],
+
+                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
+            } else if (boundaryLine.degrees === 90) {
+                L.rectangle([
+                    [boundaryLine.lat, boundaryLine.long - 1],
+                    [boundaryLine.lat + 1, boundaryLine.long + 1],
+
+                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
+            } else if (boundaryLine.degrees === 180) {
+                L.rectangle([
+                    [boundaryLine.lat - 1, boundaryLine.long],
+                    [boundaryLine.lat + 1, boundaryLine.long - 1],
+
+                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
+            } else if (boundaryLine.degrees === 270) {
+                L.rectangle([
+                    [boundaryLine.lat, boundaryLine.long + 1],
+                    [boundaryLine.lat - 1, boundaryLine.long - 1],
+
+                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
+            }
+        });
+    }
+}
+
 // I know this is gross but this is the leaflet canonical way.
 const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(`
   <div class="popup-container">
@@ -366,7 +451,7 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
     <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-error v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
       <button>Add radar</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
+    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startBoundaryLine(${latLng})">
       <button>Add boundary line</button>
     </div>
   </div>
@@ -385,6 +470,11 @@ const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
 const startPinRadar = (lat: number, long: number) => {
     pinRadarLatLng.value = [lat, long]
     shouldShowPinRadarDialog.value = true
+}
+
+const startBoundaryLine = (lat: number, long: number) => {
+    boundaryLineLatLng.value = [lat, long]
+    shouldShowBoundaryLineDialog.value = true
 }
 
 const findClosest = (key: string, type: string) => {
@@ -483,6 +573,10 @@ onMounted(async () => {
     });
 
     buildMap();
+    refreshRadar();
+    refreshThermometer();
+    refreshPolygons();
+    refreshBoundaryLines();
 
     // map.locate({setView: true, maxZoom: 16});
     // function onLocationFound(e) {
@@ -500,6 +594,7 @@ onMounted(async () => {
 
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
+    (window as any)["startBoundaryLine"] = startBoundaryLine;
 })
 
 </script>

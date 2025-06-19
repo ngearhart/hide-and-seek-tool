@@ -13,6 +13,13 @@ type RadarEntry = {
     created: string,
 };
 
+type BoundaryLineEntry = {
+    lat: number,
+    long: number,
+    degrees: number,
+    created: string,
+};
+
 type ThermometerEntry = {
     lat: number,
     long: number,
@@ -40,6 +47,7 @@ export type GameRecord = {
     id: string
     created: string,
     radarEntries: RadarEntry[]
+    boundaryLineEntries: BoundaryLineEntry[]
     thermometerEntries: ThermometerEntry[]
     polygonEntries: PolygonDrawingEntry[]
     customPins: PinEntry[]
@@ -404,4 +412,34 @@ export function distance(lat1: number, lon1: number, lat2: number, lon2: number,
         if (unit=="N") { dist = dist * 0.8684 }
         return dist;
     }
+}
+
+// From https://stackoverflow.com/a/68240704
+export const rotatePoint = (coord: number[], midpoint: number[], angle: number): L.LatLngTuple => {
+  // Make this constant so it doesn't have to be repeatedly recalculated
+  const piDiv180 = Math.PI / 180;
+
+  // Convert the input angle to radians
+  const r = angle * piDiv180;
+
+  // Create local variables using appropriate nomenclature
+  const x = coord[1];
+  const y = coord[0];
+  const mx = midpoint[1];
+  const my = midpoint[0];
+  
+  // Offset input point by the midpoint so the midpoint becomes the origin
+  const ox = x - mx;
+  const oy = y - my;
+
+  // Cache trig results because trig is expensive
+  const cosr = Math.cos(r);
+  const sinr = Math.sin(r);
+
+  // Perform rotation
+  const dx = ox * cosr - oy * sinr;
+  const dy = ox * sinr + oy * cosr;
+
+  // Undo the offset
+  return [dy + my, dx + mx];
 }

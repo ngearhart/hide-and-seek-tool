@@ -48,6 +48,9 @@ import type { VueDatabaseDocumentData } from 'vuefire';
         if (props.gamesDbObj && props.gamesDbObj.customPins?.length > 0) {
           result.push(...props.gamesDbObj.customPins.map(customPin => ({type: "customPin", created: customPin.created, text: "Custom Pin"})))
         }
+        if (props.gamesDbObj && props.gamesDbObj.boundaryLineEntries?.length > 0) {
+          result.push(...props.gamesDbObj.boundaryLineEntries.map(boundaryLine => ({type: "boundaryLine", created: boundaryLine.created, text: "Boundary Line"})))
+        }
         return result;
     });
 
@@ -77,6 +80,12 @@ import type { VueDatabaseDocumentData } from 'vuefire';
         } else if (itemType == "customPin") {
             const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
             newObj.customPins = newObj.customPins.filter(item => new Date(item.created).getTime() != itemTimestamp);
+            await set(
+                props.gamesDbRef, newObj
+            );
+        } else if (itemType == "boundaryLine") {
+            const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
+            newObj.boundaryLineEntries = newObj.boundaryLineEntries.filter(item => new Date(item.created).getTime() != itemTimestamp);
             await set(
                 props.gamesDbRef, newObj
             );
