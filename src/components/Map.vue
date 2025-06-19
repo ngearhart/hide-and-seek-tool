@@ -131,8 +131,11 @@ const buildMap = () => {
 
         if (store.$state.enableStationCircles) {
             metroStationsGeoJSON.features.forEach(station => {
-                L.marker([station.geometry.coordinates[1], station.geometry.coordinates[0]]).bindPopup(station.properties.NAME).addTo(localMapVal);
-                L.circle([station.geometry.coordinates[1], station.geometry.coordinates[0]], {
+                let latlng: L.LatLngExpression = [station.geometry.coordinates[1], station.geometry.coordinates[0]];
+                L.marker(latlng).bindPopup(getPopupFor(
+                    latlng, station.properties.NAME
+                )).addTo(localMapVal);
+                L.circle(latlng, {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.2,
