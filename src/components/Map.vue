@@ -1,7 +1,8 @@
 <template>
     <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
-        @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw" @reset="shouldConfirmDeleteDialogShow = true"/>
+        @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw" @reset="shouldConfirmDeleteDialogShow = true"
+        v-if="!droppingPin && !locating && !drawingPolygon"/>
     <div id="map" style="width: 100%; height: 100%"></div>
     <v-snackbar v-model="droppingPin" color="green" :close-on-content-click="false" timeout="-1">
         Tap on the map to drop a pin
