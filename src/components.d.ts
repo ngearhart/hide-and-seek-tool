@@ -10,7 +10,6 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     BoundaryLine: typeof import('./components/BoundaryLine.vue')['default']
     ConfirmDelete: typeof import('./components/ConfirmDelete.vue')['default']
-    copy: typeof import('./components/Radar copy.vue')['default']
     FindClosest: typeof import('./components/FindClosest.vue')['default']
     GameCreator: typeof import('./components/game/GameCreator.vue')['default']
     GameSelector: typeof import('./components/game/GameSelector.vue')['default']
