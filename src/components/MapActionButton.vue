@@ -23,9 +23,11 @@
       <v-btn key="4" color="red-darken-2" prepend-icon="mdi-radius" @click="findClosestIsOpen = true">
         Find Closest
       </v-btn>
-      <!-- <v-btn key="4" color="info" prepend-icon="mdi-draw">
+  
+      <v-btn key="4" color="info" prepend-icon="mdi-draw" @click="$emit('draw')">
         Draw
-      </v-btn> -->
+      </v-btn>
+  
       <v-btn key="4" color="info" prepend-icon="mdi-pin" @click="$emit('showPinDrop')">
         Drop Pin
       </v-btn>
@@ -34,7 +36,7 @@
         Layers
       </v-btn>
 
-      <v-btn key="4" color="error" prepend-icon="mdi-refresh">
+      <v-btn key="4" color="error" prepend-icon="mdi-refresh" @click="$emit('reset')">
         Reset
       </v-btn>
     </v-speed-dial>
@@ -67,6 +69,8 @@ defineEmits<{
   (e: 'locate'): void
   (e: 'showPinDrop'): void
   (e: 'findClosest', key: string, type: string): void
+  (e: 'draw'): void
+  (e: 'reset'): void
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)

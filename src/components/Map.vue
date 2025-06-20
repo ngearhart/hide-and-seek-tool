@@ -1,9 +1,9 @@
 <template>
     <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
-        @show-pin-drop="droppingPin = true" @find-closest="findClosest" />
+        @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw" @reset="shouldConfirmDeleteDialogShow = true"/>
     <div id="map" style="width: 100%; height: 100%"></div>
-    <v-snackbar v-model="droppingPin" color="white">
+    <v-snackbar v-model="droppingPin" color="green" :close-on-content-click="false" timeout="-1">
         Tap on the map to drop a pin
         <template v-slot:actions>
             <v-btn color="pink" variant="text" @click="droppingPin = false">
@@ -11,8 +11,11 @@
             </v-btn>
         </template>
     </v-snackbar>
-    <v-snackbar v-model="locating" color="white">
+    <v-snackbar v-model="locating" color="blue" :close-on-content-click="false" timeout="-1">
         Locating <v-progress-circular indeterminate></v-progress-circular>
+    </v-snackbar>
+    <v-snackbar v-model="drawingPolygon" color="red" :close-on-content-click="false" timeout="-1" multi-line>
+        Tap to draw polygon points. Tap the first point to finish. This will show on all devices.
     </v-snackbar>
     <v-dialog max-width="500" v-model="calculatedDistanceDialog">
         <v-card title="Distance">
@@ -37,6 +40,7 @@
     <BoundaryLine post-title="Pin" v-model="shouldShowBoundaryLineDialog"
         @submit="(lat, lng, degrees) => addBoundaryLine(boundaryLineLatLng![0], boundaryLineLatLng![1], degrees)">
     </BoundaryLine>
+    <ConfirmDelete :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" v-model="shouldConfirmDeleteDialogShow"></ConfirmDelete>
 </template>
 
 <script lang="ts" setup>
@@ -82,6 +86,10 @@ const boundaryLineLatLng = ref<number[] | null>(null);
 
 const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({ name: "", type: "", distance: 0 })
+
+const drawingPolygon = shallowRef(false);
+
+const shouldConfirmDeleteDialogShow = shallowRef(false);
 
 const OVERLAY_OPACITY = 0.6;
 
@@ -496,6 +504,11 @@ const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
     ) ?? [],
 })
 
+const draw = () => {
+    new (L as any).Draw.Polygon(localMap.value!, {}).enable()
+    drawingPolygon.value = true
+}
+
 const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
     if (droppingPin.value) {
         const newEntries = gamesObj.value?.customPins ?? [];
@@ -530,20 +543,20 @@ onMounted(async () => {
     localMap.value.on('click', onMapClick);
     L.control.scale().addTo(localMap.value);
 
-    var drawControl = new (L.Control as any).Draw({
-        position: 'topright',
-        draw: {
-            polyline: false,
-            polygon: true,
-            circle: false,
-            marker: false
-        },
-        edit: {
-            featureGroup: drawnItems,
-            remove: true
-        }
-    });
-    localMap.value.addControl(drawControl);
+    // var drawControl = new (L.Control as any).Draw({
+    //     position: 'topright',
+    //     draw: {
+    //         polyline: false,
+    //         polygon: true,
+    //         circle: false,
+    //         marker: false
+    //     },
+    //     edit: {
+    //         featureGroup: drawnItems,
+    //         remove: true
+    //     }
+    // });
+    // localMap.value.addControl(drawControl);
 
     localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
         // var type = e.layerType,
@@ -567,6 +580,7 @@ onMounted(async () => {
                 ...gamesObj.value
             }
             );
+            drawingPolygon.value = false
         }
 
         // drawnItems.addLayer(layer);
