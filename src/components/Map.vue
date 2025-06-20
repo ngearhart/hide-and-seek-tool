@@ -65,7 +65,7 @@ const localMap = shallowRef<L.Map | null>(null);
 
 const drawnItems = reactive(new L.FeatureGroup());
 const user = useCurrentUserMock();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
+const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);

@@ -68,7 +68,7 @@ import { useNotification } from "@kyvg/vue3-notification";
 const { notify }  = useNotification();
 
 const user = useCurrentUserMock();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
+const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 
 const route = useRoute()

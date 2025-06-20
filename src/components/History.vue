@@ -10,6 +10,15 @@
           </v-alert>
           <v-list :items="listItems" @click:select="deleteEvent"></v-list>
         </v-card-text>
+        <v-card-actions>
+          <v-container>
+            <v-row align="center" justify="center">
+              <v-col cols="12" md="6">
+                <v-btn variant="tonal" @click="model = false" block>Close</v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </template>

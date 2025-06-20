@@ -31,7 +31,7 @@ const emit = defineEmits<{
 }>();
 
 const user = useCurrentUserMock();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
+const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));

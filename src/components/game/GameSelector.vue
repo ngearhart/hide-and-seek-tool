@@ -44,7 +44,7 @@ const gameCodeEntered = ref('');
 
 const user = useCurrentUserMock();
 
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + (user as any)?.uid));
+const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
@@ -67,8 +67,8 @@ const createNewGame = async (teams: { name: string }[]) => {
     // Create game ID
     gameCodeEntered.value = generateSlug();
 
-    console.debug("Current user:");
-    console.debug(user);
+    console.info("Current user:");
+    console.info(user);
 
     await set(userRecordDbRef.value, {
       currentGameId: gameCodeEntered.value
@@ -136,7 +136,7 @@ const joinGame = async() => {
 
 const joinTeam = async(team: string) => {
   await set(userRecordDbRef.value, {
-    currentGameId: gameCodeEntered.value,
+    currentGameId: userRecordObj.value?.currentGameId,
     teamName: team
   });
 

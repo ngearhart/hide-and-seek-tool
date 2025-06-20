@@ -12,8 +12,17 @@
         <v-checkbox label="Radar was a hit" v-model="wasHit"></v-checkbox>
         <!-- <v-alert icon="mdi-alert" text="Make sure you have location permissions enabled for this website." color="warning" density="compact"></v-alert> -->
         <v-card-actions>
-          <v-btn color="primary" block variant="tonal" @click="submit">Submit</v-btn>
-        </v-card-actions>
+          <v-container>
+            <v-row align="center" justify="center">
+              <v-col cols="12" md="6">
+                <v-btn color="primary" block variant="tonal" @click="submit">Submit</v-btn>
+              </v-col>
+            <v-col cols="12" md="6">
+              <v-btn prepend-icon="mdi-close" variant="tonal" @click="model = false" block>Close</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-actions>
       </v-card-text>
     </v-card>
   </v-dialog>

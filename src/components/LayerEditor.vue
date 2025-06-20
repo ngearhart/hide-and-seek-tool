@@ -18,6 +18,15 @@
             :messages="checkbox.note ?? ''" hide-details="auto" :disabled="checkbox.key === 'parks'"></v-checkbox>
         </div>
       </v-card-text>
+      <v-card-actions>
+        <v-container>
+          <v-row align="center" justify="center">
+            <v-col cols="12" md="6">
+              <v-btn prepend-icon="mdi-close" variant="tonal" @click="model = false" block>Close</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
