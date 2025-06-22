@@ -8,7 +8,14 @@
         <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
           This will show on all devices.
         </v-alert>
-        <v-select label="Radar Size" :items="radarSizeOptions" v-model="radarSize"></v-select>
+        <v-radio-group inline v-model="radiusSelectionType" label="Size selection type">
+          <v-radio label="Pre-defined size" value="predefined"></v-radio>
+          <v-radio label="Custom size" value="custom"></v-radio>
+        </v-radio-group>
+        <v-select label="Radar Size" :items="radarSizeOptions" v-model="radarSize" v-if="radiusSelectionType == 'predefined'"></v-select>
+        <v-form>
+          <v-text-field label="Radar Size (miles)" v-if="radiusSelectionType == 'custom'" :rules="[rules.required, rules.numeric]" v-model="customRadius"></v-text-field>
+        </v-form>
         <v-checkbox label="Radar was a hit" v-model="wasHit"></v-checkbox>
         <!-- <v-alert icon="mdi-alert" text="Make sure you have location permissions enabled for this website." color="warning" density="compact"></v-alert> -->
         <v-card-actions>
@@ -44,6 +51,8 @@ const emit = defineEmits<{
 const radarSize = shallowRef('0.25mile');
 const wasHit = shallowRef(false);
 const loading = shallowRef(false);
+const radiusSelectionType = shallowRef('predefined')
+const customRadius = shallowRef('0');
 
 const radarSizeOptions = [
   {
@@ -84,11 +93,29 @@ const radarSizeOptions = [
   },
 ]
 
+const rules = {
+  required: (value: string) => !!value || 'Required.',
+  numeric: (value: string) => !isNaN(parseFloat(value)) || 'Must be a number'
+}
+
 const submit = async() => {
   loading.value = true;
   try {
     const position: GeolocationPosition = await new Promise((r) => navigator.geolocation.getCurrentPosition((position) => r(position)));
-    const distance = parseFloat(radarSize.value.split("mile")[0]) * 1609.344;
+    let miles = radarSize.value.split("mile")[0]
+    if (radiusSelectionType.value === 'custom') {
+      miles = customRadius.value
+      if (!miles.length || isNaN(parseFloat(miles))) {
+        // TODO: Better UX for this
+        notify({
+          type: "error",
+          text: "Invalid size entered",
+          title: "Error"
+        })
+        return
+      }
+    }
+    const distance = parseFloat(miles) * 1609.344;
     if (wasHit.value) {
       emit('hitSuccess', position.coords.latitude, position.coords.longitude, distance);
     } else {
