@@ -1,0 +1,144 @@
+<template>
+  <v-dialog max-width="350" v-model="model as any" transition="dialog-bottom-transition">
+    <v-card title="Choose Map Layers">
+      <v-card-text>
+        <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
+          This will only apply to your device.
+        </v-alert>
+        <v-radio-group label="Background style" v-model="mapStyle" v-on:click="updateMap">
+          <v-radio label="Dark" value="dark"></v-radio> <!-- Jawg.Matrix or Jawg.Dark -->
+          <v-radio label="Light" value="light"></v-radio> <!-- Jawg.Sunny  -->
+          <v-radio label="Terrain" value="terrain"></v-radio> <!-- Esri_WorldImagery  -->
+        </v-radio-group>
+        <div>
+          <v-label>
+            Markers
+          </v-label>
+          <v-checkbox :label="checkbox.label" v-model="checkbox.checked" v-for="checkbox in checkboxes" density="compact" v-on:click="updateMap"
+            :messages="checkbox.note ?? ''" hide-details="auto" :disabled="checkbox.key === 'parks'"></v-checkbox>
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-container>
+          <v-row align="center" justify="center">
+            <v-col cols="12" md="6">
+              <v-btn prepend-icon="mdi-close" variant="tonal" @click="model = false" block>Close</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script lang="ts" setup>
+import { useStore } from '@/stores/app';
+
+
+
+const store = useStore();
+
+const model = defineModel()
+
+const mapStyle = shallowRef("dark");
+
+const checkboxes = reactive([
+  {
+    label: "Rail lines",
+    checked: false,
+  },
+  {
+    label: "Station circles",
+    checked: false,
+  },
+  {
+    label: "Airports",
+    checked: false,
+    key: "airports",
+  },
+  {
+    label: "Museums",
+    checked: false,
+    key: "museums",
+  },
+  {
+    label: "Movie Theaters",
+    checked: false,
+    key: "theaters",
+  },
+  {
+    label: "Hospitals",
+    checked: false,
+    key: "hospitals",
+  },
+  {
+    label: "Libraries",
+    checked: false,
+    key: "libraries",
+  },
+  {
+    label: "Zoos",
+    checked: false,
+    key: "zoos",
+  },
+  {
+    label: "Aquariums",
+    checked: false,
+    note: "Note: There is only 1 aquarium in the DMV",
+    key: "aquariums",
+  },
+  {
+    label: "Parks",
+    checked: false,
+    key: "parks",
+    note: "Note: There are too many - none entered",
+  },
+  {
+    label: "Custom pins",
+    checked: false,
+    key: "custom"
+  },
+]);
+
+const updateMap = async() => {
+  await new Promise(r => setTimeout(r, 200));
+  const newLayers = [];
+  switch (mapStyle.value) {
+    case "dark": newLayers.push("Jawg.Matrix"); break;
+    case "light": newLayers.push("Jawg.Sunny"); break;
+    case "terrain": newLayers.push("Esri_WorldImagery"); break;
+  }
+
+  if (checkboxes.find(item => item.label == "Rail lines")?.checked) {
+    newLayers.push("OpenRailwayMap");
+  }
+
+  store.$state.mapMarkers = checkboxes.filter(checkbox => checkbox.checked && checkbox.key).map(checkbox => checkbox.key!);
+  store.$state.mapLayers = newLayers;
+  store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
+};
+
+// Refresh on every view - store could be edited elsewhere.
+watch(model, () => {
+  if (model.value) {
+    if (store.$state.mapLayers.includes("Jawg.Matrix")) {
+      mapStyle.value = "dark";
+    } else if (store.$state.mapLayers.includes("Jawg.Sunny")) {
+      mapStyle.value = "light";
+    } else if (store.$state.mapLayers.includes("Esri_WorldImagery")) {
+      mapStyle.value = "terrain";
+    }
+
+    if (store.$state.mapLayers.includes("OpenRailwayMap")) {
+      checkboxes.find(item => item.label == "Rail lines")!.checked = true;
+    }
+
+    store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
+    checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
+  }
+})
+
+// onMounted(() => {
+// });
+
+</script>
