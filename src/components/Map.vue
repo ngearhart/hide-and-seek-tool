@@ -1,13 +1,22 @@
 <template>
     <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
-        @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw" @reset="shouldConfirmDeleteDialogShow = true"
-        v-if="!droppingPin && !locating && !drawingPolygon"/>
+        @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw"
+        @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon" />
     <div id="map" style="width: 100%; height: 100%"></div>
     <v-snackbar v-model="droppingPin" color="green" :close-on-content-click="false" timeout="-1">
         Tap on the map to drop a pin
         <template v-slot:actions>
             <v-btn color="pink" variant="text" @click="droppingPin = false">
+                Cancel
+            </v-btn>
+        </template>
+    </v-snackbar>
+    <v-snackbar :model-value="measuringOtherMarkerState != null" color="green" :close-on-content-click="false"
+        timeout="-1">
+        Select another marker to take the measurement
+        <template v-slot:actions>
+            <v-btn color="pink" variant="text" @click="cancelMeasuringOtherMarker">
                 Cancel
             </v-btn>
         </template>
@@ -25,6 +34,16 @@
                 miles
                 from the selected pin, {{ locatingPinToMeasureName }}.
             </v-card-text>
+            <v-card-actions>
+                <v-container>
+                    <v-row align="center" justify="center">
+                        <v-col cols="12" md="6">
+                            <v-btn prepend-icon="mdi-close" variant="tonal" @click="calculatedDistanceDialog = false"
+                                block>Close</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-actions>
         </v-card>
     </v-dialog>
     <v-dialog max-width="500" v-model="findClosestDialog">
@@ -33,6 +52,34 @@
                 Your closest {{ findClosestResult.type }}, {{ findClosestResult.name }}, is roughly {{
                     findClosestResult.distance.toLocaleString(undefined, { maximumSignificantDigits: 3 }) }} miles from you.
             </v-card-text>
+            <v-card-actions>
+                <v-container>
+                    <v-row align="center" justify="center">
+                        <v-col cols="12" md="6">
+                            <v-btn prepend-icon="mdi-close" variant="tonal" @click="findClosestDialog = false"
+                                block>Close</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <v-dialog max-width="500" v-model="measuringOtherMarkerDistanceResultDialog">
+        <v-card title="Distance">
+            <v-card-text>
+                The pins you selected are roughly {{ measuringOtherMarkerDistanceResult.toLocaleString(undefined, {
+                maximumSignificantDigits: 3 }) }} miles apart.
+            </v-card-text>
+            <v-card-actions>
+                <v-container>
+                    <v-row align="center" justify="center">
+                        <v-col cols="12" md="6">
+                            <v-btn prepend-icon="mdi-close" variant="tonal"
+                                @click="measuringOtherMarkerDistanceResultDialog = false" block>Close</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-actions>
         </v-card>
     </v-dialog>
     <radar post-title="Pin" v-model="shouldShowPinRadarDialog"
@@ -41,7 +88,8 @@
     <BoundaryLine post-title="Pin" v-model="shouldShowBoundaryLineDialog"
         @submit="(lat, lng, degrees) => addBoundaryLine(boundaryLineLatLng![0], boundaryLineLatLng![1], degrees)">
     </BoundaryLine>
-    <ConfirmDelete :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" v-model="shouldConfirmDeleteDialogShow"></ConfirmDelete>
+    <ConfirmDelete :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" v-model="shouldConfirmDeleteDialogShow">
+    </ConfirmDelete>
 </template>
 
 <script lang="ts" setup>
@@ -92,25 +140,28 @@ const drawingPolygon = shallowRef(false);
 
 const shouldConfirmDeleteDialogShow = shallowRef(false);
 
+const measuringOtherMarkerState = ref<number[] | null>()
+const measuringOtherMarkerDistanceResultDialog = shallowRef(false)
+const measuringOtherMarkerDistanceResult = shallowRef(0)
+
 const OVERLAY_OPACITY = 0.6;
 
 
 store.$subscribe(() => {
-    buildMap();
-    refreshRadar();
-    refreshThermometer();
-    refreshPolygons();
-    refreshBoundaryLines();
+    completeRebuild()
 });
 
 watch(gamesObj, () => {
-    buildMap();
-    refreshRadar();
-    refreshThermometer();
-    refreshPolygons();
-    refreshBoundaryLines();
+    completeRebuild()
 });
 
+const completeRebuild = () => {
+    buildMap()
+    refreshRadar()
+    refreshThermometer()
+    refreshPolygons()
+    refreshBoundaryLines()
+}
 
 const buildMap = () => {
     if (localMap) {
@@ -408,7 +459,7 @@ const refreshBoundaryLines = () => {
                     // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long],
                     // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long + 1 * Math.cos(a)],
                     // // [boundaryLine.lat, boundaryLine.long + 1 * Math.cos(a)],
-                    
+
                     // // [x, y],
                     // // [x + Math.cos(a) + Math.sin(a), y],
                     // // [x + Math.cos(a) + Math.sin(a), y + Math.cos(a) - Math.sin(a)],
@@ -450,12 +501,23 @@ const refreshBoundaryLines = () => {
 }
 
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(`
+const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
-    <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
-      <button>Measure distance from me</button>
+    <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-purple v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="finishMeasuringOtherMarker(${latLng})">
+      <button>Measure to here</button>
+    </div>
+  </div>
+` : `
+  <div class="popup-container">
+    <h4 class="popup-title">${name}</h4>
+    ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
+    <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-purple v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startMeasuringOtherMarker(${latLng})">
+      <button>Show distance to another marker</button>
+    </div>
+    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+      <button>Show distance from me</button>
     </div>
     <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-error v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
       <button>Add radar</button>
@@ -484,6 +546,22 @@ const startPinRadar = (lat: number, long: number) => {
 const startBoundaryLine = (lat: number, long: number) => {
     boundaryLineLatLng.value = [lat, long]
     shouldShowBoundaryLineDialog.value = true
+}
+
+const startMeasuringOtherMarker = (lat: number, long: number) => {
+    measuringOtherMarkerState.value = [lat, long]
+    completeRebuild()
+}
+
+const cancelMeasuringOtherMarker = () => {
+    measuringOtherMarkerState.value = null
+    completeRebuild()
+}
+
+const finishMeasuringOtherMarker = (lat: number, long: number) => {
+    measuringOtherMarkerDistanceResult.value = distance(measuringOtherMarkerState.value![0], measuringOtherMarkerState.value![1], lat, long)
+    cancelMeasuringOtherMarker()
+    measuringOtherMarkerDistanceResultDialog.value = true
 }
 
 const findClosest = (key: string, type: string) => {
@@ -610,6 +688,8 @@ onMounted(async () => {
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
     (window as any)["startBoundaryLine"] = startBoundaryLine;
+    (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
+    (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
 })
 
 </script>
