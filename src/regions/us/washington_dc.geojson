@@ -1,0 +1,3721 @@
+{
+    "name": "Washington, DC",
+    "size": "medium",
+    "center": [
+        38.8929403,
+        -77.0174532
+    ],
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Branch Ave",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.91146646347411,
+                    38.82645412403157
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Braddock Road",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05366986331944,
+                    38.81415143523843
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "King St-Old Town",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06081349956652,
+                    38.806593883404894
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Eisenhower Ave",
+                "Type": "station",
+                "Description": "Lines: yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07087668309177,
+                    38.80043321423915
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Huntington",
+                "Type": "station",
+                "Description": "Lines: yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07520808387842,
+                    38.79392361596811
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Anacostia",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9953730128321,
+                    38.86297089677661
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Eastern Market",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99600340230812,
+                    38.88463004516522
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Potomac Ave",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9854975917707,
+                    38.88127105766857
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Stadium-Armory",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.97709117127123,
+                    38.88671687528953
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Rhode Island Ave-Brentwood",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99593919445644,
+                    38.92106748085953
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Minnesota Ave",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9467499947779,
+                    38.89919901218131
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Van Ness-UDC",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06298848055067,
+                    38.94327308196991
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Cleveland Park",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05804481710518,
+                    38.934770682924885
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Columbia Heights",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03255440732187,
+                    38.92784575919845
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Spring Hill",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.24156035171244,
+                    38.928959627656745
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Greensboro",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.233880199548,
+                    38.92096317905126
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Tysons",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.2217180330483,
+                    38.92068205405081
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "McLean",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.21008129320533,
+                    38.92452955166994
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "New Carrollton",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.87184352730777,
+                    38.94779265750592
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Landover",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.89120021352524,
+                    38.93351403252956
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Cheverly",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.91663029686826,
+                    38.91663964838862
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Downtown Largo",
+                "Type": "station",
+                "Description": "Lines: blue, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.84455387088464,
+                    38.90060751653347
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "NoMa-Gallaudet U",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.00302272641831,
+                    38.90702400072911
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Rosslyn",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07091098499193,
+                    38.89598688010644
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Arlington Cemetery",
+                "Type": "station",
+                "Description": "Lines: blue"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06281242553689,
+                    38.88469464037121
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Dupont Circle",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04341665160557,
+                    38.909605845165814
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Pentagon",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05371796606917,
+                    38.869470480374495
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Crystal City",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05029210057545,
+                    38.85791209734927
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Navy Yard-Ballpark",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.00508792929439,
+                    38.87648886724885
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "McPherson Sq",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03363646045379,
+                    38.90134058317957
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Shaw-Howard U",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02191398620502,
+                    38.91348466034191
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Southern Avenue",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.97505640529616,
+                    38.841093556641
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Greenbelt",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.91105982997773,
+                    39.011153673492075
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Tenleytown-AU",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07958963107609,
+                    38.94885922929714
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "West Falls Church",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.18909715927872,
+                    38.900788331406986
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Wiehle-Reston East",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.34006221928644,
+                    38.94774066428513
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "College Park-U of Md",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.92812724204757,
+                    38.97864143976418
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Capitol Heights",
+                "Type": "station",
+                "Description": "Lines: blue, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.91181036418405,
+                    38.889473645298985
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Morgan Boulevard",
+                "Type": "station",
+                "Description": "Lines: blue, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.86807700443886,
+                    38.89384271914414
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Georgia Ave-Petworth",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02346319144657,
+                    38.93744242409251
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Takoma",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01817898679428,
+                    38.97608633299409
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Glenmont",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05355966373482,
+                    39.06179158336699
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Wheaton",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05010935533228,
+                    39.037534956767026
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Forest Glen",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04291885307322,
+                    39.0149620841024
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Silver Spring",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03102011999887,
+                    38.9939571798124
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Brookland-CUA",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99453656319739,
+                    38.933218785528275
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Fort Totten",
+                "Type": "station",
+                "Description": "Lines: red, green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0022053584327,
+                    38.95185456523338
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Hyattsville Crossing",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.95588377590036,
+                    38.965393247951866
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "West Hyattsville",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.96957894675788,
+                    38.95504797022461
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Benning Road",
+                "Type": "station",
+                "Description": "Lines: blue, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.93836712615105,
+                    38.89098346374866
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Addison Road-Seat Pleasant",
+                "Type": "station",
+                "Description": "Lines: blue, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.89411015399014,
+                    38.88675560536696
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Deanwood",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.93525904115437,
+                    38.9081862878493
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Shady Grove",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.16462967696448,
+                    39.11993515031108
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Rockville",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.14612767389842,
+                    39.08432942644285
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Twinbrook",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.12082027714577,
+                    39.062475467151565
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "North Bethesda",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1128321810407,
+                    39.0481591702013
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Grosvenor-Strathmore",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1038520380558,
+                    39.02927675944517
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Medical Center",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0969546046393,
+                    39.000064288152586
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Bethesda",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09413150447965,
+                    38.9844014611561
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Foggy Bottom-GWU",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0502800325331,
+                    38.90070579477101
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Court House",
+                "Type": "station",
+                "Description": "Lines: orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08713353535401,
+                    38.89018331326664
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Clarendon",
+                "Type": "station",
+                "Description": "Lines: orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09539640501809,
+                    38.8867126201147
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "East Falls Church",
+                "Type": "station",
+                "Description": "Lines: orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.15688534574227,
+                    38.88596094496427
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Virginia Square-GMU",
+                "Type": "station",
+                "Description": "Lines: orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.10297960302945,
+                    38.88337393188724
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Ballston-MU",
+                "Type": "station",
+                "Description": "Lines: orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.11317114697351,
+                    38.88219065327559
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Farragut West",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0406977056811,
+                    38.901320680204925
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Farragut North",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03970311757885,
+                    38.90320973271147
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Woodley Park-Zoo/Adams Morgan",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05242031642709,
+                    38.92509292748009
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "L'Enfant Plaza",
+                "Type": "station",
+                "Description": "Lines: green, yellow, orange, blue, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02191076776728,
+                    38.8848455113141
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Smithsonian",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02806852006908,
+                    38.88802648586597
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Archives-Navy Memorial-Penn Quarter",
+                "Type": "station",
+                "Description": "Lines: green, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02191667221093,
+                    38.89367300870453
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Waterfront",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01750749059426,
+                    38.876469648772314
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Ronald Reagan Washington National Airport",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04404458303222,
+                    38.853424162228634
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Van Dorn Street",
+                "Type": "station",
+                "Description": "Lines: blue"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.12911383552941,
+                    38.79931543416227
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Franconia-Springfield",
+                "Type": "station",
+                "Description": "Lines: blue"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.16797250233967,
+                    38.7665296467617
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Federal Center SW",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0158704987507,
+                    38.88508013881906
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Judiciary Square",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01664123934285,
+                    38.8960981035311
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Capitol South",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0051416983916,
+                    38.88507028499647
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Metro Center",
+                "Type": "station",
+                "Description": "Lines: red, blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02808028359519,
+                    38.89832225910372
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Gallery Pl-Chinatown",
+                "Type": "station",
+                "Description": "Lines: red, green, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02191767491948,
+                    38.89832459591712
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Mt Vernon Sq 7th St-Convention Center",
+                "Type": "station",
+                "Description": "Lines: green, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02191666537722,
+                    38.90644460270957
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "U Street/African-Amer Civil War Memorial/Cardozo",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02749818032264,
+                    38.91701018892413
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Union Station",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.00741657214631,
+                    38.89777382578452
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Congress Heights",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.98851420349799,
+                    38.84566547961086
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Naylor Road",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9562649706452,
+                    38.851309162659206
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Suitland",
+                "Type": "station",
+                "Description": "Lines: green"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.93187241210394,
+                    38.84397233291179
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Dunn Loring-Merrifield",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.22716301958482,
+                    38.88363291144645
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Vienna/Fairfax-GMU",
+                "Type": "station",
+                "Description": "Lines: orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.27262461816473,
+                    38.87760889642973
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Friendship Heights",
+                "Type": "station",
+                "Description": "Lines: red"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08499811291914,
+                    38.95949166976637
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Pentagon City",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05954121553258,
+                    38.86189016412418
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Federal Triangle",
+                "Type": "station",
+                "Description": "Lines: blue, orange, silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02813428452357,
+                    38.89318865670786
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Reston Town Center",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.36018739937013,
+                    38.95277578843207
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Herndon",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.38518040938123,
+                    38.95282878221893
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Innovation Center",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.41529741726589,
+                    38.960765780680454
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Washington Dulles International Airport",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.44815043095572,
+                    38.95579178330631
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Loudoun Gateway",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.46068743533155,
+                    38.99204778811289
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Ashburn",
+                "Type": "station",
+                "Description": "Lines: silver"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.49153943827612,
+                    39.00529079281844
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Potomac Yard",
+                "Type": "station",
+                "Description": "Lines: blue, yellow"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04640667393114,
+                    38.83401369041139
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "IAD",
+                "Type": "airport"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.4529647,
+                    38.9495915
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "DCA",
+                "Type": "airport"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0478586,
+                    38.8522923
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "BWI",
+                "Type": "airport"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.6740408,
+                    39.1798251
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Dumbaron Oaks",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06377887343598,
+                    38.91575250997534
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Heurich House",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04403781615312,
+                    38.9092075405563
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Navy Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99562931046825,
+                    38.87406810678351
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Post Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0078172675733,
+                    38.89932215708013
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Renwick Gallery",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03906761692508,
+                    38.89947230896292
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Planet Word",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02929629209433,
+                    38.90228262068345
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Portait Gallery",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02298438040243,
+                    38.89810253688251
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Museum of Illusions",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02462304978398,
+                    38.900109952470046
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "All the Smithsonians",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02395544373964,
+                    38.88995420866782
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Spy Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02553342166263,
+                    38.88445060596405
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Museum of Contemporary Art",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.10210428709983,
+                    38.881941636669225
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Black Heritage Museum of Alrington",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08867979022914,
+                    38.863117584021296
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Arlington Historical Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06746042420772,
+                    38.8594083768652
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Georgia Washington Memorial",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06598070191826,
+                    38.807715047258895
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Alexandria Black History Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04817083502179,
+                    38.81229644505354
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Americans in Wartime Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.23796956303812,
+                    38.86804178224744
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Udvar-Hazy Air and Space Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.44438372814301,
+                    38.9121156015897
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Reston Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.34078536945499,
+                    38.96944555423174
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Capital Radio & TV Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.73285894240978,
+                    38.92781593742082
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "NPS Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.8755527383585,
+                    38.93141996865738
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "College Park Aviation Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.92236846605186,
+                    38.97924007825148
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Greenbelt Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.88050655942604,
+                    39.00082441880373
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Riversdale House Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.93193902062055,
+                    38.9605239900492
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AU Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08696779312115,
+                    38.93909072638099
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "14th St Graffiti Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03274120180363,
+                    38.94746229330003
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "KID Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09609639015197,
+                    38.985280970119945
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Ratner Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.12104227183741,
+                    39.02032817242554
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Josiah Henson Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.12144733879322,
+                    39.043864235837034
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Museum of Health and Medicine",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05291811873266,
+                    39.00904156224916
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "The Little towns Children's Museum",
+                "Type": "museum"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09851706498299,
+                    39.04517704674693
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Regal Ballson Quarter",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1108978844923,
+                    38.880675622100945
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Courthouse Plaza",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08497701797307,
+                    38.89083082474452
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Arlington Cinema and Drafthouse",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08652197028216,
+                    38.86263319609901
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Joe Resenthal Theater",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07090078582357,
+                    38.86931611009224
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Alamo Drafthouse",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04944311486393,
+                    38.8598261848946
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Shirlington",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08926855216498,
+                    38.84164476321713
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Georgetown",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06231771743971,
+                    38.903923548468015
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Miracle Theater",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99502646131035,
+                    38.882546426396296
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Burke Theater",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0221489574033,
+                    38.89670948909052
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Regal Gallery Place",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0214623119326,
+                    38.90018301657721
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Angelika Union Market",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99622809088409,
+                    38.91073615377087
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Landmark's Atlantic",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02300726424168,
+                    38.919284380491405
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Suns Cinema",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0363968509205,
+                    38.929968215921086
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Alamo Drafthouse",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99794470456085,
+                    38.923825207137625
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Avalon Theater",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07605062685386,
+                    38.96681509643482
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Marlow Cinema 6",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.94455801921333,
+                    38.83776724131726
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Magic Johnson",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.84847270352029,
+                    38.90244909764338
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Regal Hyattsville",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.95226908033646,
+                    38.97023096100682
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Hoff Theater",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.94519596136362,
+                    38.989307111670016
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Regal Majestic",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02535095033926,
+                    38.996754088417184
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Wheaton Mall 9",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05190387979486,
+                    39.036213964793
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Regal Rockville",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.14956747280709,
+                    39.0849340315063
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Montgomery",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1479306528418,
+                    39.024911757170244
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "IPIC Theaters",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.11755854904122,
+                    39.051327843228044
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Hoffman",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07052520265583,
+                    38.804135892171075
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Angelika Mosaic",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.22986402952857,
+                    38.87395638755514
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Tysons Corner",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.21869502650178,
+                    38.918223933641
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "CMX Tysons",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.22546964246928,
+                    38.92558165021418
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "LOOK Cinema",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.23228972565802,
+                    38.923883783342205
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Cinema Arts Theatres",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.27472099410225,
+                    38.846334156552864
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Cinemark Fairfax",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.3573398670365,
+                    38.86081898552548
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "LOOK Reston",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.35781548777558,
+                    38.95946357359966
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Worldgate",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.40053074276122,
+                    38.95752950927082
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "AMC Loudon",
+                "Type": "theater"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.4880139910477,
+                    39.00783285332628
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "GW Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05070036536351,
+                    38.90136677885082
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Georgetown University Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07514352043732,
+                    38.91152642032442
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Sibley Memorial Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1090049613609,
+                    38.93718830938889
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "VHC Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1273966029512,
+                    38.888855949246036
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Howard University Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02075482788634,
+                    38.91779617993785
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "MedStar Washington Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0144922250602,
+                    38.92936312003568
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "St. Elizabeth's Psychiatric Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.98818624040298,
+                    38.84799486243041
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "DC Department of Behavioral Health Psychiatric Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.97290993739328,
+                    38.884655159458035
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "UMD Medical Center",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.84446422632216,
+                    38.90329841176067
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Children's National PG County",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.84971527701919,
+                    38.9202674769539
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Holy Cross Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.03422017289441,
+                    39.0147228081486
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Walter Reed Military Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09354566296459,
+                    39.00230379926877
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Children's National",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09247605440515,
+                    38.98220600795305
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Suburban Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.11054203710631,
+                    38.99845170623881
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Fair Oaks Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.38038894925609,
+                    38.88751315569603
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Reston Hospital",
+                "Type": "hospital"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.36508364671428,
+                    38.96337602179907
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Courthouse Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08117854194374,
+                    38.89131251250173
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Central Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.10218138382207,
+                    38.88440248532814
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Cherrydale Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1049240229677,
+                    38.89962612575689
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Columbia Pike Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.08529250066216,
+                    38.86552288779528
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Aurora Hills Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0563504402044,
+                    38.858385543417896
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Georgetown Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06096962192333,
+                    38.914565713836424
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "West End Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04718425148086,
+                    38.904568893882136
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Palisades Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09294302038417,
+                    38.918777435485765
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Westover Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.13856248668203,
+                    38.88712659555157
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Glencarlyn Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.11882142939919,
+                    38.86467514031413
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Thomas Jefferson Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.19452409228965,
+                    38.867281476541706
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Tysons-Pimmit Regional Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.19984559468763,
+                    38.90896986159101
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Reston Regional Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.35164127970052,
+                    38.963272573531796
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "FORTNITE LIBRARY",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.38152161144497,
+                    38.972812228101944
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Thelen Memorial Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.43263688461651,
+                    38.98206065386721
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Ashburn Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.50356799635728,
+                    39.04900043935257
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Oakton Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.29143127066187,
+                    38.88565842362796
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Patrick Henry Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.25924134805797,
+                    38.90296000938762
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "James M. Duncan Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0685557418645,
+                    38.83035498800598
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Martha Washington Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05816258299689,
+                    38.773545566246874
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Kate Waller Barrett Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04713790739203,
+                    38.80804681652473
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Gelman Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.04332171898947,
+                    38.90002268991555
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "MLK Jr. Memorial Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02080518785776,
+                    38.89950312833288
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Shaw Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01855960389045,
+                    38.9132938377028
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Louis Stokes Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01412912741439,
+                    38.92037706461303
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Northwest One Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.00909173635257,
+                    38.90446242475326
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Northeast Neighborhood Libraries",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99446509483575,
+                    38.894874139157466
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Smithsonian Libraries",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02347561203511,
+                    38.89090619399777
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Library of Congress",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.00369019653932,
+                    38.88802457107472
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Southeast Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99397956316714,
+                    38.88500110332996
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Southwest Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01200492636423,
+                    38.87919001497594
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Anacostia Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.97577212357089,
+                    38.8666213199393
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Parklands-Turner Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9767431869081,
+                    38.84672422010777
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Hillcrest Heights Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.95159027573115,
+                    38.83534579774677
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "The Vine Deloria, Jr. Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.93224745228306,
+                    38.84456537676333
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Spauldings Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.90092362593555,
+                    38.85406479105409
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Benning Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.94473367893586,
+                    38.894746146775184
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Capitol View Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9235864876288,
+                    38.88991504989442
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Deanwood Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.92993786249235,
+                    38.90890049190265
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Fairmount Heights Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9122550574745,
+                    38.90373335959682
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Largo-Kettering Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.8382715784389,
+                    38.89244705961861
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Gelnarden Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.85715414250586,
+                    38.93101973885937
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Mount Rainier Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.95765920124981,
+                    38.93767632883772
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Hyattsville Branch Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.94709888745757,
+                    38.96925120779786
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Niels Bohr Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.92779900363037,
+                    38.97217671747614
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "UMD Libraries (Not putting all of them)",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.94242564450776,
+                    38.98675527918806
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Agricultural Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.92033395319255,
+                    39.02307067102462
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "U.S. Court Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.89514699788347,
+                    39.01241380061349
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Woodridge Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.97641286416045,
+                    38.92828138532035
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Gallaudet University Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.98970429358862,
+                    38.90750422953112
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "CUA Libraries (Not putting all of them)",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.99806319097748,
+                    38.93416253795832
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Lamond-Riggs/Lillian J. Huff Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.9967085445993,
+                    38.95526847389765
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Takoma Park Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.01663015783252,
+                    38.975421108545135
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Shepherd Park Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02161021312325,
+                    38.980470807736026
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Silver Spring Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02081375679943,
+                    38.995306267876444
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Kensington Park Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07956397566404,
+                    39.03035633998297
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Wheaton Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05116102349048,
+                    39.047726183463176
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Petworth Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.02395246822613,
+                    38.942974112904295
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Howard Univerity Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0156488546636,
+                    38.92263498494708
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "James Melville Gilliss Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.06454226253311,
+                    38.92147319839417
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Georgetown Libraries",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07090081384317,
+                    38.90693051967642
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Cleveland Park Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.05591968158994,
+                    38.934476626396055
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "UDC Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0627117704893,
+                    38.944330662466
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Tenly/Friendship Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07817461191433,
+                    38.948339327446924
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Chevy Chase Neighborhood Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.07551836896873,
+                    38.96591597309426
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Bethesda Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.10051982646924,
+                    38.98379030937987
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Library of Medicine",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.09740976091476,
+                    38.99611505233992
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "NIH Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.10428397405931,
+                    39.00165774175599
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Davis Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.12922468723065,
+                    39.02338714899087
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Ganga Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.11976635215501,
+                    39.055036547538826
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Rockville Library",
+                "Type": "library"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.15885389789618,
+                    39.0980217281643
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "National Zoo",
+                "Type": "zoo"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.050833,
+                    38.9294104
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Willow Pond",
+                "Type": "zoo"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.12435888676154,
+                    38.85993941148608
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "NOVA Wild",
+                "Type": "zoo"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.31244360799393,
+                    38.972233345299124
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Leesburg Animal Park",
+                "Type": "zoo"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.59311057326165,
+                    39.084451949150115
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Endless Love Petting",
+                "Type": "zoo"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.87395616926854,
+                    38.77107409602227
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Name": "Glen Echo Park Aquarium",
+                "Type": "aquarium"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.13891161559403,
+                    38.96757050634614
+                ]
+            }
+        }
+    ]
+}
