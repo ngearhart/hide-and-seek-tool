@@ -52,6 +52,7 @@ export type GameRecord = {
     polygonEntries: PolygonDrawingEntry[]
     customPins: PinEntry[]
     teams: Team[]
+    region: string
 };
 
 // From https://catalog.data.gov/dataset/metro-stations-regional

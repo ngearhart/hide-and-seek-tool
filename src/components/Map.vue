@@ -616,7 +616,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
-    localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);
+    localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);

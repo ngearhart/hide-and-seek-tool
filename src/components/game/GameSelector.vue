@@ -62,7 +62,7 @@ const launchGameCreatorDialog = () => {
   isGameCreatorOpen.value = true;
 }
 
-const createNewGame = async (teams: { name: string }[]) => {
+const createNewGame = async (teams: { name: string }[], region: string) => {
   try {
     // Create game ID
     gameCodeEntered.value = generateSlug();
@@ -76,7 +76,8 @@ const createNewGame = async (teams: { name: string }[]) => {
   
     await set(gamesDbRef.value, {
       created: new Date().toUTCString(),
-      teams: teams.map(team => ({ name: team.name }))
+      teams: teams.map(team => ({ name: team.name })),
+      region: region
     })
   
     console.log("Starting new game " + gameCodeEntered.value);
