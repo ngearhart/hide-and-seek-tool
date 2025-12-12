@@ -264,7 +264,7 @@ const onLocationFound = (e: any) => {
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
-        for (let marker of store.getMarkers(locatingClosestType.value.type.toLowerCase() as FeatureType)) {
+        for (let marker of store.getMarkers(locatingClosestType.value.key as FeatureType)) {
             let d = distance(e.latlng.lat, e.latlng.lng, marker.geometry.coordinates[1], marker.geometry.coordinates[0])
             if (d < minDistanceMiles) {
                 minDistanceMiles = d

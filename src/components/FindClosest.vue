@@ -33,36 +33,36 @@ const model = defineModel()
 
 const checkboxes = reactive([
   {
-    label: "Metro station",
-    key: "metro_stations",
+    label: "Transit Station",
+    key: "station",
   },
   {
     label: "Airport",
-    key: "airports",
+    key: "airport",
   },
   {
     label: "Museum",
-    key: "museums",
+    key: "museum",
   },
   {
     label: "Movie Theater",
-    key: "theaters",
+    key: "theater",
   },
   {
     label: "Hospital",
-    key: "hospitals",
+    key: "hospital",
   },
   {
     label: "Library",
-    key: "libraries",
+    key: "library",
   },
   {
     label: "Zoo",
-    key: "zoos",
+    key: "zoo",
   },
   {
     label: "Aquarium",
-    key: "aquariums",
+    key: "aquarium",
   },
 ]);
 
