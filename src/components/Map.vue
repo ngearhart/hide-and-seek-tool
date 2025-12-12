@@ -108,7 +108,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { loadRegion } from '@/regions/regions';
+import { flipCoords, loadRegion, type FeatureType } from '@/regions/regions';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -221,7 +221,7 @@ const buildMap = () => {
             metroStationsGeoJSON.features.forEach(station => {
                 let latlng: L.LatLngExpression = [station.geometry.coordinates[1], station.geometry.coordinates[0]];
                 L.marker(latlng).bindPopup(getPopupFor(
-                    latlng, station.properties.NAME, `Lines: ${station.properties.LINE}`
+                    latlng, station.properties.NAME, "Transit Station", `Lines: ${station.properties.LINE}`
                 )).addTo(localMapVal);
                 L.circle(latlng, {
                     color: 'red',
@@ -264,11 +264,11 @@ const onLocationFound = (e: any) => {
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
-        for (let marker of (staticMarkersIncludingMetroStations as any)[locatingClosestType.value.key]) {
-            let d = distance(e.latlng.lat, e.latlng.lng, marker.latlng[0], marker.latlng[1])
+        for (let marker of store.getMarkers(locatingClosestType.value.type.toLowerCase() as FeatureType)) {
+            let d = distance(e.latlng.lat, e.latlng.lng, marker.geometry.coordinates[1], marker.geometry.coordinates[0])
             if (d < minDistanceMiles) {
                 minDistanceMiles = d
-                minDistanceName = marker.name
+                minDistanceName = marker.properties.Name
             }
         }
         findClosestResult.value.distance = minDistanceMiles
@@ -506,7 +506,7 @@ const refreshBoundaryLines = () => {
 }
 
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
+const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
@@ -518,6 +518,7 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
+    ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
     <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-purple v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startMeasuringOtherMarker(${latLng})">
       <button>Show distance to another marker</button>
     </div>
@@ -533,7 +534,7 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
   </div>
 `)
 
-const getMarkerFor = (latLng: L.LatLngExpression, name: string) => L.marker(latLng).bindPopup(getPopupFor(latLng, name))
+const getMarkerFor = (latLng: L.LatLngExpression, name: string, subtitle: string) => L.marker(latLng).bindPopup(getPopupFor(latLng, name, subtitle))
 
 const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locatingPinToMeasureLatLng.value = [
@@ -575,16 +576,16 @@ const findClosest = (key: string, type: string) => {
 }
 
 const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
-    airports: staticMarkers.airports.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    parks: [],
-    museums: staticMarkers.museums.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    theaters: staticMarkers.theaters.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    hospitals: staticMarkers.hospitals.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    libraries: staticMarkers.libraries.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    zoos: staticMarkers.zoos.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    aquariums: staticMarkers.aquariums.map(marker => getMarkerFor(marker.latlng, marker.name)),
+    airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport")),
+    parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park")),
+    museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum")),
+    theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater")),
+    hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital")),
+    libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library")),
+    zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo")),
+    aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium")),
     custom: gamesObj.value?.customPins?.map(pin =>
-        getMarkerFor([pin.lat, pin.long], "Custom Pin")
+        getMarkerFor([pin.lat, pin.long], "Custom Pin", "")
     ) ?? [],
 })
 

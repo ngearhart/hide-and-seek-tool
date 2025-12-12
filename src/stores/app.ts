@@ -1,6 +1,7 @@
 // Utilities
 import { defineStore } from 'pinia'
-import type { Region, RegionDescriptor } from '@/regions/regions';
+import type { CustomProperty, FeatureType, Region, RegionDescriptor } from '@/regions/regions';
+import type { Feature, Point } from 'geojson';
 
 type State = {
   mapLayers: string[]
@@ -21,5 +22,10 @@ export const useStore = defineStore('app', {
     regions: [],
     loadedRegionData: null
   }),
+  getters: {
+    getMarkers() {
+      return (type: FeatureType): Feature<Point, CustomProperty>[] => this.loadedRegionData?.features.filter(feature => feature.properties.Type === type) ?? [];
+    },
+  },
   persist: true
 })

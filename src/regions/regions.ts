@@ -1,12 +1,15 @@
-import type { GeoJSON, GeoJsonProperties, Geometry } from "geojson"
+import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geojson"
+import type { LatLngTuple } from "leaflet";
 
-type CustomProperty = GeoJsonProperties & {
+export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "park";
+
+export type CustomProperty = GeoJsonProperties & {
     Name: string
-    Type: "Station" | "Airport" | "Museum" | "Theater" | "Hospital" | "Library" | "Zoo" | "Aquarium" | "Park"
+    Type: FeatureType
     Description: string
 }
 
-export type Region = GeoJSON<Geometry, CustomProperty> & {
+export type Region = FeatureCollection<Point, CustomProperty> & {
     name: string
     size: string
     center: [number, number]
@@ -26,4 +29,8 @@ export type RegionDescriptor = {
 export async function loadRegionDescriptions(): Promise<RegionDescriptor[]> {
     // TODO: Remove this hard-code to "US"
     return fetch(`/regions.json`).then((res) => res.json()).then(json => json['us'])
+}
+
+export function flipCoords(coords: Position): LatLngTuple {
+    return [coords[1], coords[0]];
 }
