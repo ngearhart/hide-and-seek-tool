@@ -50,7 +50,10 @@
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <router-view v-if="gamesObj && gamesObj.region" />
+      <EarthAnimation v-else>
+        hi
+      </EarthAnimation>
     </v-main>
     <AppFooter />
     <GameSelector />
