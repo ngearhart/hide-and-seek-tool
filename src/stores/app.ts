@@ -1,13 +1,13 @@
 // Utilities
 import { defineStore } from 'pinia'
-import L from 'leaflet';
-import type { RegionDescriptor } from '@/regions/regions';
+import type { Region, RegionDescriptor } from '@/regions/regions';
 
 type State = {
   mapLayers: string[]
   mapMarkers: string[],
   enableStationCircles: boolean,
   regions: RegionDescriptor[],
+  loadedRegionData: Region | null
 };
 
 export const useStore = defineStore('app', {
@@ -18,7 +18,8 @@ export const useStore = defineStore('app', {
     ],
     mapMarkers: [],
     enableStationCircles: false,
-    regions: []
+    regions: [],
+    loadedRegionData: null
   }),
   persist: true
 })

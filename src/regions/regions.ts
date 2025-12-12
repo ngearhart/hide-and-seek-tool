@@ -13,7 +13,7 @@ export type Region = GeoJSON<Geometry, CustomProperty> & {
 }
 
 export async function loadRegion(regionName: string): Promise<Region> {
-    const regionJson = await fetch(`/regions/${regionName}.json`).then((res) => res.json())
+    const regionJson = await fetch(`/regions/${regionName}.geojson`).then((res) => res.json())
     console.log(`Loaded region ${regionName}`)
     return regionJson
 }

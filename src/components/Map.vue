@@ -108,6 +108,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
+import { loadRegion } from '@/regions/regions';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -156,11 +157,15 @@ watch(gamesObj, () => {
 });
 
 const completeRebuild = () => {
-    buildMap()
-    refreshRadar()
-    refreshThermometer()
-    refreshPolygons()
-    refreshBoundaryLines()
+    if (store.$state.loadedRegionData?.center) {
+        buildMap()
+        refreshRadar()
+        refreshThermometer()
+        refreshPolygons()
+        refreshBoundaryLines()
+    } else {
+        ensureRegionLoaded()
+    }
 }
 
 const buildMap = () => {
@@ -665,11 +670,7 @@ onMounted(async () => {
         // drawnItems.addLayer(layer);
     });
 
-    buildMap();
-    refreshRadar();
-    refreshThermometer();
-    refreshPolygons();
-    refreshBoundaryLines();
+    completeRebuild();
 
     // map.locate({setView: true, maxZoom: 16});
     // function onLocationFound(e) {
@@ -691,5 +692,12 @@ onMounted(async () => {
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
 })
+
+const ensureRegionLoaded = () => {
+    const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
+    loadRegion(regionId).then((region) => {
+        store.$state.loadedRegionData = region;
+    })
+}
 
 </script>
