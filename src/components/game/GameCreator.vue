@@ -91,6 +91,7 @@ const rmTeam = (id: number) => {
 }
 
 const submit = (e: any) => {
+  store.$state.loadedRegionData = null;
   e.then((r: { valid: boolean }) => {
     if (r.valid) {
       loading.value = true;

@@ -2,8 +2,8 @@
     "name": "Washington, DC",
     "size": "medium",
     "center": [
-        38.8929403,
-        -77.0174532
+        -77.0174532,
+        38.8929403
     ],
     "type": "FeatureCollection",
     "features": [

@@ -1,6 +1,10 @@
 {
     "us": [
         {
+            "name": "Pittsburgh, PA",
+            "path": "pittsburgh_pa"
+        },
+        {
             "name": "Washington, DC",
             "path": "washington_dc"
         }

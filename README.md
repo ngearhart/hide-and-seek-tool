@@ -17,7 +17,7 @@ Feature Properties:
 | Property Name | Property Value                                                    | Description                                                                                                |
 |---------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
 | Name          | *Name of Feature*                                                 | The name that this feature should use on the map, for example, the name of the transit station or library. |
-| Type          | Station,Airport,Museum,Theater,Hospital,Library,Zoo,Aquarium,Park | The type of thing this feature describes.                                                                  |
+| Type          | station,airport,museum,theater,hospital,library,zoo,aquarium,park | The type of thing this feature describes.                                                                  |
 | Description   | *Description*                                                     | An optional description, a second line in the UI.                                                          |
 
 ## Feature Requests

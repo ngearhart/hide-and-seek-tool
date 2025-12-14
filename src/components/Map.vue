@@ -94,13 +94,13 @@
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L, { type LatLngBoundsExpression, type LatLngTuple, type LeafletEvent } from 'leaflet';
+import L, { type LatLngBoundsExpression } from 'leaflet';
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
-import { distance, metroStationsGeoJSON, rotatePoint, staticMarkers, staticMarkersIncludingMetroStations } from '@/utils';
+import { distance, rotatePoint } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
-import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
+import { getDatabase, ref as dbRef, set } from 'firebase/database';
 import { useDatabaseObject } from 'vuefire';
 
 import { useCurrentUserMock } from '@/firebase/mock';
@@ -214,24 +214,18 @@ const buildMap = () => {
         // Dynamically get markers, needed for loading custom markers.
         let markers = getMarkers();
         store.$state.mapMarkers.forEach(marker => {
-            markers[marker].forEach(m => m.addTo(localMapVal));
-        })
-
-        if (store.$state.enableStationCircles) {
-            metroStationsGeoJSON.features.forEach(station => {
-                let latlng: L.LatLngExpression = [station.geometry.coordinates[1], station.geometry.coordinates[0]];
-                L.marker(latlng).bindPopup(getPopupFor(
-                    latlng, station.properties.NAME, "Transit Station", `Lines: ${station.properties.LINE}`
-                )).addTo(localMapVal);
-                L.circle(latlng, {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.2,
-                    radius: 402.336, // quarter mile in meters
-                }).addTo(localMapVal);
+            markers[marker].forEach(m => {
+                if (marker == "stations") {
+                    L.circle(m.getLatLng(), {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.2,
+                        radius: 402.336, // quarter mile in meters
+                    }).addTo(localMapVal);
+                }
+                m.addTo(localMapVal)
             });
-        }
-
+        });
 
         localMapVal.addLayer(drawnItems as any);
     }
@@ -576,6 +570,7 @@ const findClosest = (key: string, type: string) => {
 }
 
 const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
+    stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station")),
     airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport")),
     parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park")),
     museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum")),
@@ -622,7 +617,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
-    localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);  // Region default
+    localMap.value = L.map('map').setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);

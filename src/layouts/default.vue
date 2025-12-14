@@ -30,7 +30,12 @@
 
         <v-list>
           <v-list-item>
-            Current game code: {{ userRecordObj?.currentGameId }}
+            <template v-slot:default>
+              Current game code: {{ userRecordObj?.currentGameId }}
+            </template>
+            <template v-slot:append>
+              <v-btn icon="mdi-clipboard-multiple-outline" variant="text" @click="copyGameCodeToClipboard"></v-btn>
+            </template>
           </v-list-item>
           <v-list-item>
             Team: {{ userRecordObj?.teamName }}
@@ -129,5 +134,11 @@ const redirect = (link: any) => {
 };
 
 watch(currentTab, redirect);
+
+const copyGameCodeToClipboard = async() => {
+  if (userRecordObj?.value?.currentGameId) {
+    await navigator.clipboard.writeText(userRecordObj?.value?.currentGameId);
+  }
+};
 
 </script>

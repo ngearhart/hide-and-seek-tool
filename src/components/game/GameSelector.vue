@@ -32,6 +32,7 @@ import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
 
 import { useNotification } from "@kyvg/vue3-notification";
+import { useStore } from '@/stores/app';
 
 const { notify }  = useNotification()
 
@@ -48,6 +49,8 @@ const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.valu
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
+
+const store = useStore();
 
 const generateSlug = () => {
     let slug = '';
@@ -115,6 +118,7 @@ const joinGame = async() => {
   try {
     const existingGame = await get(gamesDbRef.value);
     if (existingGame.exists()) {
+      store.$state.loadedRegionData = null;
       isDialogOpen.value = false;
       notify({
         title: "Joined game",
