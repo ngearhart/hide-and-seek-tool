@@ -5,7 +5,7 @@
  */
 
 // Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import { createRouter, createWebHistory } from 'vue-router'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 
@@ -21,11 +21,11 @@ import { getCurrentUserMock } from '@/firebase/mock'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(routes),
+  routes: setupLayouts(Array.from(routes)),
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
-router.onError((err, to) => {
+router.onError((err: any, to: any) => {
   if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
     if (!localStorage.getItem('vuetify:dynamic-reload')) {
       console.log('Reloading page to fix dynamic import error')
@@ -44,7 +44,7 @@ router.isReady().then(() => {
 })
 
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to: any) => {
   // routes with `meta: { requiresAuth: true }` will check for the users, others won't
   if (to.path != '/login') {
     const currentUser = await getCurrentUserMock()
