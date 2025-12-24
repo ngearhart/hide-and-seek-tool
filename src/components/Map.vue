@@ -94,13 +94,13 @@
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L, { type LatLngBoundsExpression, type LatLngTuple, type LeafletEvent } from 'leaflet';
+import L, { type LatLngBoundsExpression } from 'leaflet';
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
-import { distance, metroStationsGeoJSON, rotatePoint, staticMarkers, staticMarkersIncludingMetroStations } from '@/utils';
+import { distance, rotatePoint } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
-import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
+import { getDatabase, ref as dbRef, set } from 'firebase/database';
 import { useDatabaseObject } from 'vuefire';
 
 import { useCurrentUserMock } from '@/firebase/mock';
@@ -108,6 +108,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
+import { flipCoords, loadRegion, type FeatureType } from '@/regions/regions';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -156,11 +157,15 @@ watch(gamesObj, () => {
 });
 
 const completeRebuild = () => {
-    buildMap()
-    refreshRadar()
-    refreshThermometer()
-    refreshPolygons()
-    refreshBoundaryLines()
+    if (store.$state.loadedRegionData?.center) {
+        buildMap()
+        refreshRadar()
+        refreshThermometer()
+        refreshPolygons()
+        refreshBoundaryLines()
+    } else {
+        ensureRegionLoaded()
+    }
 }
 
 const buildMap = () => {
@@ -209,24 +214,18 @@ const buildMap = () => {
         // Dynamically get markers, needed for loading custom markers.
         let markers = getMarkers();
         store.$state.mapMarkers.forEach(marker => {
-            markers[marker].forEach(m => m.addTo(localMapVal));
-        })
-
-        if (store.$state.enableStationCircles) {
-            metroStationsGeoJSON.features.forEach(station => {
-                let latlng: L.LatLngExpression = [station.geometry.coordinates[1], station.geometry.coordinates[0]];
-                L.marker(latlng).bindPopup(getPopupFor(
-                    latlng, station.properties.NAME, `Lines: ${station.properties.LINE}`
-                )).addTo(localMapVal);
-                L.circle(latlng, {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.2,
-                    radius: 402.336, // quarter mile in meters
-                }).addTo(localMapVal);
+            markers[marker].forEach(m => {
+                if (marker == "stations") {
+                    L.circle(m.getLatLng(), {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.2,
+                        radius: 402.336, // quarter mile in meters
+                    }).addTo(localMapVal);
+                }
+                m.addTo(localMapVal)
             });
-        }
-
+        });
 
         localMapVal.addLayer(drawnItems as any);
     }
@@ -259,11 +258,11 @@ const onLocationFound = (e: any) => {
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
-        for (let marker of (staticMarkersIncludingMetroStations as any)[locatingClosestType.value.key]) {
-            let d = distance(e.latlng.lat, e.latlng.lng, marker.latlng[0], marker.latlng[1])
+        for (let marker of store.getMarkers(locatingClosestType.value.key as FeatureType)) {
+            let d = distance(e.latlng.lat, e.latlng.lng, marker.geometry.coordinates[1], marker.geometry.coordinates[0])
             if (d < minDistanceMiles) {
                 minDistanceMiles = d
-                minDistanceName = marker.name
+                minDistanceName = marker.properties.Name
             }
         }
         findClosestResult.value.distance = minDistanceMiles
@@ -501,7 +500,7 @@ const refreshBoundaryLines = () => {
 }
 
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
+const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
@@ -513,6 +512,7 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
+    ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
     <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-purple v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startMeasuringOtherMarker(${latLng})">
       <button>Show distance to another marker</button>
     </div>
@@ -528,7 +528,7 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
   </div>
 `)
 
-const getMarkerFor = (latLng: L.LatLngExpression, name: string) => L.marker(latLng).bindPopup(getPopupFor(latLng, name))
+const getMarkerFor = (latLng: L.LatLngExpression, name: string, subtitle: string) => L.marker(latLng).bindPopup(getPopupFor(latLng, name, subtitle))
 
 const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locatingPinToMeasureLatLng.value = [
@@ -570,16 +570,17 @@ const findClosest = (key: string, type: string) => {
 }
 
 const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
-    airports: staticMarkers.airports.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    parks: [],
-    museums: staticMarkers.museums.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    theaters: staticMarkers.theaters.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    hospitals: staticMarkers.hospitals.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    libraries: staticMarkers.libraries.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    zoos: staticMarkers.zoos.map(marker => getMarkerFor(marker.latlng, marker.name)),
-    aquariums: staticMarkers.aquariums.map(marker => getMarkerFor(marker.latlng, marker.name)),
+    stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station")),
+    airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport")),
+    parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park")),
+    museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum")),
+    theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater")),
+    hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital")),
+    libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library")),
+    zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo")),
+    aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium")),
     custom: gamesObj.value?.customPins?.map(pin =>
-        getMarkerFor([pin.lat, pin.long], "Custom Pin")
+        getMarkerFor([pin.lat, pin.long], "Custom Pin", "")
     ) ?? [],
 })
 
@@ -616,7 +617,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
-    localMap.value = L.map('map').setView([38.8929403, -77.0174532], 13);
+    localMap.value = L.map('map').setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
@@ -665,11 +666,7 @@ onMounted(async () => {
         // drawnItems.addLayer(layer);
     });
 
-    buildMap();
-    refreshRadar();
-    refreshThermometer();
-    refreshPolygons();
-    refreshBoundaryLines();
+    completeRebuild();
 
     // map.locate({setView: true, maxZoom: 16});
     // function onLocationFound(e) {
@@ -691,5 +688,12 @@ onMounted(async () => {
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
 })
+
+const ensureRegionLoaded = () => {
+    const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
+    loadRegion(regionId).then((region) => {
+        store.$state.loadedRegionData = region;
+    })
+}
 
 </script>

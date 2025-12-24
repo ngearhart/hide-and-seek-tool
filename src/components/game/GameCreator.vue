@@ -7,6 +7,11 @@
       <v-form @submit.prevent="submit">
         <v-card-text>
           <v-container>
+            <v-row align="center" justify="center">
+              <v-col cols="12" md="12">
+                <v-autocomplete label="Region" v-model="region" :items="regionAutocompleteData" :rules="regionRules"></v-autocomplete>
+              </v-col>
+            </v-row>
             <v-row align="center" justify="center" v-for="team in teams" :key="team.id">
               <v-col cols="12" md="10">
                 <v-text-field v-model="team.name" label="Enter team name" :rules="rules"></v-text-field>
@@ -42,14 +47,21 @@
 </template>
 
 <script lang="ts" setup>
+import { loadRegionDescriptions } from '@/regions/regions';
+import { useStore } from '@/stores/app';
+
 
 const emit = defineEmits<{
-  (e: 'submit', teams: { id: number, name: string }[]): void
+  (e: 'submit', teams: { id: number, name: string }[], region: string): void
 }>();
 
 const isDialogOpen = defineModel<boolean>()
 const teams = ref([{id: 0, name: ''}, {id: 1, name: ''}]);
+const region = ref(null);
 const loading = ref(false);
+const store = useStore();
+
+const regionAutocompleteData = computed(() => Array.from(store.$state.regions).map(region => region.name))
 
 const rules = [
     (value: string | null) => {
@@ -58,6 +70,12 @@ const rules = [
     },
   ]
 
+const regionRules = [
+    (value: string | null) => {
+      if (value) return true
+      return 'You must select a region'
+    },
+  ]
 
 const rmTeam = (id: number) => {
   const newTeams = [];
@@ -73,12 +91,17 @@ const rmTeam = (id: number) => {
 }
 
 const submit = (e: any) => {
+  store.$state.loadedRegionData = null;
   e.then((r: { valid: boolean }) => {
     if (r.valid) {
       loading.value = true;
-      emit('submit', teams.value);
+      emit('submit', teams.value, region.value!);
     }
   })
 }
+
+onMounted(async () => {
+  store.$state.regions = await loadRegionDescriptions()
+})
 
 </script>

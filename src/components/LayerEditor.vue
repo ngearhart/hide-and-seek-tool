@@ -48,8 +48,9 @@ const checkboxes = reactive([
     checked: false,
   },
   {
-    label: "Station circles",
+    label: "Transit Stations",
     checked: false,
+    key: "stations",
   },
   {
     label: "Airports",
@@ -115,7 +116,7 @@ const updateMap = async() => {
 
   store.$state.mapMarkers = checkboxes.filter(checkbox => checkbox.checked && checkbox.key).map(checkbox => checkbox.key!);
   store.$state.mapLayers = newLayers;
-  store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
+  // store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
 };
 
 // Refresh on every view - store could be edited elsewhere.
@@ -134,7 +135,7 @@ watch(model, () => {
     }
 
     store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
-    checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
+    // checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
   }
 })
 

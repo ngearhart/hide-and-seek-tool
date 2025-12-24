@@ -1,11 +1,14 @@
 // Utilities
 import { defineStore } from 'pinia'
-import L from 'leaflet';
+import type { CustomProperty, FeatureType, Region, RegionDescriptor } from '@/regions/regions';
+import type { Feature, Point } from 'geojson';
 
 type State = {
   mapLayers: string[]
   mapMarkers: string[],
   enableStationCircles: boolean,
+  regions: RegionDescriptor[],
+  loadedRegionData: Region | null
 };
 
 export const useStore = defineStore('app', {
@@ -16,6 +19,13 @@ export const useStore = defineStore('app', {
     ],
     mapMarkers: [],
     enableStationCircles: false,
+    regions: [],
+    loadedRegionData: null
   }),
+  getters: {
+    getMarkers() {
+      return (type: FeatureType): Feature<Point, CustomProperty>[] => this.loadedRegionData?.features.filter(feature => feature.properties.Type === type) ?? [];
+    },
+  },
   persist: true
 })
