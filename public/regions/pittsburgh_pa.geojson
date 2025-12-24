@@ -2806,6 +2806,2792 @@
                 "Name": "Wood Street Subway",
                 "Type": "station"
             }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0117568,
+                    40.2456169
+                ]
+            },
+            "properties": {
+                "Name": "Finleyville Airport",
+                "Type": "airport"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.92704619999999,
+                    40.352398799999996
+                ]
+            },
+            "properties": {
+                "Name": "Allegheny County Airport - AGC",
+                "Type": "airport"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.2398691,
+                    40.4928544
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh International Airport - PIT",
+                "Type": "airport"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.005155,
+                    40.453091099999995
+                ]
+            },
+            "properties": {
+                "Name": "MuseumLab",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0375796,
+                    40.3946797
+                ]
+            },
+            "properties": {
+                "Name": "Dormont Historical Society",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.89690999999999,
+                    40.4210815
+                ]
+            },
+            "properties": {
+                "Name": "Eastman Flats",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9021729,
+                    40.447137
+                ]
+            },
+            "properties": {
+                "Name": "Car and Carriage Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.8804881,
+                    40.4227215
+                ]
+            },
+            "properties": {
+                "Name": "Trundle Manor",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0009991,
+                    40.4441683
+                ]
+            },
+            "properties": {
+                "Name": "Ft Duquesne",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.99958319999999,
+                    40.453568
+                ]
+            },
+            "properties": {
+                "Name": "Photo Antiquities",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9562239,
+                    40.4462048
+                ]
+            },
+            "properties": {
+                "Name": "Latin American Cultural Center",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9590953,
+                    40.467577299999995
+                ]
+            },
+            "properties": {
+                "Name": "CLP Lawrenceville",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9964375,
+                    40.3031875
+                ]
+            },
+            "properties": {
+                "Name": "The Jurassic Alcove",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0097399,
+                    40.4579311
+                ]
+            },
+            "properties": {
+                "Name": "Randyland",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0074447,
+                    40.434799
+                ]
+            },
+            "properties": {
+                "Name": "Josh Gibson Heritage Park",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9017563,
+                    40.4474811
+                ]
+            },
+            "properties": {
+                "Name": "The Frick Pittsburgh Museums & Gardens",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9435002,
+                    40.4476835
+                ]
+            },
+            "properties": {
+                "Name": "Rodef American Jewish Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9335315,
+                    40.4513422
+                ]
+            },
+            "properties": {
+                "Name": "Captured::Pittsburgh Open Air Photography Gallery",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9871486,
+                    40.4155583
+                ]
+            },
+            "properties": {
+                "Name": "DIIVIINETIME",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9972801,
+                    40.3035559
+                ]
+            },
+            "properties": {
+                "Name": "Museum Bldg S Park Fairgrounds",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9532562,
+                    40.4444071
+                ]
+            },
+            "properties": {
+                "Name": "Nationality Rooms at the Cathedral of Learning",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0064158,
+                    40.4528353
+                ]
+            },
+            "properties": {
+                "Name": "Children's Museum of Pittsburgh",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0046034,
+                    40.4343113
+                ]
+            },
+            "properties": {
+                "Name": "Bessemer Converter",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.90129999999999,
+                    40.448505600000004
+                ]
+            },
+            "properties": {
+                "Name": "Clayton",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9489727,
+                    40.4437052
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Museum of Art",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9613461,
+                    40.378754400000005
+                ]
+            },
+            "properties": {
+                "Name": "Black Rhino Artwork",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0464145,
+                    40.3781214
+                ]
+            },
+            "properties": {
+                "Name": "The Historical Society of Mount Lebanon",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.94227049999999,
+                    40.4418857
+                ]
+            },
+            "properties": {
+                "Name": "Posner Center for Special Collections, Carnegie Mellon University",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0124212,
+                    40.457219099999996
+                ]
+            },
+            "properties": {
+                "Name": "Mattress Factory Contemporary Art Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9502225,
+                    40.4432834
+                ]
+            },
+            "properties": {
+                "Name": "Jennifer A. Sheridan",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.950052,
+                    40.4432203
+                ]
+            },
+            "properties": {
+                "Name": "Hillman Hall of Minerals and Gems",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.1093247,
+                    40.2969036
+                ]
+            },
+            "properties": {
+                "Name": "Toms Garage",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.05098799999999,
+                    40.493594699999996
+                ]
+            },
+            "properties": {
+                "Name": "Hermann Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0513181,
+                    40.349153199999996
+                ]
+            },
+            "properties": {
+                "Name": "The Citizen Science Lab - South Hills",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9413581,
+                    40.464925199999996
+                ]
+            },
+            "properties": {
+                "Name": "Boom Concepts",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0065687,
+                    40.320062199999995
+                ]
+            },
+            "properties": {
+                "Name": "Oliver Miller Homestead",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.94677940000001,
+                    40.4851809
+                ]
+            },
+            "properties": {
+                "Name": "Contemporary Craft",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.03219159999999,
+                    40.4561912
+                ]
+            },
+            "properties": {
+                "Name": "Bicycle Heaven",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9497702,
+                    40.4438609
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Museums",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9043716,
+                    40.4091822
+                ]
+            },
+            "properties": {
+                "Name": "Rivers of Steel: Bost Building National Historic Landmark",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0959615,
+                    40.3798814
+                ]
+            },
+            "properties": {
+                "Name": "Woodville Experience",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0552436,
+                    40.4554828
+                ]
+            },
+            "properties": {
+                "Name": "Karpeles Manuscript Library Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.00903199999999,
+                    40.446148
+                ]
+            },
+            "properties": {
+                "Name": "Museum of Illusions Pittsburgh",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9446493,
+                    40.4654272
+                ]
+            },
+            "properties": {
+                "Name": "Center for PostNatural History",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.93301389999999,
+                    40.4640694
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh Glass Center",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.86431689999999,
+                    40.405585599999995
+                ]
+            },
+            "properties": {
+                "Name": "Braddock's Battlefield History Center",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9437538,
+                    40.4411268
+                ]
+            },
+            "properties": {
+                "Name": "Hunt Institute",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9527331,
+                    40.4437047
+                ]
+            },
+            "properties": {
+                "Name": "Stephen Foster Memorial",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.01818519999999,
+                    40.4456828
+                ]
+            },
+            "properties": {
+                "Name": "Kamin Science Center",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0024907,
+                    40.4483755
+                ]
+            },
+            "properties": {
+                "Name": "The Andy Warhol Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9920696,
+                    40.4468415
+                ]
+            },
+            "properties": {
+                "Name": "Senator John Heinz History Center",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.967686,
+                    40.4624843
+                ]
+            },
+            "properties": {
+                "Name": "The Clemente Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9564298,
+                    40.4451001
+                ]
+            },
+            "properties": {
+                "Name": "Soldiers & Sailors Memorial Hall & Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.1719597,
+                    40.417474399999996
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh Botanic Garden",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.00968639999999,
+                    40.4406403
+                ]
+            },
+            "properties": {
+                "Name": "Fort Pitt Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0202015,
+                    40.4502574
+                ]
+            },
+            "properties": {
+                "Name": "Moonshot Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.949974,
+                    40.443321499999996
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Museum of Natural History",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.04307639999999,
+                    40.4847501
+                ]
+            },
+            "properties": {
+                "Name": "Team Pittsburgh Dekhockey",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.93499580000001,
+                    40.450897999999995
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh Tattoo Art Museum",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0114669,
+                    40.2691261
+                ]
+            },
+            "properties": {
+                "Name": "The Antique Key Machine Museum Of America",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9627166,
+                    40.4425854
+                ]
+            },
+            "properties": {
+                "Name": "Salk Hall",
+                "Type": "museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9183966,
+                    40.4066045
+                ]
+            },
+            "properties": {
+                "Name": "AMC Waterfront 22",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9228073,
+                    40.437179199999996
+                ]
+            },
+            "properties": {
+                "Name": "Manor Theatre",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96527859999999,
+                    40.4280586
+                ]
+            },
+            "properties": {
+                "Name": "SouthSide Works",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.1463622,
+                    40.4391258
+                ]
+            },
+            "properties": {
+                "Name": "Cinemark Robinson Township and XD",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0439145,
+                    40.3809223
+                ]
+            },
+            "properties": {
+                "Name": "Denis Theatre",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9986995,
+                    40.4430234
+                ]
+            },
+            "properties": {
+                "Name": "Harris Theater",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0539289,
+                    40.343377499999995
+                ]
+            },
+            "properties": {
+                "Name": "AMC CLASSIC South Hills Village 10",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0353757,
+                    40.396105999999996
+                ]
+            },
+            "properties": {
+                "Name": "Row House Cinemas - Hollywood",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.05227099999999,
+                    40.3572442
+                ]
+            },
+            "properties": {
+                "Name": "AMC CLASSIC Mount Lebanon 6",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96106499999999,
+                    40.469939
+                ]
+            },
+            "properties": {
+                "Name": "Row House Cinema - Lawrenceville",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.112015,
+                    40.367894
+                ]
+            },
+            "properties": {
+                "Name": "Phoenix Theatres Luxury 14 + PTX",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.946316,
+                    40.34695
+                ]
+            },
+            "properties": {
+                "Name": "Century Square Luxury Cinemas",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0178218,
+                    40.4455834
+                ]
+            },
+            "properties": {
+                "Name": "The Rangos Giant Cinema",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0725132,
+                    40.4719482
+                ]
+            },
+            "properties": {
+                "Name": "The Parkway Theater & Film Lounge",
+                "Type": "theater"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9859702,
+                    40.4379729
+                ]
+            },
+            "properties": {
+                "Name": "Three Rivers Medical Center",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9619941,
+                    40.4468421
+                ]
+            },
+            "properties": {
+                "Name": "VA Pittsburgh Healthcare System",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96888539999999,
+                    40.4533499
+                ]
+            },
+            "properties": {
+                "Name": "Tuberculosis Hospital of Pittsburgh",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9838948,
+                    40.3755151
+                ]
+            },
+            "properties": {
+                "Name": "AHN Brentwood Neighborhood Hospital",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0047089,
+                    40.423023199999996
+                ]
+            },
+            "properties": {
+                "Name": "Hilltop Community Healthcare Center",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9617741,
+                    40.440628
+                ]
+            },
+            "properties": {
+                "Name": "UPMC Montefiore",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9608872,
+                    40.4368081
+                ]
+            },
+            "properties": {
+                "Name": "UPMC Magee-Womens Hospital",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9607984,
+                    40.44206990000001
+                ]
+            },
+            "properties": {
+                "Name": "Select Specialty Hospital - Pittsburgh / UPMC",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9599752,
+                    40.4434742
+                ]
+            },
+            "properties": {
+                "Name": "UPMC Western Psychiatric Hospital",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.00331229999999,
+                    40.4569171
+                ]
+            },
+            "properties": {
+                "Name": "AHN Allegheny General Hospital - Main Building",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96079139999999,
+                    40.442085399999996
+                ]
+            },
+            "properties": {
+                "Name": "UPMC Presbyterian",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0845977,
+                    40.3696735
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh TMJ & Facial Pain Center",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9576363,
+                    40.4405577
+                ]
+            },
+            "properties": {
+                "Name": "UPMC Senior Services",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9612427,
+                    40.4417358
+                ]
+            },
+            "properties": {
+                "Name": "Eye & Ear Institute",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96040219999999,
+                    40.442451999999996
+                ]
+            },
+            "properties": {
+                "Name": "Pancreatic Cancer Center",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9605725,
+                    40.4427929
+                ]
+            },
+            "properties": {
+                "Name": "Gertzen",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.04018669999999,
+                    40.403471100000004
+                ]
+            },
+            "properties": {
+                "Name": "AHN Primary Care",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.066761,
+                    40.377949099999995
+                ]
+            },
+            "properties": {
+                "Name": "St. Clair Hospital",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96040119999999,
+                    40.442453799999996
+                ]
+            },
+            "properties": {
+                "Name": "Wound Healing/Limb Preservation Center",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.02136290000001,
+                    40.337675
+                ]
+            },
+            "properties": {
+                "Name": "AHN Behavioral Health at Health + Wellness Pavilion Bethel Park",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96047519999999,
+                    40.4418637
+                ]
+            },
+            "properties": {
+                "Name": "A-Life Hospital Coding",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.985575,
+                    40.4364439
+                ]
+            },
+            "properties": {
+                "Name": "UPMC Mercy",
+                "Type": "hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.05842559999999,
+                    40.4649518
+                ]
+            },
+            "properties": {
+                "Name": "Sto-Rox Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.88583539999999,
+                    40.4433702
+                ]
+            },
+            "properties": {
+                "Name": "Wilkinsburg Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.92984129999999,
+                    40.297516699999996
+                ]
+            },
+            "properties": {
+                "Name": "Jefferson Hills Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9503103,
+                    40.442580299999996
+                ]
+            },
+            "properties": {
+                "Name": "CLP \u2013 Children's Department",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.085495,
+                    40.406843099999996
+                ]
+            },
+            "properties": {
+                "Name": "Andrew Carnegie Free Library & Music Hall",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0533832,
+                    40.334033
+                ]
+            },
+            "properties": {
+                "Name": "Little Free Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0340451,
+                    40.4400573
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - West End",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9915546,
+                    40.4364207
+                ]
+            },
+            "properties": {
+                "Name": "Duquesne Center for Legal Information",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9963447,
+                    40.2916916
+                ]
+            },
+            "properties": {
+                "Name": "South Park Township Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9542427,
+                    40.442611899999996
+                ]
+            },
+            "properties": {
+                "Name": "Hillman Library at University of Pittsburgh",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.035958,
+                    40.394166999999996
+                ]
+            },
+            "properties": {
+                "Name": "Dormont Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0907744,
+                    40.4727327
+                ]
+            },
+            "properties": {
+                "Name": "Ohio Valley Hospital Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.03374970000002,
+                    40.4403413
+                ]
+            },
+            "properties": {
+                "Name": "Library Support Center",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9716107,
+                    40.4788536
+                ]
+            },
+            "properties": {
+                "Name": "Millvale Community Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.95230629999999,
+                    40.446625499999996
+                ]
+            },
+            "properties": {
+                "Name": "University of Pittsburgh - Theodore M Finney Music Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.8852036,
+                    40.4322824
+                ]
+            },
+            "properties": {
+                "Name": "C.C. Mellor Memorial Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9499529,
+                    40.443230199999995
+                ]
+            },
+            "properties": {
+                "Name": "\u5339\u5179\u5821\u56fe\u4e66\u9986",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9936936,
+                    40.3599855
+                ]
+            },
+            "properties": {
+                "Name": "Union Park Little Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.85518809999999,
+                    40.345287
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of McKeesport",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9437361,
+                    40.44111710000001
+                ]
+            },
+            "properties": {
+                "Name": "Hunt Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9852854,
+                    40.4361368
+                ]
+            },
+            "properties": {
+                "Name": "Fred C Brady Memorial Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.883347,
+                    40.291923
+                ]
+            },
+            "properties": {
+                "Name": "Clairton Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.066977,
+                    40.4343448
+                ]
+            },
+            "properties": {
+                "Name": "Crafton Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9590515,
+                    40.467612800000005
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Lawrenceville",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9749076,
+                    40.3750746
+                ]
+            },
+            "properties": {
+                "Name": "Brentwood Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9578544,
+                    40.4440676
+                ]
+            },
+            "properties": {
+                "Name": "University of Pittsburgh - Bevier Engineering & Sciences Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.920519,
+                    40.467311699999996
+                ]
+            },
+            "properties": {
+                "Name": "Clifford E. Barbour Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.95970710000002,
+                    40.4417882
+                ]
+            },
+            "properties": {
+                "Name": "Blair-Lippincott Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96333709999999,
+                    40.4391233
+                ]
+            },
+            "properties": {
+                "Name": "Carlow University - Grace Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.15400249999999,
+                    40.445752999999996
+                ]
+            },
+            "properties": {
+                "Name": "Robinson Township Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9227914,
+                    40.4381637
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Squirrel Hill",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9965861,
+                    40.4403979
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh Photographic Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0717784,
+                    40.3333744
+                ]
+            },
+            "properties": {
+                "Name": "Upper St. Clair Township Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.8406524,
+                    40.4176521
+                ]
+            },
+            "properties": {
+                "Name": "C.C. Mellor Memorial Library Forest Hills Branch",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9512992,
+                    40.4425512
+                ]
+            },
+            "properties": {
+                "Name": "Western Pennsylvania Genealogical Society",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9502225,
+                    40.4432834
+                ]
+            },
+            "properties": {
+                "Name": "Einetwork",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.99737379999999,
+                    40.4417769
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Downtown",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9437542,
+                    40.4083113
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Hazelwood",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0468448,
+                    40.418610099999995
+                ]
+            },
+            "properties": {
+                "Name": "Green Tree Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.8490186,
+                    40.351034899999995
+                ]
+            },
+            "properties": {
+                "Name": "Health Service Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.84793859999999,
+                    40.3720493
+                ]
+            },
+            "properties": {
+                "Name": "Duquesne Branch of the Carnegie Library of McKeesport",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9777119,
+                    40.3416915
+                ]
+            },
+            "properties": {
+                "Name": "Baldwin Borough Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.94227049999999,
+                    40.4418857
+                ]
+            },
+            "properties": {
+                "Name": "Posner Center for Special Collections, Carnegie Mellon University",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0037243,
+                    40.4570102
+                ]
+            },
+            "properties": {
+                "Name": "Health Sciences Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0565506,
+                    40.4552008
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Sheraden",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.98497359999999,
+                    40.4296528
+                ]
+            },
+            "properties": {
+                "Name": "Little Free Library N'At",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0258236,
+                    40.4527241
+                ]
+            },
+            "properties": {
+                "Name": "Dax & Kasidy's Little Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9891718,
+                    40.4132232
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Knoxville",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0830807,
+                    40.4323007
+                ]
+            },
+            "properties": {
+                "Name": "Crafton Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9968464,
+                    40.4381093
+                ]
+            },
+            "properties": {
+                "Name": "Allegheny County Law Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9618823,
+                    40.442515
+                ]
+            },
+            "properties": {
+                "Name": "University of Pittsburgh - Health Sciences Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.951044,
+                    40.446138
+                ]
+            },
+            "properties": {
+                "Name": "Mellon Institute Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9765364,
+                    40.4455017
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Hill District",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0132981,
+                    40.4497266
+                ]
+            },
+            "properties": {
+                "Name": "CCAC Allegheny Campus Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0222744,
+                    40.3677431
+                ]
+            },
+            "properties": {
+                "Name": "Castle Shannon Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0062662,
+                    40.4390923
+                ]
+            },
+            "properties": {
+                "Name": "Cohen & Grigsby Law Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.1353149,
+                    40.4351112
+                ]
+            },
+            "properties": {
+                "Name": "Colibri Systems North America Inc.",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0628851,
+                    40.4971494
+                ]
+            },
+            "properties": {
+                "Name": "Avalon Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.86548370000001,
+                    40.401862699999995
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie One Braddock",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0543096,
+                    40.496514499999996
+                ]
+            },
+            "properties": {
+                "Name": "Andrew Bayne Memorial Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0809798,
+                    40.2803925
+                ]
+            },
+            "properties": {
+                "Name": "Peters Township Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.02343599999999,
+                    40.2868938
+                ]
+            },
+            "properties": {
+                "Name": "Library Design & Equipment Co",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.00002880000001,
+                    40.442030100000004
+                ]
+            },
+            "properties": {
+                "Name": "Evoqua Online Store",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.94918299999999,
+                    40.453817
+                ]
+            },
+            "properties": {
+                "Name": "Library of Accessible Media for Pennsylvanians (LAMP)",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.031418,
+                    40.3323995
+                ]
+            },
+            "properties": {
+                "Name": "Bethel Park Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.97426949999999,
+                    40.4286799
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - South Side",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0277134,
+                    40.4070533
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Beechview",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.991948,
+                    40.4366128
+                ]
+            },
+            "properties": {
+                "Name": "School of Law Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9265435,
+                    40.4608869
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - East Liberty",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0008625,
+                    40.439733100000005
+                ]
+            },
+            "properties": {
+                "Name": "University Center",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9285225,
+                    40.4692088
+                ]
+            },
+            "properties": {
+                "Name": "Eastfield Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96200569999999,
+                    40.3337286
+                ]
+            },
+            "properties": {
+                "Name": "Pleasant Hills Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.8911655,
+                    40.422553099999995
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Free Library of Swissvale",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0301815,
+                    40.4762414
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Woods Run",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.94636369999999,
+                    40.4614529
+                ]
+            },
+            "properties": {
+                "Name": "Western Pa Hospital Medical Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.98754699999999,
+                    40.397019
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Carrick",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0065961,
+                    40.456357499999996
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Allegheny",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.1423271,
+                    40.355270999999995
+                ]
+            },
+            "properties": {
+                "Name": "South Fayette Township Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.945784,
+                    40.442647
+                ]
+            },
+            "properties": {
+                "Name": "Sorrells Engineering and Science Library- Carnegie Mellon University",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.97161609999999,
+                    40.4788516
+                ]
+            },
+            "properties": {
+                "Name": "Millvale Tool Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.96068799999999,
+                    40.4368286
+                ]
+            },
+            "properties": {
+                "Name": "Howard Anderson-Power Memorial",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9512415,
+                    40.4416574
+                ]
+            },
+            "properties": {
+                "Name": "University of Pittsburgh - Frick Fine Arts Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9527331,
+                    40.4437047
+                ]
+            },
+            "properties": {
+                "Name": "Stephen Foster Memorial",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9507696,
+                    40.4427033
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Main (Oakland)",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9302293,
+                    40.4943603
+                ]
+            },
+            "properties": {
+                "Name": "Sharpsburg Community Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9527339,
+                    40.4438026
+                ]
+            },
+            "properties": {
+                "Name": "Center for American Music",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.01044259999999,
+                    40.433565699999996
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Mt. Washington",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.0840429,
+                    40.3868964
+                ]
+            },
+            "properties": {
+                "Name": "Scott Twp Public Works Department",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.08386689999999,
+                    40.3871456
+                ]
+            },
+            "properties": {
+                "Name": "Scott Township Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.8611176,
+                    40.4273946
+                ]
+            },
+            "properties": {
+                "Name": "Little Free Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9798768,
+                    40.3509671
+                ]
+            },
+            "properties": {
+                "Name": "Whitehall Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.902948,
+                    40.407013899999995
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie of Homestead",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9349226,
+                    40.3178584
+                ]
+            },
+            "properties": {
+                "Name": "Behan Health Science Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.021441,
+                    40.3944049
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh Brookline",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.9263252,
+                    40.448600299999995
+                ]
+            },
+            "properties": {
+                "Name": "Jennie King Mellon Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.1115934,
+                    40.3562814
+                ]
+            },
+            "properties": {
+                "Name": "Bridgeville Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.991503,
+                    40.437349
+                ]
+            },
+            "properties": {
+                "Name": "Duquesne University - Gumberg Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.045211,
+                    40.3771096
+                ]
+            },
+            "properties": {
+                "Name": "Mt Lebanon Public Library",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.89918469999999,
+                    40.4552896
+                ]
+            },
+            "properties": {
+                "Name": "Carnegie Library of Pittsburgh - Homewood",
+                "Type": "library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.922206,
+                    40.4842648
+                ]
+            },
+            "properties": {
+                "Name": "Pittsburgh Zoo & Aquarium",
+                "Type": "zoo"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.00960529999999,
+                    40.4533299
+                ]
+            },
+            "properties": {
+                "Name": "National Aviary",
+                "Type": "zoo"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -80.123757,
+                    40.278418
+                ]
+            },
+            "properties": {
+                "Name": "Wet Pets And Friends",
+                "Type": "aquarium"
+            }
         }
     ]
 }
