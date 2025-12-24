@@ -51,5 +51,8 @@
     "vite-plugin-vuetify": "^2.0.3",
     "vue-router": "^4.6.4",
     "vue-tsc": "^2.1.10"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.54.0"
   }
 }
