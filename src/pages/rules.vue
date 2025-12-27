@@ -28,21 +28,17 @@
 <script lang="ts" setup>
 
 const rules = [
-  "We are playing a Medium game. Always use the effects specified with an \"M\" for medium on the cards or rulebook.",
-  "The hiding period is 45 minutes instead of an hour.",
-  "\"Public transportation\" is defined as everything a Smartrip card can buy, MARC, and VRE. However, ONLY metrorail stations are zones.",
-  "The Pentagon station is banned from being a hider zone station. However, you are allowed to connect to and from the station on rail or bus.",
+  "We are playing a Small game. Always use the effects specified with an \"S\" for medium on the cards or rulebook.",
+  "\"Public transportation\" is PRT \"T\", PRT buses, and the Inclines. However, T stations and Incline stations are zones.",
   "The hider must be off of a train before their hiding period is done. However, if they are on a bus, they must make a best-effort to get to the nearest station.",
+  "Due to the high headways of the T, it may be too easy to figure out where the hiders go during a hiding period by watching arrivals at the given station. Therefore, live tracking of the T is not permitted during the hiding period.",
   "It's likely things will come up that aren't clear in the rules. When in doubt, do your best according to the \"spirit of the game.\"",
-  "First Administrative Division is VA, MD, or DC.",
-  "Second Administrative Division is County in the States and DC itself.",
-  "No Third or Fourth Administrative Divisions exist. Do not use these questions.",
+  "No Administrative Divisions are useful. Do not use these questions.",
   "HAVE FUN!",
 ]
 
 const checklist = [
-  "Ask if everyone feels alright despite the heat",
-  "Apply another coat of sunscreen",
+  "Ask if everyone feels alright despite the cold",
   "Hand over tracker notepad",
   "Hand over hider deck",
   "Switch over Life360",
