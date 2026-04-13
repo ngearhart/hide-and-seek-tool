@@ -109,6 +109,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
 import { flipCoords, loadRegion, type FeatureType } from '@/regions/regions';
+import { getIconFor } from '@/geo/icons';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -528,7 +529,13 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
   </div>
 `)
 
-const getMarkerFor = (latLng: L.LatLngExpression, name: string, subtitle: string) => L.marker(latLng).bindPopup(getPopupFor(latLng, name, subtitle))
+const getMarkerFor = (latLng: L.LatLngExpression, name: string, subtitle: string, customIconTitle?: string) => {
+    let additionalOptions: L.MarkerOptions = {};
+    if (customIconTitle) {
+        additionalOptions.icon = getIconFor(customIconTitle);
+    }
+    return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, subtitle))
+}
 
 const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locatingPinToMeasureLatLng.value = [
@@ -570,15 +577,15 @@ const findClosest = (key: string, type: string) => {
 }
 
 const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
-    stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station")),
-    airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport")),
-    parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park")),
-    museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum")),
-    theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater")),
-    hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital")),
-    libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library")),
-    zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo")),
-    aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium")),
+    stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station", "transitstations")),
+    airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport", "airports")),
+    parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park", "parks")),
+    museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum", "museums")),
+    theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater", "movietheaters")),
+    hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital", "hospitals")),
+    libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library", "libraries")),
+    zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo", "zoos")),
+    aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium", "aquariums")),
     custom: gamesObj.value?.customPins?.map(pin =>
         getMarkerFor([pin.lat, pin.long], "Custom Pin", "")
     ) ?? [],

@@ -33,6 +33,7 @@ node_modules
 .env.local
 .env.*.local
 .venv
+.venv-wsl
 
 # Log files
 npm-debug.log*
