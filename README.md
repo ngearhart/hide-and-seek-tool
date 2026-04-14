@@ -22,8 +22,12 @@ Feature Properties:
 
 ## Feature Requests
 
-Ruler
-
+- Better history view (who made it and what it is)
+- What-If mode to quickly undo
+- High priority changes (require an extra click to delete, "lock in")
+- Quick undo
+- Different color pins
+- Better team configuration (each team wouldn't see each other's maps/configurable)
 
 ## Developing
 H&SL was developed using Vuetify. See below for more info. Vuetify is available under the [MIT License](http://opensource.org/licenses/MIT), Copyright (c) 2016-present Vuetify, LLC.
@@ -72,3 +76,18 @@ yarn build
 (Repeat for npm, pnpm, and bun with respective commands.)
 
 Once the build process is completed, your application will be ready for deployment in a production environment.
+
+## Color Palette
+
+https://coolors.co/5e3408-fffcf2-0d3b66-f4d666-eb5e28-faf0ca-a663cc-669bbc-84a98c-03071e
+
+- Transit Stations #5E3408
+- Airports #FFFCF2
+- Museums #0D3B66
+- Movie Theaters #F4D666
+- Hospitals #EB5E28
+- Libraries #FAF0CA
+- Zoos #A663CC
+- Aquariums #669BBC
+- Parks #84A98C
+- Graveyards #03071E

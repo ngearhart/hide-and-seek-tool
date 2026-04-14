@@ -16,6 +16,7 @@ COLORS = {
     "Zoos": "#A663CC",
     "Aquariums": "#669BBC",
     "Parks": "#84A98C",
+    "Graveyards": "#03071E",
 }
 
 
