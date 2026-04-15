@@ -9,4 +9,5 @@ export default {
     "Aquariums": "#669BBC",
     "Parks": "#84A98C",
     "Graveyards": "#03071E",
+    "Custom Pins": "#C2095A",
 };

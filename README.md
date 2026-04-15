@@ -91,3 +91,4 @@ https://coolors.co/5e3408-fffcf2-0d3b66-f4d666-eb5e28-faf0ca-a663cc-669bbc-84a98
 - Aquariums #669BBC
 - Parks #84A98C
 - Graveyards #03071E
+- Custom Pins #C2095A

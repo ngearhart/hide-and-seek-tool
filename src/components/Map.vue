@@ -587,7 +587,7 @@ const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
     zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo", "zoos")),
     aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium", "aquariums")),
     custom: gamesObj.value?.customPins?.map(pin =>
-        getMarkerFor([pin.lat, pin.long], "Custom Pin", "")
+        getMarkerFor([pin.lat, pin.long], "Custom Pin", "", "custompins")
     ) ?? [],
 })
 
