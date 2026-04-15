@@ -1,18 +1,18 @@
 <template>
-  <v-fab :absolute="true" :color="open ? '' : 'primary'" location="right bottom" size="large" extended
-    :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'">
+  <v-fab :absolute="true" :color="open ? '' : 'primary'" location="bottom center" size="large" extended
+    :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'" width="16em">
     Edit Map
     <v-speed-dial v-model="open" location="top center" transition="slide-y-reverse-transition" activator="parent">
 
-      <v-btn key="4" color="purple-darken-4" prepend-icon="mdi-history" @click="historyIsOpen = true">
+      <v-btn key="4" color="purple-darken-4" prepend-icon="mdi-history" @click="historyIsOpen = true" spaced="start" width="14em">
         History
       </v-btn>
 
-      <v-btn key="4" color="orange-darken-4" prepend-icon="mdi-pin" @click="$emit('locate')">
+      <v-btn key="4" color="orange-darken-4" prepend-icon="mdi-pin" @click="$emit('locate')"  spaced="start">
         Locate
       </v-btn>
 
-      <v-btn key="4" color="cyan-darken-4" prepend-icon="mdi-radar" @click="radarIsOpen = true">
+      <v-btn key="4" color="cyan-darken-4" prepend-icon="mdi-radar" @click="radarIsOpen = true"  spaced="start">
         Radar
       </v-btn>
 
@@ -20,23 +20,23 @@
         Thermometer
       </v-btn> -->
 
-      <v-btn key="4" color="red-darken-2" prepend-icon="mdi-radius" @click="findClosestIsOpen = true">
+      <v-btn key="4" color="red-darken-2" prepend-icon="mdi-radius" @click="findClosestIsOpen = true"  spaced="start">
         Find Closest
       </v-btn>
   
-      <v-btn key="4" color="info" prepend-icon="mdi-draw" @click="$emit('draw')">
+      <v-btn key="4" color="info" prepend-icon="mdi-draw" @click="$emit('draw')"  spaced="start">
         Draw
       </v-btn>
   
-      <v-btn key="4" color="info" prepend-icon="mdi-pin" @click="$emit('showPinDrop')">
+      <v-btn key="4" color="info" prepend-icon="mdi-pin" @click="$emit('showPinDrop')"  spaced="start">
         Drop Pin
       </v-btn>
 
-      <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true">
+      <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true"  spaced="start">
         Layers
       </v-btn>
 
-      <v-btn key="4" color="error" prepend-icon="mdi-refresh" @click="$emit('reset')">
+      <v-btn key="4" color="error" prepend-icon="mdi-refresh" @click="$emit('reset')"  spaced="start">
         Reset
       </v-btn>
     </v-speed-dial>
@@ -105,13 +105,12 @@ code {
 }
 
 .v-fab {
-  z-index: 100000;
+  z-index: 1000;
 }
 </style>
 
 <style>
 .v-fab.v-fab--bottom .v-fab__container {
   bottom: 5em;
-  right: 3em;
 }
 </style>
