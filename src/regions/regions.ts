@@ -1,7 +1,6 @@
 import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geojson"
 import type { LatLngTuple } from "leaflet";
-
-export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "park";
+import type { FeatureType } from "./features";
 
 export type CustomProperty = GeoJsonProperties & {
     Name: string

@@ -108,8 +108,9 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion, type FeatureType } from '@/regions/regions';
-import { getIconFor } from '@/geo/icons';
+import { flipCoords, loadRegion } from '@/regions/regions';
+import { getIconFor } from '@/regions/icons';
+import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -213,9 +214,9 @@ const buildMap = () => {
         });
 
         // Dynamically get markers, needed for loading custom markers.
-        let markers = getMarkers();
+        let markers = getFeatureMarkers(getPopupFor);
         store.$state.mapMarkers.forEach(marker => {
-            markers[marker].forEach(m => {
+            markers[marker as FeatureType].forEach(m => {
                 if (marker == "stations") {
                     L.circle(m.getLatLng(), {
                         color: 'red',
@@ -501,7 +502,7 @@ const refreshBoundaryLines = () => {
 }
 
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
+const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
@@ -528,14 +529,6 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
     </div>
   </div>
 `)
-
-const getMarkerFor = (latLng: L.LatLngExpression, name: string, subtitle: string, customIconTitle?: string) => {
-    let additionalOptions: L.MarkerOptions = {};
-    if (customIconTitle) {
-        additionalOptions.icon = getIconFor(customIconTitle);
-    }
-    return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, subtitle))
-}
 
 const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locatingPinToMeasureLatLng.value = [
@@ -575,21 +568,6 @@ const findClosest = (key: string, type: string) => {
     locatingClosestType.value = { key: key, type: type }
     locate()
 }
-
-const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
-    stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station", "transitstations")),
-    airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport", "airports")),
-    parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park", "parks")),
-    museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum", "museums")),
-    theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater", "movietheaters")),
-    hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital", "hospitals")),
-    libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library", "libraries")),
-    zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo", "zoos")),
-    aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium", "aquariums")),
-    custom: gamesObj.value?.customPins?.map(pin =>
-        getMarkerFor([pin.lat, pin.long], "Custom Pin", "", "custompins")
-    ) ?? [],
-})
 
 const draw = () => {
     new (L as any).Draw.Polygon(localMap.value!, {}).enable()

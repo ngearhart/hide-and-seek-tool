@@ -7,9 +7,9 @@ M<template>
         </v-alert>
         <v-checkbox :label="checkbox.label" v-model="checkbox.checked" v-for="checkbox in checkboxes" density="compact" v-on:click="updateMap"
           :messages="checkbox.note ?? ''" hide-details="auto"
-          :color="colors[checkbox.key as PlaceType] ?? ''">
-          <template v-slot:append v-if="colors[checkbox.key as PlaceType]">
-            <img :src="getImagePathFor(checkbox.key as PlaceType)"></img>
+          :color="colors[checkbox.key as FeatureType] ?? ''">
+          <template v-slot:append v-if="colors[checkbox.key as FeatureType]">
+            <img :src="getImagePathFor(checkbox.key as FeatureType)"></img>
           </template>
         </v-checkbox>
       </v-card-text>
@@ -28,7 +28,8 @@ M<template>
 
 <script lang="ts" setup>
 import { useStore } from '@/stores/app';
-import { colors, places, getImagePathFor, type PlaceType } from '@/placeTypes';
+import { colors, features, getImagePathFor, type FeatureType } from '@/regions/features';
+import { isTokenKind } from 'typescript';
 
 
 const store = useStore();
@@ -40,7 +41,7 @@ const checkboxes = reactive<{
   checked: boolean,
   key: string,
   note?: string
-}[]>(places.map(place => ({ label: place.pluralLabel, key: place.key, checked: false})))
+}[]>(features.map(feature => ({ label: feature.pluralLabel, key: feature.key, checked: false})))
 
 const updateMap = async() => {
   await new Promise(r => setTimeout(r, 200));
@@ -50,6 +51,14 @@ const updateMap = async() => {
 // Refresh on every view - store could be edited elsewhere.
 watch(model, () => {
   store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
+})
+
+onMounted(() => {
+  // Backwards compatibility - clear invalid checkboxes from state
+  if (store.$state.mapMarkers.some(marker => features.find(feat => feat.key == marker) === undefined)) {
+    console.warn("WARNING! Detected old state with invalid map markers. Clearing old state")
+    store.$state.mapMarkers = []
+  }
 })
 
 </script>

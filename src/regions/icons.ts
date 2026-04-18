@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { getImagePathFor, type FeatureType } from './features';
 
 const PlaceMarkerIcon = L.Icon.extend({
     options: {
@@ -11,6 +12,6 @@ const PlaceMarkerIcon = L.Icon.extend({
     }
 });
 
-export function getIconFor(type: string) {
-    return new PlaceMarkerIcon({iconUrl: "images/markers/" + type + ".png"});
+export function getIconFor(type: FeatureType) {
+    return new PlaceMarkerIcon({iconUrl: getImagePathFor(type)});
 }
