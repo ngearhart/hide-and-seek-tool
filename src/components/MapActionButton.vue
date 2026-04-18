@@ -73,7 +73,7 @@ const props = defineProps<{
 }>();
 
 import { shallowRef } from 'vue'
-import { useStore } from '@/stores/app';
+import { useUndoRedoStore } from '@/stores/app';
 
 defineEmits<{
   (e: 'radar', hit: boolean, lat: number, long: number, meters: number): void
@@ -92,7 +92,7 @@ const historyIsOpen = shallowRef(false)
 const thermometerIsOpen = shallowRef(false)
 const findClosestIsOpen = shallowRef(false)
 
-const store = useStore();
+const store = useUndoRedoStore();
 
 const canUndo = computed(() => store.$state.gameHistory.length > 1);
 const canRedo = computed(() => store.$state.undoHistory.length > 0);

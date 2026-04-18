@@ -15,13 +15,13 @@
  * To redo, we pop the latest off the top of the undo stack and set the game state to that.
  */
 
-import { useStore } from "@/stores/app";
+import { useUndoRedoStore } from "@/stores/app";
 import type { GameRecord } from "@/utils"
 import { set, type DatabaseReference } from "firebase/database"
 
 
 export const updateGame = async(newGameObject: GameRecord, oldGameObject: GameRecord, gamesDbRef: DatabaseReference, rewriteLast: boolean = false) => {
-    const store = useStore();
+    const store = useUndoRedoStore();
     if (store.$state.gameHistory.length == 0) {
         // Base case if the user loads the page for the first time
         // Also add the old state to undo history
@@ -43,7 +43,7 @@ export const updateGame = async(newGameObject: GameRecord, oldGameObject: GameRe
 };
 
 export const undoGame = async(gamesDbRef: DatabaseReference) => {
-    const store = useStore();
+    const store = useUndoRedoStore();
     if (store.$state.gameHistory.length < 2) {
         throw "Cannot call Undo function when no history exists (history must contain base state and >= 1 operation)";
     }
@@ -54,7 +54,7 @@ export const undoGame = async(gamesDbRef: DatabaseReference) => {
 }
 
 export const redoGame = async(gamesDbRef: DatabaseReference) => {
-    const store = useStore();
+    const store = useUndoRedoStore();
     if (store.$state.undoHistory.length == 0) {
         throw "Cannot call Redo function when no history exists";
     }
