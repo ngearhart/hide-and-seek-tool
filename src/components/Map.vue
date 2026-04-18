@@ -170,11 +170,6 @@ const completeRebuild = () => {
         refreshThermometer()
         refreshPolygons()
         refreshBoundaryLines()
-
-        // There is a specific edge case right before the re
-        // if (localMap.value?.getCenter() === new L.LatLng(0, 0)) {
-            
-        // }
     } else {
         ensureRegionLoaded()
     }

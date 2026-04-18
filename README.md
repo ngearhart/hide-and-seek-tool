@@ -22,11 +22,9 @@ Feature Properties:
 
 ## Feature Requests
 
-- Better history view (who made it and what it is)
 - What-If mode to quickly undo
 - High priority changes (require an extra click to delete, "lock in")
 - Quick undo
-- Different color pins
 - Better team configuration (each team wouldn't see each other's maps/configurable)
 
 ## Developing
