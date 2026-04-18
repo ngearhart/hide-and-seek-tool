@@ -1,3 +1,5 @@
+type ColorDict = { [place: string]: string };
+
 export default {
     "Transit Stations": "#5E3408",
     "Airports": "#FFFCF2",
@@ -10,4 +12,4 @@ export default {
     "Parks": "#84A98C",
     "Graveyards": "#03071E",
     "Custom Pins": "#C2095A",
-};
+} satisfies ColorDict;

@@ -32,13 +32,16 @@ import { useStore } from '@/stores/app';
 import colors from '@/colors';
 
 
-
 const store = useStore();
 
 const model = defineModel()
 
-
-const checkboxes = reactive([
+const checkboxes = reactive<{
+  label: string,
+  checked: boolean,
+  key: string,
+  note?: string
+}[]>([
   {
     label: "Transit Stations",
     checked: false,
@@ -99,43 +102,12 @@ const checkboxes = reactive([
 
 const updateMap = async() => {
   await new Promise(r => setTimeout(r, 200));
-  const newLayers = [];
-  switch (mapStyle.value) {
-    case "dark": newLayers.push("Jawg.Matrix"); break;
-    case "light": newLayers.push("Jawg.Sunny"); break;
-    case "terrain": newLayers.push("Esri_WorldImagery"); break;
-  }
-
-  if (checkboxes.find(item => item.label == "Rail lines")?.checked) {
-    newLayers.push("OpenRailwayMap");
-  }
-
   store.$state.mapMarkers = checkboxes.filter(checkbox => checkbox.checked && checkbox.key).map(checkbox => checkbox.key!);
-  store.$state.mapLayers = newLayers;
-  // store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
 };
 
 // Refresh on every view - store could be edited elsewhere.
 watch(model, () => {
-  if (model.value) {
-    if (store.$state.mapLayers.includes("Jawg.Matrix")) {
-      mapStyle.value = "dark";
-    } else if (store.$state.mapLayers.includes("Jawg.Sunny")) {
-      mapStyle.value = "light";
-    } else if (store.$state.mapLayers.includes("Esri_WorldImagery")) {
-      mapStyle.value = "terrain";
-    }
-
-    if (store.$state.mapLayers.includes("OpenRailwayMap")) {
-      checkboxes.find(item => item.label == "Rail lines")!.checked = true;
-    }
-
-    store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
-    // checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
-  }
+  store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
 })
-
-// onMounted(() => {
-// });
 
 </script>
