@@ -2,6 +2,8 @@ import L from 'leaflet';
 import { getIconFor } from './icons';
 import { useStore } from '@/stores/app';
 import { flipCoords } from './regions';
+import type { _RefDatabase, VueDatabaseDocumentData } from 'vuefire';
+import type { GameRecord } from '@/utils';
 
 export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "graveyard" | "park" | "custom";
 
@@ -95,29 +97,20 @@ const getMarkerFor = (feature: Feature, latLng: L.LatLngExpression, name: string
   return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, feature.singularLabel))
 }
 
-export const getFeatureMarkers = (getPopupFor: GetPopupFunction): { [key in FeatureType]: L.Marker<any>[] } => {
+export const getFeatureMarkers = (getPopupFor: GetPopupFunction, gamesObj: _RefDatabase<VueDatabaseDocumentData<GameRecord | null> | undefined>): { [key in FeatureType]: L.Marker<any>[] } => {
   // Can't import this earlier due to injection dependencies
   // https://pinia.vuejs.org/core-concepts/outside-component-usage.html
   const store = useStore();
-  return Object.fromEntries(
+  let markers = Object.fromEntries(
     features.map(feature => [
       feature.key,
       store.getMarkers(feature.key).map(marker => getMarkerFor(feature, flipCoords(marker.geometry.coordinates), marker.properties.Name, getPopupFor))
     ])
   ) as { [key in FeatureType]: L.Marker<any>[] }
-}
 
-//   ({
-//     stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station", "transitstations")),
-//     airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport", "airports")),
-//     parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park", "parks")),
-//     museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum", "museums")),
-//     theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater", "movietheaters")),
-//     hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital", "hospitals")),
-//     libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library", "libraries")),
-//     zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo", "zoos")),
-//     aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium", "aquariums")),
-//     custom: gamesObj.value?.customPins?.map(pin =>
-//         getMarkerFor([pin.lat, pin.long], "Custom Pin", "", "custompins")
-//     ) ?? [],
-// })
+  // Custom markers are loaded from Firebase and not the pinia store, so we have to insert those separately.
+  const customFeature = features.find(feat => feat.key == "custom")!;
+  markers.custom = gamesObj.value?.customPins?.map(pin => getMarkerFor(customFeature, [pin.lat, pin.long], "Custom Pin", getPopupFor)) ?? [];
+
+  return markers;
+}

@@ -214,7 +214,7 @@ const buildMap = () => {
         });
 
         // Dynamically get markers, needed for loading custom markers.
-        let markers = getFeatureMarkers(getPopupFor);
+        let markers = getFeatureMarkers(getPopupFor, gamesObj);
         store.$state.mapMarkers.forEach(marker => {
             markers[marker as FeatureType].forEach(m => {
                 if (marker == "stations") {
