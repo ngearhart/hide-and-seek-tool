@@ -110,7 +110,7 @@ export const getFeatureMarkers = (getPopupFor: GetPopupFunction, gamesObj: _RefD
 
   // Custom markers are loaded from Firebase and not the pinia store, so we have to insert those separately.
   const customFeature = features.find(feat => feat.key == "custom")!;
-  markers.custom = gamesObj.value?.customPins?.map(pin => getMarkerFor(customFeature, [pin.lat, pin.long], "Custom Pin", getPopupFor)) ?? [];
+  markers.custom = gamesObj.value?.customPins?.map(pin => getMarkerFor(customFeature, [pin.lat, pin.long], pin.customTitle ?? "Custom Pin", getPopupFor)) ?? [];
 
   return markers;
 }

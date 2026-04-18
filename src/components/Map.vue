@@ -68,7 +68,8 @@
         <v-card title="Distance">
             <v-card-text>
                 The pins you selected are roughly {{ measuringOtherMarkerDistanceResult.toLocaleString(undefined, {
-                maximumSignificantDigits: 3 }) }} miles apart.
+                    maximumSignificantDigits: 3
+                }) }} miles apart.
             </v-card-text>
             <v-card-actions>
                 <v-container>
@@ -90,6 +91,8 @@
     </BoundaryLine>
     <ConfirmDelete :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" v-model="shouldConfirmDeleteDialogShow">
     </ConfirmDelete>
+    <CustomPinLabelEditor v-model="showCustomPinLabelEditor" :most-recent-pin-drop="mostRecentlyDroppedPin" ,
+        :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"></CustomPinLabelEditor>
 </template>
 
 <script lang="ts" setup>
@@ -122,6 +125,8 @@ const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
+const showCustomPinLabelEditor = shallowRef(false);
+const mostRecentlyDroppedPin = ref<L.LatLng | null>(null);
 const droppingPin = shallowRef(false);
 const locating = shallowRef(false);
 const locatingPinToMeasureLatLng = ref<number[] | null>(null);
@@ -501,7 +506,7 @@ const refreshBoundaryLines = () => {
     }
 }
 
-const popupButtonClasses =  "v-btn v-btn--block v-btn--elevated v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer";
+const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer";
 
 // I know this is gross but this is the leaflet canonical way.
 const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
@@ -529,7 +534,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     <div style="margin-top: 1em;" class="${popupButtonClasses} bg-primary" onclick="startBoundaryLine(${latLng})">
       <button>Add boundary line</button>
     </div>
-    ${name === 'Custom Pin' ? `
+    ${subtitle === 'Custom Pin' ? `
     <div style="margin-top: 1em;" class="${popupButtonClasses} bg-red-darken-2" onclick="deleteCustomMarker(${latLng})">
       <button>Delete</button>
     </div>
@@ -571,7 +576,7 @@ const finishMeasuringOtherMarker = (lat: number, long: number) => {
     measuringOtherMarkerDistanceResultDialog.value = true
 }
 
-const deleteCustomMarker = async(lat: number, long: number) => {
+const deleteCustomMarker = async (lat: number, long: number) => {
     const newObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
     newObj.customPins = newObj.customPins.filter(item => item.lat != lat || item.long != long);
     await set(
@@ -599,6 +604,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             long: e.latlng.lng,
             created: new Date().toUTCString()
         });
+        mostRecentlyDroppedPin.value = e.latlng;
         set(
             gamesDbRef.value, {
             customPins: newEntries,
@@ -610,6 +616,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             title: "Success",
             text: "Added pin"
         })
+        showCustomPinLabelEditor.value = true;
 
         // Auto enable custom pins (clearer UI)
         if (!store.$state.mapMarkers.includes("custom")) {
