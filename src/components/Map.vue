@@ -170,6 +170,11 @@ const completeRebuild = () => {
         refreshThermometer()
         refreshPolygons()
         refreshBoundaryLines()
+
+        // There is a specific edge case right before the re
+        // if (localMap.value?.getCenter() === new L.LatLng(0, 0)) {
+            
+        // }
     } else {
         ensureRegionLoaded()
     }
@@ -704,6 +709,8 @@ const ensureRegionLoaded = () => {
     const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
     loadRegion(regionId).then((region) => {
         store.$state.loadedRegionData = region;
+        // If we do not recenter here, the user will be stuck on null island (0, 0) until they reload
+        localMap.value!.setView(flipCoords(store.$state.loadedRegionData!.center), 13);
     })
 }
 
