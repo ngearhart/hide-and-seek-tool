@@ -1,7 +1,7 @@
-import L, { Class } from 'leaflet';
+import L, { Class, Icon, type BaseIconOptions } from 'leaflet';
 import { getImagePathFor, type FeatureType } from './features';
 
-type PlaceMarkerIconCls = { new(options: {iconUrl: string}): PlaceMarkerIconCls } & typeof Class;
+type PlaceMarkerIconCls = { new(options: BaseIconOptions): Icon<BaseIconOptions> } & typeof Class;
 
 const PlaceMarkerIcon: PlaceMarkerIconCls = L.Icon.extend({
     options: {
