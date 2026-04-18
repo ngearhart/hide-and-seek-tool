@@ -313,7 +313,11 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
-    await updateGame(gamesObj.value!, oldGameObj, gamesDbRef.value);
+    // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
+    await updateGame({
+        thermometerEntries: newEntries,
+        ...gamesObj.value
+    } as GameRecord, oldGameObj, gamesDbRef.value);
 };
 
 
@@ -329,7 +333,10 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
-    await updateGame(gamesObj.value!, oldGameObj, gamesDbRef.value);
+    await updateGame({
+        radarEntries: newEntries,
+        ...gamesObj.value
+    } as GameRecord, oldGameObj, gamesDbRef.value);
 };
 
 const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
@@ -343,7 +350,10 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
-    await updateGame(gamesObj.value!, oldGameObj, gamesDbRef.value);
+    await updateGame({
+        boundaryLineEntries: newEntries,
+        ...gamesObj.value
+    } as GameRecord, oldGameObj, gamesDbRef.value);
 }
 
 const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
@@ -601,7 +611,10 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
         });
         mostRecentlyDroppedPin.value = e.latlng;
         updateGame(
-            gamesObj.value!,
+            {
+                customPins: newEntries,
+                ...gamesObj.value
+            } as GameRecord,
             oldGameObj,
             gamesDbRef.value
         );
@@ -661,7 +674,10 @@ onMounted(async () => {
             });
 
             updateGame(
-                gamesObj.value!,
+                {
+                    polygonEntries: newEntries,
+                    ...gamesObj.value,
+                } as GameRecord,
                 oldGameObj,
                 gamesDbRef.value
             );
