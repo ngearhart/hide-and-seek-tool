@@ -31,7 +31,7 @@ export const updateGame = async(newGameObject: GameRecord, oldGameObject: GameRe
     if (rewriteLast) {
         // This parameter is set to mean we don't want to track the previous action
         // For example, the custom pin drop and label operations are recorded separately, but
-        //  it is not useful to the user to undo the label operation. 
+        //  it is not useful to the user to undo the label operation.
         store.$state.gameHistory.pop();
     }
     store.$state.gameHistory.push(newGameObject);

@@ -132,5 +132,6 @@ code {
   bottom: 2.5em;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
 }
 </style>
