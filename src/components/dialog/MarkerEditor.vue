@@ -7,10 +7,9 @@ M<template>
         </v-alert>
         <v-checkbox :label="checkbox.label" v-model="checkbox.checked" v-for="checkbox in checkboxes" density="compact" v-on:click="updateMap"
           :messages="checkbox.note ?? ''" hide-details="auto"
-          :color="colors[checkbox.label] ?? ''">
-          <template v-slot:append v-if="colors[checkbox.label]">
-            <img :src="'images/markers/' + checkbox.label.toLowerCase().replace(' ', '') + '.png'">
-          </img>
+          :color="colors[checkbox.key as PlaceType] ?? ''">
+          <template v-slot:append v-if="colors[checkbox.key as PlaceType]">
+            <img :src="getImagePathFor(checkbox.key as PlaceType)"></img>
           </template>
         </v-checkbox>
       </v-card-text>
@@ -29,7 +28,7 @@ M<template>
 
 <script lang="ts" setup>
 import { useStore } from '@/stores/app';
-import colors from '@/colors';
+import { colors, places, getImagePathFor, type PlaceType } from '@/placeTypes';
 
 
 const store = useStore();
@@ -41,64 +40,7 @@ const checkboxes = reactive<{
   checked: boolean,
   key: string,
   note?: string
-}[]>([
-  {
-    label: "Transit Stations",
-    checked: false,
-    key: "stations",
-  },
-  {
-    label: "Airports",
-    checked: false,
-    key: "airports",
-  },
-  {
-    label: "Museums",
-    checked: false,
-    key: "museums",
-  },
-  {
-    label: "Movie Theaters",
-    checked: false,
-    key: "theaters",
-  },
-  {
-    label: "Hospitals",
-    checked: false,
-    key: "hospitals",
-  },
-  {
-    label: "Libraries",
-    checked: false,
-    key: "libraries",
-  },
-  {
-    label: "Zoos",
-    checked: false,
-    key: "zoos",
-  },
-  {
-    label: "Aquariums",
-    checked: false,
-    key: "aquariums",
-  },
-  {
-    label: "Parks",
-    checked: false,
-    key: "parks",
-    // note: "Note: There are too many - none entered",
-  },
-  {
-    label: "Graveyards",
-    checked: false,
-    key: "graveyards",
-  },
-  {
-    label: "Custom Pins",
-    checked: false,
-    key: "custom"
-  },
-]);
+}[]>(places.map(place => ({ label: place.pluralLabel, key: place.key, checked: false})))
 
 const updateMap = async() => {
   await new Promise(r => setTimeout(r, 200));

@@ -6,6 +6,9 @@
           This will only show on your device and will not notify the other team(s).
         </v-alert>
         <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;" @click="$emit('findClosest', checkbox.key, checkbox.label)">
+          <template v-slot:prepend v-if="colors[checkbox.key as PlaceType]">
+            <img :src="getImagePathFor(checkbox.key as PlaceType)"></img>
+          </template>
           {{ checkbox.label }}
         </v-btn>
       </v-card-text>
@@ -23,6 +26,8 @@
 </template>
 
 <script lang="ts" setup>
+import { places, type PlaceType, colors, getImagePathFor } from '@/placeTypes';
+
 
 defineEmits<{
   (e: 'findClosest', key: string, type: string): void
@@ -31,39 +36,9 @@ defineEmits<{
 
 const model = defineModel()
 
-const checkboxes = reactive([
-  {
-    label: "Transit Station",
-    key: "station",
-  },
-  {
-    label: "Airport",
-    key: "airport",
-  },
-  {
-    label: "Museum",
-    key: "museum",
-  },
-  {
-    label: "Movie Theater",
-    key: "theater",
-  },
-  {
-    label: "Hospital",
-    key: "hospital",
-  },
-  {
-    label: "Library",
-    key: "library",
-  },
-  {
-    label: "Zoo",
-    key: "zoo",
-  },
-  {
-    label: "Aquarium",
-    key: "aquarium",
-  },
-]);
+const checkboxes = reactive<{
+  label: string,
+  key: string
+}[]>(places.map(place => ({ label: place.singularLabel, key: place.key})));
 
 </script>
