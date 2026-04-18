@@ -18,7 +18,7 @@ declare module 'vue' {
     GameCreator: typeof import('./components/game/GameCreator.vue')['default']
     GameSelector: typeof import('./components/game/GameSelector.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
-    History: typeof import('./components/History.vue')['default']
+    History: typeof import('./components/dialog/History.vue')['default']
     LayerEditor: typeof import('./components/dialog/LayerEditor.vue')['default']
     Map: typeof import('./components/Map.vue')['default']
     MapActionButton: typeof import('./components/MapActionButton.vue')['default']

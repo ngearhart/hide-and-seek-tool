@@ -602,7 +602,8 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
         newEntries.push({
             lat: e.latlng.lat,
             long: e.latlng.lng,
-            created: new Date().toUTCString()
+            created: new Date().toUTCString(),
+            creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
         });
         mostRecentlyDroppedPin.value = e.latlng;
         set(

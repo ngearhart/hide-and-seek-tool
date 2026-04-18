@@ -37,6 +37,7 @@ type PinEntry = {
     lat: number,
     long: number,
     created: string,
+    creatorName: string,
     customTitle?: string,
 }
 
