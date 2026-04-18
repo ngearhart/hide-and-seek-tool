@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts" setup>
+import { updateGame } from '@/game';
 import type { GameRecord } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { set, type DatabaseReference } from 'firebase/database';
@@ -43,14 +44,15 @@ const loading = shallowRef(false)
 const save = async() => {
   loading.value = true;
   const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
+  const oldObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
   const pinToEdit = newObj.customPins.find(pin => pin.lat === props.mostRecentPinDrop?.lat && pin.long === props.mostRecentPinDrop.lng);
   if (pinToEdit) {
     pinToEdit.customTitle = label.value;
   } else {
     console.error("Pin To Edit custom pin label is undefined for some reason");
   }
-  await set(
-    props.gamesDbRef, newObj
+  await updateGame(
+    newObj, oldObj, props.gamesDbRef, true
   );
   loading.value = false
   model.value = false

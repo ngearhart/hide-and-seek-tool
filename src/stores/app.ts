@@ -3,13 +3,16 @@ import { defineStore } from 'pinia'
 import type { CustomProperty, Region, RegionDescriptor } from '@/regions/regions';
 import type { Feature, Point } from 'geojson';
 import type { FeatureType } from '@/regions/features';
+import type { GameRecord } from '@/utils';
 
 type State = {
   mapLayers: string[]
   mapMarkers: string[],
   enableStationCircles: boolean,
   regions: RegionDescriptor[],
-  loadedRegionData: Region | null
+  loadedRegionData: Region | null,
+  gameHistory: GameRecord[], // Used for Undo operation
+  undoHistory: GameRecord[], // Used for Redo operation ("undo the undo")
 };
 
 export const useStore = defineStore('app', {
@@ -21,7 +24,9 @@ export const useStore = defineStore('app', {
     mapMarkers: [],
     enableStationCircles: false,
     regions: [],
-    loadedRegionData: null
+    loadedRegionData: null,
+    gameHistory: [],
+    undoHistory: [],
   }),
   getters: {
     getMarkers() {

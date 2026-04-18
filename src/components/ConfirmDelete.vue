@@ -32,7 +32,8 @@
 
 <script lang="ts" setup>
 
-  import type { GameRecord } from '@/utils';
+  import { updateGame } from '@/game';
+import type { GameRecord } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { set, type DatabaseReference } from 'firebase/database';
 import type { VueDatabaseDocumentData } from 'vuefire';
@@ -52,13 +53,12 @@ const confirm = async() => {
     await new Promise(r => setTimeout(r, 2000))
 
     const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
+    const oldObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
     newObj.boundaryLineEntries = [];
     newObj.customPins = [];
     newObj.polygonEntries = [];
     newObj.radarEntries = [];
-    await set(
-        props.gamesDbRef, newObj
-    );
+    await updateGame(newObj, oldObj, props.gamesDbRef);
     loading.value = false
     model.value = false
     notify({

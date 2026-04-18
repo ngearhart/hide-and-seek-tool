@@ -114,6 +114,7 @@ import '../styles/leaflet.draw.css';
 import { flipCoords, loadRegion } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
+import { updateGame } from '@/game';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -311,12 +312,10 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
-    await set(
-        gamesDbRef.value, {
+    await updateGame({
         thermometerEntries: newEntries,
         ...gamesObj.value
-    }
-    );
+    } as GameRecord, JSON.parse(JSON.stringify(gamesObj.value)), gamesDbRef.value);
 };
 
 
@@ -331,12 +330,10 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
-    await set(
-        gamesDbRef.value, {
+    await updateGame({
         radarEntries: newEntries,
         ...gamesObj.value
-    }
-    );
+    } as GameRecord, JSON.parse(JSON.stringify(gamesObj.value)), gamesDbRef.value);
 };
 
 const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
@@ -349,12 +346,10 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
-    await set(
-        gamesDbRef.value, {
+    await updateGame({
         boundaryLineEntries: newEntries,
         ...gamesObj.value
-    }
-    );
+    } as GameRecord, JSON.parse(JSON.stringify(gamesObj.value)), gamesDbRef.value);
 }
 
 const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
@@ -581,9 +576,10 @@ const finishMeasuringOtherMarker = (lat: number, long: number) => {
 
 const deleteCustomMarker = async (lat: number, long: number) => {
     const newObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
+    const oldObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
     newObj.customPins = newObj.customPins.filter(item => item.lat != lat || item.long != long);
-    await set(
-        gamesDbRef.value, newObj
+    await updateGame(
+        newObj, oldObj, gamesDbRef.value
     );
     completeRebuild()
 }
@@ -609,11 +605,14 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
         });
         mostRecentlyDroppedPin.value = e.latlng;
-        set(
-            gamesDbRef.value, {
-            customPins: newEntries,
-            ...gamesObj.value
-        });
+        updateGame(
+            {
+                customPins: newEntries,
+                ...gamesObj.value
+            } as GameRecord,
+            JSON.parse(JSON.stringify(gamesObj.value)),
+            gamesDbRef.value
+        );
         droppingPin.value = false
         notify({
             type: 'success',
@@ -668,11 +667,13 @@ onMounted(async () => {
                 creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
             });
 
-            set(
-                gamesDbRef.value, {
-                polygonEntries: newEntries,
-                ...gamesObj.value
-            }
+            updateGame(
+                {
+                    polygonEntries: newEntries,
+                    ...gamesObj.value,
+                } as GameRecord,
+                JSON.parse(JSON.stringify(gamesObj.value)),
+                gamesDbRef.value
             );
             drawingPolygon.value = false
         }
