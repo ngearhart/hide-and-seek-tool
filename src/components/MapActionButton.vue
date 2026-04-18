@@ -32,6 +32,10 @@
         Drop Pin
       </v-btn>
 
+      <v-btn key="4" color="success" prepend-icon="mdi-information-outline" @click="layerEditorIsOpen = true"  spaced="start">
+        Markers
+      </v-btn>
+
       <v-btn key="4" color="warning" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true"  spaced="start">
         Layers
       </v-btn>
