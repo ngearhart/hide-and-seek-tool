@@ -1,7 +1,9 @@
-import L from 'leaflet';
+import L, { Class } from 'leaflet';
 import { getImagePathFor, type FeatureType } from './features';
 
-const PlaceMarkerIcon = L.Icon.extend({
+type PlaceMarkerIconCls = { new(options: {iconUrl: string}): PlaceMarkerIconCls } & typeof Class;
+
+const PlaceMarkerIcon: PlaceMarkerIconCls = L.Icon.extend({
     options: {
         shadowUrl: 'marker-shadow.png',
         iconSize:     [36, 36],
