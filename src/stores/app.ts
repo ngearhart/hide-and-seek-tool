@@ -1,7 +1,8 @@
 // Utilities
 import { defineStore } from 'pinia'
-import type { CustomProperty, FeatureType, Region, RegionDescriptor } from '@/regions/regions';
+import type { CustomProperty, Region, RegionDescriptor } from '@/regions/regions';
 import type { Feature, Point } from 'geojson';
+import type { FeatureType } from '@/regions/features';
 
 type State = {
   mapLayers: string[]

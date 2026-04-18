@@ -5,7 +5,11 @@
         <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
           This will only show on your device and will not notify the other team(s).
         </v-alert>
-        <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;" @click="$emit('findClosest', checkbox.key, checkbox.label)">
+        <v-btn v-for="checkbox in checkboxes" block color="primary" style="margin-bottom: 1em;"
+          @click="$emit('findClosest', checkbox.key, checkbox.label)" spaced="start">
+          <template v-slot:prepend v-if="colors[checkbox.key as FeatureType]">
+            <img :src="getImagePathFor(checkbox.key as FeatureType)"></img>
+          </template>
           {{ checkbox.label }}
         </v-btn>
       </v-card-text>
@@ -23,6 +27,8 @@
 </template>
 
 <script lang="ts" setup>
+import { features, colors, getImagePathFor, type FeatureType } from '@/regions/features';
+
 
 defineEmits<{
   (e: 'findClosest', key: string, type: string): void
@@ -31,39 +37,11 @@ defineEmits<{
 
 const model = defineModel()
 
-const checkboxes = reactive([
-  {
-    label: "Transit Station",
-    key: "station",
-  },
-  {
-    label: "Airport",
-    key: "airport",
-  },
-  {
-    label: "Museum",
-    key: "museum",
-  },
-  {
-    label: "Movie Theater",
-    key: "theater",
-  },
-  {
-    label: "Hospital",
-    key: "hospital",
-  },
-  {
-    label: "Library",
-    key: "library",
-  },
-  {
-    label: "Zoo",
-    key: "zoo",
-  },
-  {
-    label: "Aquarium",
-    key: "aquarium",
-  },
-]);
+const checkboxes = reactive<{
+  label: string,
+  key: string
+}[]>(features
+  .filter(feature => feature.key != "custom")  // It does not make sense to find closest custom pin (maybe feature request?)
+  .map(feature => ({ label: feature.singularLabel, key: feature.key })));
 
 </script>

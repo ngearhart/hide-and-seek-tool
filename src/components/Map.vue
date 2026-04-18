@@ -68,7 +68,8 @@
         <v-card title="Distance">
             <v-card-text>
                 The pins you selected are roughly {{ measuringOtherMarkerDistanceResult.toLocaleString(undefined, {
-                maximumSignificantDigits: 3 }) }} miles apart.
+                    maximumSignificantDigits: 3
+                }) }} miles apart.
             </v-card-text>
             <v-card-actions>
                 <v-container>
@@ -90,6 +91,8 @@
     </BoundaryLine>
     <ConfirmDelete :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" v-model="shouldConfirmDeleteDialogShow">
     </ConfirmDelete>
+    <CustomPinLabelEditor v-model="showCustomPinLabelEditor" :most-recent-pin-drop="mostRecentlyDroppedPin" ,
+        :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"></CustomPinLabelEditor>
 </template>
 
 <script lang="ts" setup>
@@ -108,7 +111,9 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion, type FeatureType } from '@/regions/regions';
+import { flipCoords, loadRegion } from '@/regions/regions';
+import { getIconFor } from '@/regions/icons';
+import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -120,6 +125,8 @@ const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
+const showCustomPinLabelEditor = shallowRef(false);
+const mostRecentlyDroppedPin = ref<L.LatLng | null>(null);
 const droppingPin = shallowRef(false);
 const locating = shallowRef(false);
 const locatingPinToMeasureLatLng = ref<number[] | null>(null);
@@ -212,9 +219,9 @@ const buildMap = () => {
         });
 
         // Dynamically get markers, needed for loading custom markers.
-        let markers = getMarkers();
+        let markers = getFeatureMarkers(getPopupFor, gamesObj);
         store.$state.mapMarkers.forEach(marker => {
-            markers[marker].forEach(m => {
+            markers[marker as FeatureType].forEach(m => {
                 if (marker == "stations") {
                     L.circle(m.getLatLng(), {
                         color: 'red',
@@ -300,7 +307,8 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         long: long,
         hotter: hotter,
         angle: angle,
-        created: new Date().toUTCString()
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     await set(
@@ -319,7 +327,8 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         long: long,
         hit: hit,
         meters: meters,
-        created: new Date().toUTCString()
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
     await set(
@@ -336,7 +345,8 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         lat: lat,
         long: long,
         degrees: degrees,
-        created: new Date().toUTCString()
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     await set(
@@ -499,8 +509,10 @@ const refreshBoundaryLines = () => {
     }
 }
 
+const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer";
+
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
+const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
@@ -513,22 +525,25 @@ const getPopupFor = (latLng: L.LatLngExpression, name: string, subtitle: string 
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
-    <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-purple v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startMeasuringOtherMarker(${latLng})">
+    <div style="margin-top: 0.5em;" class="${popupButtonClasses} bg-purple" onclick="startMeasuringOtherMarker(${latLng})">
       <button>Show distance to another marker</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-success" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
       <button>Show distance from me</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-error v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-error" onclick="startPinRadar(${latLng})">
       <button>Add radar</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startBoundaryLine(${latLng})">
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-primary" onclick="startBoundaryLine(${latLng})">
       <button>Add boundary line</button>
     </div>
+    ${subtitle === 'Custom Pin' ? `
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-red-darken-2" onclick="deleteCustomMarker(${latLng})">
+      <button>Delete</button>
+    </div>
+    ` : ''}
   </div>
 `)
-
-const getMarkerFor = (latLng: L.LatLngExpression, name: string, subtitle: string) => L.marker(latLng).bindPopup(getPopupFor(latLng, name, subtitle))
 
 const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locatingPinToMeasureLatLng.value = [
@@ -564,25 +579,20 @@ const finishMeasuringOtherMarker = (lat: number, long: number) => {
     measuringOtherMarkerDistanceResultDialog.value = true
 }
 
+const deleteCustomMarker = async (lat: number, long: number) => {
+    const newObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
+    newObj.customPins = newObj.customPins.filter(item => item.lat != lat || item.long != long);
+    await set(
+        gamesDbRef.value, newObj
+    );
+    completeRebuild()
+}
+
+
 const findClosest = (key: string, type: string) => {
     locatingClosestType.value = { key: key, type: type }
     locate()
 }
-
-const getMarkers = (): { [key: string]: L.Marker<any>[] } => ({
-    stations: store.getMarkers("station").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Transit Station")),
-    airports: store.getMarkers("airport").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Airport")),
-    parks: store.getMarkers("park").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Park")),
-    museums: store.getMarkers("museum").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Museum")),
-    theaters: store.getMarkers("theater").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Theater")),
-    hospitals: store.getMarkers("hospital").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Hospital")),
-    libraries: store.getMarkers("library").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Library")),
-    zoos: store.getMarkers("zoo").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Zoo")),
-    aquariums: store.getMarkers("aquarium").map(marker => getMarkerFor(flipCoords(marker.geometry.coordinates), marker.properties.Name, "Aquarium")),
-    custom: gamesObj.value?.customPins?.map(pin =>
-        getMarkerFor([pin.lat, pin.long], "Custom Pin", "")
-    ) ?? [],
-})
 
 const draw = () => {
     new (L as any).Draw.Polygon(localMap.value!, {}).enable()
@@ -595,8 +605,10 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
         newEntries.push({
             lat: e.latlng.lat,
             long: e.latlng.lng,
-            created: new Date().toUTCString()
+            created: new Date().toUTCString(),
+            creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
         });
+        mostRecentlyDroppedPin.value = e.latlng;
         set(
             gamesDbRef.value, {
             customPins: newEntries,
@@ -608,6 +620,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             title: "Success",
             text: "Added pin"
         })
+        showCustomPinLabelEditor.value = true;
 
         // Auto enable custom pins (clearer UI)
         if (!store.$state.mapMarkers.includes("custom")) {
@@ -651,7 +664,8 @@ onMounted(async () => {
             const newEntries = gamesObj.value?.polygonEntries ?? [];
             newEntries.push({
                 points: e.layer.editing.latlngs,
-                created: new Date().toUTCString()
+                created: new Date().toUTCString(),
+                creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
             });
 
             set(
@@ -687,12 +701,15 @@ onMounted(async () => {
     (window as any)["startBoundaryLine"] = startBoundaryLine;
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
+    (window as any)["deleteCustomMarker"] = deleteCustomMarker;
 })
 
 const ensureRegionLoaded = () => {
     const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
     loadRegion(regionId).then((region) => {
         store.$state.loadedRegionData = region;
+        // If we do not recenter here, the user will be stuck on null island (0, 0) until they reload
+        localMap.value!.setView(flipCoords(store.$state.loadedRegionData!.center), 13);
     })
 }
 

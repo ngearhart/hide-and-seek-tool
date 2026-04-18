@@ -5,18 +5,12 @@
         <v-alert style="margin-bottom: 1em;" icon="$info" density="compact">
           This will only apply to your device.
         </v-alert>
-        <v-radio-group label="Background style" v-model="mapStyle" v-on:click="updateMap">
+        <v-radio-group label="Background style" v-model="mapStyle" v-on:click="updateMap" >
           <v-radio label="Dark" value="dark"></v-radio> <!-- Jawg.Matrix or Jawg.Dark -->
           <v-radio label="Light" value="light"></v-radio> <!-- Jawg.Sunny  -->
           <v-radio label="Terrain" value="terrain"></v-radio> <!-- Esri_WorldImagery  -->
         </v-radio-group>
-        <div>
-          <v-label>
-            Markers
-          </v-label>
-          <v-checkbox :label="checkbox.label" v-model="checkbox.checked" v-for="checkbox in checkboxes" density="compact" v-on:click="updateMap"
-            :messages="checkbox.note ?? ''" hide-details="auto" :disabled="checkbox.key === 'parks'"></v-checkbox>
-        </div>
+        <v-checkbox label="Railroad Overlay" v-model="enableRailroadOverlay" v-on:update:model-value="updateMap"></v-checkbox>
       </v-card-text>
       <v-card-actions>
         <v-container>
@@ -34,72 +28,12 @@
 <script lang="ts" setup>
 import { useStore } from '@/stores/app';
 
-
-
 const store = useStore();
 
 const model = defineModel()
 
 const mapStyle = shallowRef("dark");
-
-const checkboxes = reactive([
-  {
-    label: "Rail lines",
-    checked: false,
-  },
-  {
-    label: "Transit Stations",
-    checked: false,
-    key: "stations",
-  },
-  {
-    label: "Airports",
-    checked: false,
-    key: "airports",
-  },
-  {
-    label: "Museums",
-    checked: false,
-    key: "museums",
-  },
-  {
-    label: "Movie Theaters",
-    checked: false,
-    key: "theaters",
-  },
-  {
-    label: "Hospitals",
-    checked: false,
-    key: "hospitals",
-  },
-  {
-    label: "Libraries",
-    checked: false,
-    key: "libraries",
-  },
-  {
-    label: "Zoos",
-    checked: false,
-    key: "zoos",
-  },
-  {
-    label: "Aquariums",
-    checked: false,
-    note: "Note: There is only 1 aquarium in the DMV",
-    key: "aquariums",
-  },
-  {
-    label: "Parks",
-    checked: false,
-    key: "parks",
-    note: "Note: There are too many - none entered",
-  },
-  {
-    label: "Custom pins",
-    checked: false,
-    key: "custom"
-  },
-]);
+const enableRailroadOverlay = shallowRef(false);
 
 const updateMap = async() => {
   await new Promise(r => setTimeout(r, 200));
@@ -110,13 +44,11 @@ const updateMap = async() => {
     case "terrain": newLayers.push("Esri_WorldImagery"); break;
   }
 
-  if (checkboxes.find(item => item.label == "Rail lines")?.checked) {
+  if (enableRailroadOverlay.value) {
     newLayers.push("OpenRailwayMap");
   }
 
-  store.$state.mapMarkers = checkboxes.filter(checkbox => checkbox.checked && checkbox.key).map(checkbox => checkbox.key!);
   store.$state.mapLayers = newLayers;
-  // store.$state.enableStationCircles = checkboxes.find(item => item.label == "Station circles")!.checked;
 };
 
 // Refresh on every view - store could be edited elsewhere.
@@ -131,15 +63,9 @@ watch(model, () => {
     }
 
     if (store.$state.mapLayers.includes("OpenRailwayMap")) {
-      checkboxes.find(item => item.label == "Rail lines")!.checked = true;
+      enableRailroadOverlay.value = true;
     }
-
-    store.$state.mapMarkers.forEach(marker => checkboxes.find(item => item.key == marker)!.checked = true)
-    // checkboxes.find(item => item.label == "Station circles")!.checked = store.$state.enableStationCircles;
   }
 })
-
-// onMounted(() => {
-// });
 
 </script>
