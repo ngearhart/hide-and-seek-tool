@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts" setup>
+import { updateGame } from '@/game';
 import type { GameRecord } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { set, type DatabaseReference } from 'firebase/database';
@@ -82,9 +83,10 @@ const listItems = computed(() => events.value.sort((eventA, eventB) => new Date(
 const deleteSelectedEvents = async() => {
   loading.value = true
   const newObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
+  const oldObj: GameRecord = JSON.parse(JSON.stringify(props.gamesDbObj));
   selectedEvents.value.forEach(item => deleteEvent(item, newObj));
-  await set(
-    props.gamesDbRef, newObj
+  await updateGame(
+    newObj, oldObj, props.gamesDbRef
   );
   notify({
     title: "Success",

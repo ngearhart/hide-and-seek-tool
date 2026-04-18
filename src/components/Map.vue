@@ -114,6 +114,7 @@ import '../styles/leaflet.draw.css';
 import { flipCoords, loadRegion } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
+import { updateGame } from '@/game';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -301,6 +302,7 @@ const locate = () => {
 
 
 const addThermometer = async (lat: number, long: number, angle: number, hotter: boolean) => {
+    const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value))
     const newEntries = gamesObj.value?.thermometerEntries ?? [];
     newEntries.push({
         lat: lat,
@@ -311,16 +313,12 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
-    await set(
-        gamesDbRef.value, {
-        thermometerEntries: newEntries,
-        ...gamesObj.value
-    }
-    );
+    await updateGame(gamesObj.value!, oldGameObj, gamesDbRef.value);
 };
 
 
 const addRadar = async (hit: boolean, lat: number, long: number, meters: number) => {
+    const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
     const newEntries = gamesObj.value?.radarEntries ?? [];
     newEntries.push({
         lat: lat,
@@ -331,15 +329,11 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
-    await set(
-        gamesDbRef.value, {
-        radarEntries: newEntries,
-        ...gamesObj.value
-    }
-    );
+    await updateGame(gamesObj.value!, oldGameObj, gamesDbRef.value);
 };
 
 const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
+    const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
     const newEntries = gamesObj.value?.boundaryLineEntries ?? [];
     newEntries.push({
         lat: lat,
@@ -349,12 +343,7 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
-    await set(
-        gamesDbRef.value, {
-        boundaryLineEntries: newEntries,
-        ...gamesObj.value
-    }
-    );
+    await updateGame(gamesObj.value!, oldGameObj, gamesDbRef.value);
 }
 
 const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
@@ -581,9 +570,10 @@ const finishMeasuringOtherMarker = (lat: number, long: number) => {
 
 const deleteCustomMarker = async (lat: number, long: number) => {
     const newObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
+    const oldObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
     newObj.customPins = newObj.customPins.filter(item => item.lat != lat || item.long != long);
-    await set(
-        gamesDbRef.value, newObj
+    await updateGame(
+        newObj, oldObj, gamesDbRef.value
     );
     completeRebuild()
 }
@@ -601,6 +591,7 @@ const draw = () => {
 
 const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
     if (droppingPin.value) {
+        const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
         const newEntries = gamesObj.value?.customPins ?? [];
         newEntries.push({
             lat: e.latlng.lat,
@@ -609,11 +600,11 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
         });
         mostRecentlyDroppedPin.value = e.latlng;
-        set(
-            gamesDbRef.value, {
-            customPins: newEntries,
-            ...gamesObj.value
-        });
+        updateGame(
+            gamesObj.value!,
+            oldGameObj,
+            gamesDbRef.value
+        );
         droppingPin.value = false
         notify({
             type: 'success',
@@ -661,6 +652,7 @@ onMounted(async () => {
 
         console.log(e);
         if (e.type == "draw:created" && (e as any).layerType == "polygon") {
+            const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
             const newEntries = gamesObj.value?.polygonEntries ?? [];
             newEntries.push({
                 points: e.layer.editing.latlngs,
@@ -668,11 +660,10 @@ onMounted(async () => {
                 creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
             });
 
-            set(
-                gamesDbRef.value, {
-                polygonEntries: newEntries,
-                ...gamesObj.value
-            }
+            updateGame(
+                gamesObj.value!,
+                oldGameObj,
+                gamesDbRef.value
             );
             drawingPolygon.value = false
         }
