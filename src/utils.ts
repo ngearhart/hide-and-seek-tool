@@ -11,6 +11,7 @@ type RadarEntry = {
     meters: number,
     hit: boolean,
     created: string,
+    creatorName: string,
 };
 
 type BoundaryLineEntry = {
@@ -18,6 +19,7 @@ type BoundaryLineEntry = {
     long: number,
     degrees: number,
     created: string,
+    creatorName: string,
 };
 
 type ThermometerEntry = {
@@ -26,11 +28,13 @@ type ThermometerEntry = {
     angle: number,
     hotter: boolean,
     created: string,
+    creatorName: string,
 };
 
 type PolygonDrawingEntry = {
     points: LatLng[],
     created: string,
+    creatorName: string,
 }
 
 type PinEntry = {

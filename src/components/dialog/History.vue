@@ -58,16 +58,16 @@ const headers: { title: string, key: string, align?: 'start' | 'end' }[] = [
 const events = computed(() => {
   const result: HistoryEvent[] = [];
   if (props.gamesDbObj && props.gamesDbObj.radarEntries?.length > 0) {
-    result.push(...props.gamesDbObj.radarEntries.map(radarObj => ({ type: "radar", created: radarObj.created, text: `Radar ${radarObj.hit ? 'Hit' : 'Miss'}`, creator: '' })));
+    result.push(...props.gamesDbObj.radarEntries.map(radarObj => ({ type: "radar", created: radarObj.created, text: `Radar ${radarObj.hit ? 'Hit' : 'Miss'}`, creator: radarObj.creatorName })));
   }
   if (props.gamesDbObj && props.gamesDbObj.polygonEntries?.length > 0) {
-    result.push(...props.gamesDbObj.polygonEntries.map(polygon => ({ type: "polygon", created: polygon.created, text: "Polygon", creator: '' })));
+    result.push(...props.gamesDbObj.polygonEntries.map(polygon => ({ type: "polygon", created: polygon.created, text: "Polygon", creator: polygon.creatorName })));
   }
   if (props.gamesDbObj && props.gamesDbObj.customPins?.length > 0) {
     result.push(...props.gamesDbObj.customPins.map(customPin => ({ type: "customPin", created: customPin.created, text: customPin.customTitle ? `Custom Pin - ${customPin.customTitle}` : "Custom Pin", creator: customPin.creatorName })))
   }
   if (props.gamesDbObj && props.gamesDbObj.boundaryLineEntries?.length > 0) {
-    result.push(...props.gamesDbObj.boundaryLineEntries.map(boundaryLine => ({ type: "boundaryLine", created: boundaryLine.created, text: "Boundary Line", creator: '' })))
+    result.push(...props.gamesDbObj.boundaryLineEntries.map(boundaryLine => ({ type: "boundaryLine", created: boundaryLine.created, text: "Boundary Line", creator: boundaryLine.creatorName })))
   }
   return result;
 });

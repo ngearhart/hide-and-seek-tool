@@ -312,7 +312,8 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         long: long,
         hotter: hotter,
         angle: angle,
-        created: new Date().toUTCString()
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     await set(
@@ -331,7 +332,8 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         long: long,
         hit: hit,
         meters: meters,
-        created: new Date().toUTCString()
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
     await set(
@@ -348,7 +350,8 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         lat: lat,
         long: long,
         degrees: degrees,
-        created: new Date().toUTCString()
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     await set(
@@ -666,7 +669,8 @@ onMounted(async () => {
             const newEntries = gamesObj.value?.polygonEntries ?? [];
             newEntries.push({
                 points: e.layer.editing.latlngs,
-                created: new Date().toUTCString()
+                created: new Date().toUTCString(),
+                creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
             });
 
             set(
