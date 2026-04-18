@@ -40,6 +40,8 @@ const model = defineModel()
 const checkboxes = reactive<{
   label: string,
   key: string
-}[]>(features.map(feature => ({ label: feature.singularLabel, key: feature.key })));
+}[]>(features
+  .filter(feature => feature.key != "custom")  // It does not make sense to find closest custom pin (maybe feature request?)
+  .map(feature => ({ label: feature.singularLabel, key: feature.key })));
 
 </script>
