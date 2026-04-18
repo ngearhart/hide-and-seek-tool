@@ -32,7 +32,7 @@
         Drop Pin
       </v-btn>
 
-      <v-btn key="4" color="success" prepend-icon="mdi-information-outline" @click="layerEditorIsOpen = true"  spaced="start">
+      <v-btn key="4" color="success" prepend-icon="mdi-information-outline" @click="markerEditorIsOpen = true"  spaced="start">
         Markers
       </v-btn>
 
@@ -44,6 +44,7 @@
         Reset
       </v-btn>
     </v-speed-dial>
+    <marker-editor v-model="markerEditorIsOpen" />
     <layer-editor v-model="layerEditorIsOpen" />
     <find-closest v-model="findClosestIsOpen"
       @find-closest="(key: string, type: string) => { findClosestIsOpen = false; $emit('findClosest', key, type) }" />
@@ -78,6 +79,7 @@ defineEmits<{
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)
+const markerEditorIsOpen = shallowRef(false)
 const radarIsOpen = shallowRef(false)
 const historyIsOpen = shallowRef(false)
 const thermometerIsOpen = shallowRef(false)
