@@ -501,6 +501,8 @@ const refreshBoundaryLines = () => {
     }
 }
 
+const popupButtonClasses =  "v-btn v-btn--block v-btn--elevated v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer";
+
 // I know this is gross but this is the leaflet canonical way.
 const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
@@ -515,18 +517,23 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
-    <div style="margin-top: 0.5em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-purple v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startMeasuringOtherMarker(${latLng})">
+    <div style="margin-top: 0.5em;" class="${popupButtonClasses} bg-purple" onclick="startMeasuringOtherMarker(${latLng})">
       <button>Show distance to another marker</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-success v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-success" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
       <button>Show distance from me</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-error v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startPinRadar(${latLng})">
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-error" onclick="startPinRadar(${latLng})">
       <button>Add radar</button>
     </div>
-    <div style="margin-top: 1em;" class="v-btn v-btn--block v-btn--elevated v-theme--dark bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated" onclick="startBoundaryLine(${latLng})">
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-primary" onclick="startBoundaryLine(${latLng})">
       <button>Add boundary line</button>
     </div>
+    ${name === 'Custom Pin' ? `
+    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-red-darken-2" onclick="deleteCustomMarker(${latLng})">
+      <button>Delete</button>
+    </div>
+    ` : ''}
   </div>
 `)
 
@@ -563,6 +570,16 @@ const finishMeasuringOtherMarker = (lat: number, long: number) => {
     cancelMeasuringOtherMarker()
     measuringOtherMarkerDistanceResultDialog.value = true
 }
+
+const deleteCustomMarker = async(lat: number, long: number) => {
+    const newObj: GameRecord = JSON.parse(JSON.stringify(gamesObj.value));
+    newObj.customPins = newObj.customPins.filter(item => item.lat != lat || item.long != long);
+    await set(
+        gamesDbRef.value, newObj
+    );
+    completeRebuild()
+}
+
 
 const findClosest = (key: string, type: string) => {
     locatingClosestType.value = { key: key, type: type }
@@ -672,6 +689,7 @@ onMounted(async () => {
     (window as any)["startBoundaryLine"] = startBoundaryLine;
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
+    (window as any)["deleteCustomMarker"] = deleteCustomMarker;
 })
 
 const ensureRegionLoaded = () => {
