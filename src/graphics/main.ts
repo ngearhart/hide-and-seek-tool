@@ -2,6 +2,12 @@ import L from 'leaflet';
 import 'leaflet-pixi-overlay';
 import * as PIXI from 'pixi.js';
 
+export abstract class DrawableElement {
+    abstract setup(container: PIXI.Container): undefined;
+    abstract create(utils: PixiUtils): undefined;
+    abstract draw(): undefined;
+}
+
 type PixiUtils = {
     latLngToLayerPoint: (latLng: L.LatLng, zoom?: number) => L.Point,
     layerPointToLatLng: (point: L.Point, zoom?: number) => L.LatLng,
