@@ -115,6 +115,7 @@ import { flipCoords, loadRegion } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
+import addPixiOverlay from '@/pixi/main';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -171,6 +172,7 @@ const completeRebuild = () => {
         refreshThermometer()
         refreshPolygons()
         refreshBoundaryLines()
+        addPixiOverlay(localMap.value!)
     } else {
         ensureRegionLoaded()
     }
@@ -634,6 +636,10 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
+    if (store.$state.loadedRegionData && store.$state.loadedRegionData?.name != gamesObj.value?.region) {
+        // There is an odd case where the wrong region is loaded
+        ensureRegionLoaded();
+    }
     localMap.value = L.map('map').setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);

@@ -27,6 +27,10 @@ Feature Properties:
 - Quick undo
 - Better team configuration (each team wouldn't see each other's maps/configurable)
 
+## PIXI.js
+
+Note: The Leaflet plugin only supports up to Pixi.js major version 7.
+
 ## Developing
 H&SL was developed using Vuetify. See below for more info. Vuetify is available under the [MIT License](http://opensource.org/licenses/MIT), Copyright (c) 2016-present Vuetify, LLC.
 
