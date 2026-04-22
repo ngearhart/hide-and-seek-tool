@@ -115,7 +115,7 @@ import { flipCoords, loadRegion } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
-import addPixiOverlay from '@/pixi/main';
+import addPixiOverlay from '@/graphics/main';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -168,11 +168,11 @@ watch(gamesObj, () => {
 const completeRebuild = () => {
     if (store.$state.loadedRegionData?.center) {
         buildMap()
-        refreshRadar()
-        refreshThermometer()
-        refreshPolygons()
-        refreshBoundaryLines()
-        addPixiOverlay(localMap.value!)
+        // refreshRadar()
+        // refreshThermometer()
+        // refreshPolygons()
+        // refreshBoundaryLines()
+        addPixiOverlay(localMap.value!, gamesObj.value!)
     } else {
         ensureRegionLoaded()
     }
@@ -359,6 +359,7 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
 }
 
 const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
+    return
     if (hit) {
         console.log("Adding radar hit");
         const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
