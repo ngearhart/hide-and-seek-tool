@@ -23,8 +23,8 @@ export default class Radar extends DrawableElement {
     private point?: L.Point;
     private radius?: number;
 
-    constructiveGraphics: Graphics;
-    destructiveGraphics: Graphics;
+    private constructiveGraphics: Graphics;
+    private destructiveGraphics: Graphics;
 
     constructor(origin: L.LatLng, sizeMeters: number, isHit: boolean) {
         super();

@@ -168,8 +168,6 @@ watch(gamesObj, () => {
 const completeRebuild = () => {
     if (store.$state.loadedRegionData?.center) {
         buildMap()
-        // refreshRadar()
-        // refreshThermometer()
         // refreshPolygons()
         // refreshBoundaryLines()
         addPixiOverlay(localMap.value!, gamesObj.value!)
@@ -358,155 +356,10 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
     } as GameRecord, oldGameObj, gamesDbRef.value);
 }
 
-const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
-    return
-    if (hit) {
-        console.log("Adding radar hit");
-        const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-        svgElement.setAttribute('viewBox', "0 0 100 100");
-        svgElement.innerHTML = `<mask id="circle-mask"><rect width="100" height="100" fill="white"/><circle cx="50" cy="50" r="10" fill="black"/></mask><rect width="100" height="100" fill="black" opacity="${OVERLAY_OPACITY}" mask="url(#circle-mask)"/>`;
-        // 0.093 SVG units per mile
-        // 1609.344 meters per mile
-        const offset = 0.095 * meters / 1609.344;
-        console.log(offset);
-        const svgElementBounds: LatLngBoundsExpression = [
-            [lat - offset, long - offset],
-            [lat + offset, long + offset]
-        ];
-        L.svgOverlay(svgElement, svgElementBounds).addTo(localMap.value!);
-
-        // also add extra squares
-        // west
-        L.polygon([
-            [lat - 1, long - offset],
-            [lat + 1, long - offset],
-            [lat + 1, long - offset - 1],
-            [lat - 1, long - offset - 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-        // east
-        L.polygon([
-            [lat - 1, long + offset],
-            [lat + 1, long + offset],
-            [lat + 1, long + offset + 1],
-            [lat - 1, long + offset + 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-        // north
-        L.polygon([
-            [lat + offset / 1.28, long - offset],
-            [lat + offset / 1.28, long + offset],
-            [lat + offset + 1, long + offset],
-            [lat + offset + 1, long - offset],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', stroke: false }).addTo(localMap.value!);
-        // south
-        L.polygon([
-            [lat - offset / 1.28, long - offset],
-            [lat - offset / 1.28, long + offset],
-            [lat - offset - 1, long + offset],
-            [lat - offset - 1, long - offset],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-    } else {
-        console.log("Adding radar miss");
-        L.circle([lat, long], {
-            stroke: false,
-            fillColor: 'black',
-            fillOpacity: OVERLAY_OPACITY,
-            radius: meters,
-        }).addTo(localMap.value!);
-    }
-};
-
-const displayThermometer = (lat: number, long: number, angle: number, hotter: boolean) => {
-    // // If angle = 0 and hotter
-    // const a = 0;
-    // L.polygon([
-    //     [lat - 1 * Math.sin(a), long],
-    //     [lat + 1 * Math.sin(a), long],
-    //     [lat + 1 * Math.sin(a), long + 1 * Math.cos(a)],
-    //     [lat - 1 * Math.sin(a), long + 1 * Math.cos(a)],
-    // ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-};
-
-const refreshRadar = () => {
-    if (gamesObj.value?.radarEntries && gamesObj.value!.radarEntries.length > 0) {
-        gamesObj.value!.radarEntries.forEach(radarEntry => {
-            displayRadar(radarEntry.hit, radarEntry.lat, radarEntry.long, radarEntry.meters);
-        });
-    }
-}
-
-const refreshThermometer = () => {
-    if (gamesObj.value?.thermometerEntries && gamesObj.value!.thermometerEntries.length > 0) {
-        gamesObj.value!.thermometerEntries.forEach(themometerEntry => {
-            displayThermometer(themometerEntry.lat, themometerEntry.long, themometerEntry.angle, themometerEntry.hotter);
-        });
-    }
-}
-
 const refreshPolygons = () => {
     if (gamesObj.value?.polygonEntries && gamesObj.value!.polygonEntries.length > 0) {
         gamesObj.value!.polygonEntries.forEach(polygonEntry => {
             L.polygon(polygonEntry.points).addTo(localMap.value!);
-        });
-    }
-}
-
-const refreshBoundaryLines = () => {
-    if (gamesObj.value?.boundaryLineEntries && gamesObj.value!.boundaryLineEntries.length > 0) {
-        // So sorry for this garbage implementation
-        gamesObj.value!.boundaryLineEntries.forEach(boundaryLine => {
-            if ((boundaryLine.degrees - 45) % 90 === 0) {
-                const a = boundaryLine.degrees;
-                let delta = 0.2;
-                let x = boundaryLine.lat;
-                let y = boundaryLine.long;
-                let midPoint = [x, y];
-                let offsetPointEast = [x, y + delta];
-                let offsetPointNorth = [x + delta, y];
-                let offsetPointWest = [x, y - delta];
-                let offsetPointSouth = [x - delta, y];
-                L.polygon([
-                    // // [boundaryLine.lat, boundaryLine.long],
-                    // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long],
-                    // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long + 1 * Math.cos(a)],
-                    // // [boundaryLine.lat, boundaryLine.long + 1 * Math.cos(a)],
-
-                    // // [x, y],
-                    // // [x + Math.cos(a) + Math.sin(a), y],
-                    // // [x + Math.cos(a) + Math.sin(a), y + Math.cos(a) - Math.sin(a)],
-                    // // [x, y + Math.cos(a) - Math.sin(a)],
-                    // [x, y],
-                    rotatePoint(offsetPointEast, midPoint, a),
-                    rotatePoint(offsetPointNorth, midPoint, a),
-                    // rotatePoint(offsetPointWest, midPoint, a),
-                    rotatePoint(offsetPointSouth, midPoint, a),
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 0) {
-                L.rectangle([
-                    [boundaryLine.lat - 1, boundaryLine.long],
-                    [boundaryLine.lat + 1, boundaryLine.long + 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 90) {
-                L.rectangle([
-                    [boundaryLine.lat, boundaryLine.long - 1],
-                    [boundaryLine.lat + 1, boundaryLine.long + 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 180) {
-                L.rectangle([
-                    [boundaryLine.lat - 1, boundaryLine.long],
-                    [boundaryLine.lat + 1, boundaryLine.long - 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 270) {
-                L.rectangle([
-                    [boundaryLine.lat, boundaryLine.long + 1],
-                    [boundaryLine.lat - 1, boundaryLine.long - 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            }
         });
     }
 }

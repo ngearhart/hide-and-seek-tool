@@ -4,6 +4,7 @@ import 'leaflet-pixi-overlay';
 import * as PIXI from 'pixi.js';
 import Radar from './radar';
 import type { DrawableElement, PixiUtils } from './base';
+import Boundary from './boundary';
 
 const pixiOverlay = ((elements: DrawableElement[]) => {
     const rootContainer = new PIXI.Container();
@@ -37,5 +38,6 @@ const pixiOverlay = ((elements: DrawableElement[]) => {
 export default function addPixiOverlay(map: L.Map, game: GameRecord) {
     pixiOverlay([
         ...Radar.fromGame(game),
+        ...Boundary.fromGame(game),
     ]).addTo(map);
 }

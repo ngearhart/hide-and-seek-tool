@@ -7,7 +7,7 @@ export abstract class DrawableElement {
 }
 
 export type PixiUtils = {
-    latLngToLayerPoint: (latLng: L.LatLng, zoom?: number) => L.Point,
+    latLngToLayerPoint: (latLng: L.LatLng | L.LatLngTuple, zoom?: number) => L.Point,
     layerPointToLatLng: (point: L.Point, zoom?: number) => L.LatLng,
     getScale: (zoom?: number) => number,
     getRenderer: () => Renderer,
