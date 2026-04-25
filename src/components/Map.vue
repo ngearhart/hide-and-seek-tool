@@ -180,12 +180,7 @@ const buildMap = () => {
     if (localMap) {
         console.info("Rebuilding map with layers " + store.$state.mapLayers)
         const localMapVal = localMap.value!;
-        localMapVal.eachLayer(layer => {
-            if (layer.destroy) {
-                layer.destroy();
-            }
-            layer.remove();
-        });
+        localMapVal.eachLayer(layer => layer.remove());
         store.$state.mapLayers.forEach(layer => {
             if (layer == "CartoDB_DarkMatter") {
                 var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -369,7 +364,7 @@ const refreshPolygons = () => {
     }
 }
 
-const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer";
+const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-btn--spaced v-btn--spaced-start v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer dialog-button";
 
 // I know this is gross but this is the leaflet canonical way.
 const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
@@ -381,25 +376,58 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     </div>
   </div>
 ` : `
-  <div class="popup-container">
+  <div class="popup-container popup-${subtitle.toLowerCase().replace(' ', '')}">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
-    <div style="margin-top: 0.5em;" class="${popupButtonClasses} bg-purple" onclick="startMeasuringOtherMarker(${latLng})">
-      <button>Show distance to another marker</button>
+    <div style="margin-top: 0.5em;" class="${popupButtonClasses}" onclick="startMeasuringOtherMarker(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-pin mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Measure distance to a pin</button>
+        </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-success" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
-      <button>Show distance from me</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+        <span class="v-btn__prepend">
+            <i class="mdi-near-me mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Measure distance to me</button>
+        </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-error" onclick="startPinRadar(${latLng})">
-      <button>Add radar</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startPinRadar(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-radar mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Place radar</button>
+        </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-primary" onclick="startBoundaryLine(${latLng})">
-      <button>Add boundary line</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startBoundaryLine(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-line-scan mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Place boundary line</button>
+        </span>
+    </div>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="">
+        <span class="v-btn__prepend">
+            <i class="mdi-chart-pie-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Add cell</button>
+        </span>
     </div>
     ${subtitle === 'Custom Pin' ? `
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-red-darken-2" onclick="deleteCustomMarker(${latLng})">
-      <button>Delete</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="deleteCustomMarker(${latLng})">
+            <span class="v-btn__prepend">
+            <i class="mdi-view-dashboard-edit-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Delete</button>
+        </span>
     </div>
     ` : ''}
   </div>

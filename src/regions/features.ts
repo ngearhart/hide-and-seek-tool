@@ -32,7 +32,7 @@ export const features: Feature[] = [
   },
   {
     pluralLabel: "Movie Theaters",
-    singularLabel: "Movie Thearer",
+    singularLabel: "Movie Theater",
     key: "theater",
   },
   {
