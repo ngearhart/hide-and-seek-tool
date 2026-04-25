@@ -26,6 +26,8 @@ export default class Radar extends DrawableElement {
     private constructiveGraphics: Graphics;
     private destructiveGraphics: Graphics;
 
+    private container: Container;
+
     constructor(origin: L.LatLng, sizeMeters: number, isHit: boolean) {
         super();
         this.origin = origin;
@@ -33,13 +35,16 @@ export default class Radar extends DrawableElement {
         this.isHit = isHit;
         this.constructiveGraphics = new Graphics();
         this.destructiveGraphics = new Graphics();
-        this.destructiveGraphics.blendMode = BLEND_MODES.DST_OUT;
+        this.destructiveGraphics.blendMode = BLEND_MODES.XOR;
+        // this.destructiveGraphics.blendMode = BLEND_MODES.SRC_OUT;
+        this.container = new Container();
     }
 
     setupContainer(container: Container): undefined {
-        container.addChild(this.constructiveGraphics);
+        container.addChild(this.container);
+        this.container.addChild(this.constructiveGraphics);
         if (this.isHit) {
-            container.addChild(this.destructiveGraphics);
+            this.container.addChild(this.destructiveGraphics);
         }
     }
 
@@ -51,6 +56,7 @@ export default class Radar extends DrawableElement {
 
     // 6.178
     draw(utils: PixiUtils): undefined {
+        console.log("--- radar: " + this.radius + " " + this.isHit)
         if (!this.isHit) {
             this.constructiveGraphics.clear();
             this.constructiveGraphics.beginFill(RADAR_COLOR, 1);
@@ -61,9 +67,12 @@ export default class Radar extends DrawableElement {
             this.constructiveGraphics.clear();
             this.constructiveGraphics.beginFill(RADAR_COLOR, 1);
             this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, HIT_RADIUS);
-            this.constructiveGraphics.endFill();
+            // this.constructiveGraphics.endFill();
+            // this.constructiveGraphics.beginFill(RADAR_COLOR, 0);
+            // this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
+            // this.constructiveGraphics.endFill();
             this.destructiveGraphics.clear();
-            this.destructiveGraphics.beginFill(RADAR_COLOR, 1);
+            this.destructiveGraphics.beginFill(0xFFFFFF, 1);
             this.destructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
             this.destructiveGraphics.endFill();
         }

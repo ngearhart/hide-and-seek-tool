@@ -180,7 +180,12 @@ const buildMap = () => {
     if (localMap) {
         console.info("Rebuilding map with layers " + store.$state.mapLayers)
         const localMapVal = localMap.value!;
-        localMapVal.eachLayer(layer => layer.remove());
+        localMapVal.eachLayer(layer => {
+            if (layer.destroy) {
+                layer.destroy();
+            }
+            layer.remove();
+        });
         store.$state.mapLayers.forEach(layer => {
             if (layer == "CartoDB_DarkMatter") {
                 var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
