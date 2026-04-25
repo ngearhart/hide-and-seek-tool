@@ -1,7 +1,6 @@
 import type { GameRecord } from '@/utils';
-import L from 'leaflet';
+import L, { Layer } from 'leaflet';
 import 'leaflet-pixi-overlay';
-import * as PIXI from 'pixi.js';
 import Radar from './radar';
 import type { DrawableElement, PixiUtils } from './base';
 import Boundary from './boundary';
@@ -9,47 +8,54 @@ import { Voronoi } from 'd3';
 import VoronoiShape from './voronoi';
 import { useStore } from '@/stores/app';
 import { generateVolonoi } from '@/regions/regions';
+import { Container } from 'pixi.js';
 
-const pixiOverlay = ((elements: DrawableElement[]) => {
-    const rootContainer = new PIXI.Container();
-    rootContainer.filters = [ new PIXI.AlphaFilter(0.5) ];
+class _PixiOverlay {
+    private rootContainer: Container;
 
-    let firstDraw = true;
-    let prevZoom: any;
+    private overlay: Layer;
+    private elements: DrawableElement[];
 
-    elements.forEach(element => element.setupContainer(rootContainer));
+    private firstDraw: boolean;
+    private prevZoom: number;
 
-    return L.pixiOverlay((utils: PixiUtils) => {
+    constructor() {
+        this.rootContainer = new Container();
+        // rootContainer.filters = [ new PIXI.AlphaFilter(0.5) ];
+
+        this.elements = [];
+        this.overlay = L.pixiOverlay((utils: PixiUtils) => this.setup(utils), this.rootContainer);
+        this.firstDraw = true;
+        this.prevZoom = -1;
+    }
+
+    private setup(utils: PixiUtils) {
         const zoom = utils.getMap().getZoom();
         const container = utils.getContainer();
         const renderer = utils.getRenderer();
-        if (firstDraw) {
-            elements.forEach(element => element.createWithMap(utils));
+        if (this.firstDraw) {
+            this.elements.forEach(element => element.createWithMap(utils));
         }
 
-        // if (firstDraw || prevZoom !== zoom) {
-        //     window.__PIXI_DEVTOOLS__ = {
-        //         stage: container,
-        //         renderer: renderer
-        //     }
-        // }
-        
-        elements.forEach(element => element.draw(utils));
-        firstDraw = false;
-        prevZoom = zoom;
+        this.elements.forEach(element => element.draw(utils));
+        this.firstDraw = false;
+        this.prevZoom = zoom;
         renderer.render(container);
-    }, rootContainer, {
-        preserveDrawingBuffer: true
-    });
-});
+    }
 
+    getLayer(): Layer {
+        return this.overlay;
+    }
 
-export default function addPixiOverlay(map: L.Map, game: GameRecord) {
-    const store = useStore();
-    // const voro = generateVolonoi(store.$state.loadedRegionData!);
-    pixiOverlay([
-        ...Radar.fromGame(game),
-        ...Boundary.fromGame(game),
-        new VoronoiShape(null, 0, store.$state.loadedRegionData)
-    ]).addTo(map);
+    update(game: GameRecord) {
+        this.rootContainer.removeChildren();
+        this.elements = [
+            ...Radar.fromGame(game),
+            ...Boundary.fromGame(game),
+        ];
+        this.elements.forEach(element => element.setupContainer(this.rootContainer));
+        this.firstDraw = true;
+    }
 }
+
+export const PixiOverlay = new _PixiOverlay();

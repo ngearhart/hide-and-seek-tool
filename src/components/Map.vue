@@ -115,7 +115,7 @@ import { flipCoords, loadRegion } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
-import addPixiOverlay from '@/graphics/main';
+import addPixiOverlay, { PixiOverlay } from '@/graphics/main';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
 
@@ -158,7 +158,33 @@ const measuringOtherMarkerDistanceResult = shallowRef(0)
 
 
 watch(storeToRefs(store).mapLayers, () => updateTileLayers(store.$state.mapLayers, localMap.value!))
+watch(storeToRefs(store).mapMarkers, () => updateMarkers())
+watch(gamesObj, () => updateGameObjects())
 
+let previousMarkers: L.Marker<any>[] = [];
+
+const updateMarkers = () => {
+    previousMarkers.forEach(m => m.remove());
+    let markers = getFeatureMarkers(getPopupFor, gamesObj);
+    previousMarkers = Object.values(markers).flat();
+    store.$state.mapMarkers.forEach(marker => {
+        markers[marker as FeatureType].forEach(m => {
+            if (marker == "stations") {
+                L.circle(m.getLatLng(), {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.2,
+                    radius: 402.336, // quarter mile in meters
+                }).addTo(localMap.value!);
+            }
+            m.addTo(localMap.value!);
+        });
+    });
+}
+
+const updateGameObjects = () => {
+    PixiOverlay.update(gamesObj.value!);
+}
 
 const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {
     if (pinRadarLatLng.value != null) {
@@ -477,6 +503,9 @@ onMounted(async () => {
     });
 
     updateTileLayers(store.$state.mapLayers, localMap.value!);
+    localMap.value!.addLayer(PixiOverlay.getLayer());
+    updateGameObjects();
+    updateMarkers();
 
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
