@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { MapTileLayerType } from '@/graphics/mapTiles';
 import { useStore } from '@/stores/app';
 
 const store = useStore();
@@ -37,10 +38,10 @@ const enableRailroadOverlay = shallowRef(false);
 
 const updateMap = async() => {
   await new Promise(r => setTimeout(r, 200));
-  const newLayers = [];
+  const newLayers: MapTileLayerType[] = [];
   switch (mapStyle.value) {
-    case "dark": newLayers.push("Jawg.Matrix"); break;
-    case "light": newLayers.push("Jawg.Sunny"); break;
+    case "dark": newLayers.push("Jawg_Matrix"); break;
+    case "light": newLayers.push("Jawg_Sunny"); break;
     case "terrain": newLayers.push("Esri_WorldImagery"); break;
   }
 
@@ -54,9 +55,9 @@ const updateMap = async() => {
 // Refresh on every view - store could be edited elsewhere.
 watch(model, () => {
   if (model.value) {
-    if (store.$state.mapLayers.includes("Jawg.Matrix")) {
+    if (store.$state.mapLayers.includes("Jawg_Matrix")) {
       mapStyle.value = "dark";
-    } else if (store.$state.mapLayers.includes("Jawg.Sunny")) {
+    } else if (store.$state.mapLayers.includes("Jawg_Sunny")) {
       mapStyle.value = "light";
     } else if (store.$state.mapLayers.includes("Esri_WorldImagery")) {
       mapStyle.value = "terrain";

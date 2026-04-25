@@ -116,6 +116,8 @@ import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
 import addPixiOverlay from '@/graphics/main';
+import { updateTileLayers } from '@/graphics/mapTiles';
+import { storeToRefs } from 'pinia';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -154,90 +156,9 @@ const measuringOtherMarkerState = ref<number[] | null>()
 const measuringOtherMarkerDistanceResultDialog = shallowRef(false)
 const measuringOtherMarkerDistanceResult = shallowRef(0)
 
-const OVERLAY_OPACITY = 0.6;
 
+watch(storeToRefs(store).mapLayers, () => updateTileLayers(store.$state.mapLayers, localMap.value!))
 
-store.$subscribe(() => {
-    completeRebuild()
-});
-
-watch(gamesObj, () => {
-    completeRebuild()
-});
-
-const completeRebuild = () => {
-    if (store.$state.loadedRegionData?.center) {
-        buildMap()
-        // refreshPolygons()
-        // refreshBoundaryLines()
-        addPixiOverlay(localMap.value!, gamesObj.value!)
-    } else {
-        ensureRegionLoaded()
-    }
-}
-
-const buildMap = () => {
-    if (localMap) {
-        console.info("Rebuilding map with layers " + store.$state.mapLayers)
-        const localMapVal = localMap.value!;
-        localMapVal.eachLayer(layer => layer.remove());
-        store.$state.mapLayers.forEach(layer => {
-            if (layer == "CartoDB_DarkMatter") {
-                var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 20
-                });
-                CartoDB_DarkMatter.addTo(localMapVal);
-            } else if (layer == "OpenRailwayMap") {
-                var OpenRailwayMap = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://www.OpenRailwayMap.org">OpenRailwayMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-                });
-                OpenRailwayMap.addTo(localMapVal);
-            } else if (layer == "Esri_WorldImagery") {
-                var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-                });
-                Esri_WorldImagery.addTo(localMapVal);
-            } else if (layer == "Jawg.Matrix") {
-                var Jawg_Matrix = L.tileLayer('https://tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
-                    attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    minZoom: 0,
-                    maxZoom: 22,
-                    accessToken: '2mOYvuNmhK7nVC5H0StYF6OmHWF3cfdnzxDcuNNh4iq3K8IoslHbtI5PmSsbgLPV'
-                } as any);
-                Jawg_Matrix.addTo(localMapVal);
-            } else if (layer == "Jawg.Sunny") {
-                var Jawg_Sunny = L.tileLayer('https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
-                    attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    minZoom: 0,
-                    maxZoom: 22,
-                    accessToken: '2mOYvuNmhK7nVC5H0StYF6OmHWF3cfdnzxDcuNNh4iq3K8IoslHbtI5PmSsbgLPV'
-                } as any);
-                Jawg_Sunny.addTo(localMapVal);
-            }
-        });
-
-        // Dynamically get markers, needed for loading custom markers.
-        let markers = getFeatureMarkers(getPopupFor, gamesObj);
-        store.$state.mapMarkers.forEach(marker => {
-            markers[marker as FeatureType].forEach(m => {
-                if (marker == "stations") {
-                    L.circle(m.getLatLng(), {
-                        color: 'red',
-                        fillColor: '#f03',
-                        fillOpacity: 0.2,
-                        radius: 402.336, // quarter mile in meters
-                    }).addTo(localMapVal);
-                }
-                m.addTo(localMapVal)
-            });
-        });
-
-        localMapVal.addLayer(drawnItems as any);
-    }
-}
 
 const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {
     if (pinRadarLatLng.value != null) {
@@ -453,12 +374,12 @@ const startBoundaryLine = (lat: number, long: number) => {
 
 const startMeasuringOtherMarker = (lat: number, long: number) => {
     measuringOtherMarkerState.value = [lat, long]
-    completeRebuild()
+    // completeRebuild()
 }
 
 const cancelMeasuringOtherMarker = () => {
     measuringOtherMarkerState.value = null
-    completeRebuild()
+    // completeRebuild()
 }
 
 const finishMeasuringOtherMarker = (lat: number, long: number) => {
@@ -474,7 +395,7 @@ const deleteCustomMarker = async (lat: number, long: number) => {
     await updateGame(
         newObj, oldObj, gamesDbRef.value
     );
-    completeRebuild()
+    // completeRebuild()
 }
 
 
@@ -533,30 +454,7 @@ onMounted(async () => {
     localMap.value.on('click', onMapClick);
     L.control.scale().addTo(localMap.value);
 
-    // var drawControl = new (L.Control as any).Draw({
-    //     position: 'topright',
-    //     draw: {
-    //         polyline: false,
-    //         polygon: true,
-    //         circle: false,
-    //         marker: false
-    //     },
-    //     edit: {
-    //         featureGroup: drawnItems,
-    //         remove: true
-    //     }
-    // });
-    // localMap.value.addControl(drawControl);
-
     localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
-        // var type = e.layerType,
-        //         layer = e.layer;
-
-        // if (type === 'marker') {
-        //     layer.bindPopup('A popup!');
-        // }
-
-        console.log(e);
         if (e.type == "draw:created" && (e as any).layerType == "polygon") {
             const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
             const newEntries = gamesObj.value?.polygonEntries ?? [];
@@ -576,25 +474,9 @@ onMounted(async () => {
             );
             drawingPolygon.value = false
         }
-
-        // drawnItems.addLayer(layer);
     });
 
-    completeRebuild();
-
-    // map.locate({setView: true, maxZoom: 16});
-    // function onLocationFound(e) {
-    //     var radius = e.accuracy;
-
-    //     console.log(e.latlng);
-
-    //     L.marker(e.latlng).addTo(map)
-    //         .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-    //     L.circle(e.latlng, radius).addTo(map);
-    // }
-
-    // map.on('locationfound', onLocationFound);
+    updateTileLayers(store.$state.mapLayers, localMap.value!);
 
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;

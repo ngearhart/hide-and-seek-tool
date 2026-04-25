@@ -4,9 +4,10 @@ import type { CustomProperty, Region, RegionDescriptor } from '@/regions/regions
 import type { Feature, Point } from 'geojson';
 import type { FeatureType } from '@/regions/features';
 import type { GameRecord } from '@/utils';
+import type { MapTileLayerType } from '@/graphics/mapTiles';
 
 type State = {
-  mapLayers: string[]
+  mapLayers: MapTileLayerType[]
   mapMarkers: string[],
   enableStationCircles: boolean,
   regions: RegionDescriptor[],
