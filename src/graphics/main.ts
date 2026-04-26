@@ -29,6 +29,19 @@ class _PixiOverlay {
         this.prevZoom = -1;
     }
 
+    /**
+     * Refresh all overlays forcefully even if the map doesn't redraw
+     */
+    private rebuild() {
+        this.overlay.remove();
+        this.rootContainer = new Container();
+
+        this.elements = [];
+        this.overlay = L.pixiOverlay((utils: PixiUtils) => this.setup(utils), this.rootContainer);
+        this.firstDraw = true;
+        this.prevZoom = -1;
+    }
+
     private setup(utils: PixiUtils) {
         const zoom = utils.getMap().getZoom();
         const container = utils.getContainer();
@@ -47,7 +60,10 @@ class _PixiOverlay {
         return this.overlay;
     }
 
-    update(game: GameRecord) {
+    update(game: GameRecord, rebuild: boolean=true) {
+        if (rebuild) {
+            this.rebuild();
+        }
         this.rootContainer.removeChildren();
         this.elements = [
             ...Radar.fromGame(game),

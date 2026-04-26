@@ -18,7 +18,7 @@
 
 
 div.dialog-button {
-  background: linear-gradient(-70deg, #37474F 84%, #212121 16%);
+  background: linear-gradient(-70deg, #37474F 82%, #212121 18%);
 }
 
 
@@ -27,7 +27,7 @@ $lightFeatures: (
     "museum": "#0D3B66",
     "zoo": "#A663CC",
     "graveyard": "#03071E",
-    "custom": "#C2095A",
+    "custompin": "#C2095A",
 );
 
 @each $name, $hex in $lightFeatures {
@@ -54,3 +54,19 @@ $darkFeatures: (
     }
 }
 
+.popup-container {
+    font-weight: 500;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v51/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBGEe.woff2) format('woff2');
+
+}
+
+.popup-container .v-btn__content button {
+    text-transform: uppercase;
+    letter-spacing: 0.0892857143em;
+    text-indent: 0.0892857143em;
+    font-size: var(--v-btn-size);
+}

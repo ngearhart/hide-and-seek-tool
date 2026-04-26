@@ -56,7 +56,6 @@ export default class Radar extends DrawableElement {
 
     // 6.178
     draw(utils: PixiUtils): undefined {
-        console.log("--- radar: " + this.radius + " " + this.isHit)
         if (!this.isHit) {
             this.constructiveGraphics.clear();
             this.constructiveGraphics.beginFill(RADAR_COLOR, 1);

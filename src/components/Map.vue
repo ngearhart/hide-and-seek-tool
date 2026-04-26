@@ -183,7 +183,9 @@ const updateMarkers = () => {
 }
 
 const updateGameObjects = () => {
+    updateMarkers();
     PixiOverlay.update(gamesObj.value!);
+    localMap.value!.addLayer(PixiOverlay.getLayer());
 }
 
 const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {
@@ -327,12 +329,12 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
-    <div style="margin-top: 0.5em;" class="${popupButtonClasses}" onclick="startMeasuringOtherMarker(${latLng})">
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startMeasuringOtherMarker(${latLng})">
         <span class="v-btn__prepend">
             <i class="mdi-pin mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
         </span>
         <span class="v-btn__content" data-no-activator="">
-            <button>Measure distance to a pin</button>
+            <button>Measure to a pin</button>
         </span>
     </div>
     <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
@@ -340,7 +342,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
             <i class="mdi-near-me mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
         </span>
         <span class="v-btn__content" data-no-activator="">
-            <button>Measure distance to me</button>
+            <button>Measure to me</button>
         </span>
     </div>
     <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startPinRadar(${latLng})">
@@ -356,7 +358,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
             <i class="mdi-line-scan mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
         </span>
         <span class="v-btn__content" data-no-activator="">
-            <button>Place boundary line</button>
+            <button>Place boundary</button>
         </span>
     </div>
     <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="">
@@ -400,12 +402,12 @@ const startBoundaryLine = (lat: number, long: number) => {
 
 const startMeasuringOtherMarker = (lat: number, long: number) => {
     measuringOtherMarkerState.value = [lat, long]
-    // completeRebuild()
+    updateMarkers();
 }
 
 const cancelMeasuringOtherMarker = () => {
     measuringOtherMarkerState.value = null
-    // completeRebuild()
+    updateMarkers();
 }
 
 const finishMeasuringOtherMarker = (lat: number, long: number) => {
@@ -421,7 +423,6 @@ const deleteCustomMarker = async (lat: number, long: number) => {
     await updateGame(
         newObj, oldObj, gamesDbRef.value
     );
-    // completeRebuild()
 }
 
 
@@ -503,9 +504,9 @@ onMounted(async () => {
     });
 
     updateTileLayers(store.$state.mapLayers, localMap.value!);
-    localMap.value!.addLayer(PixiOverlay.getLayer());
     updateGameObjects();
     updateMarkers();
+    localMap.value!.addLayer(PixiOverlay.getLayer());
 
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
