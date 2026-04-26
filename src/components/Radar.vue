@@ -1,6 +1,7 @@
 <template>
   <v-dialog max-width="400" v-model="model as any" transition="dialog-bottom-transition">
-    <v-card title="Create Radar" :subtitle="'Create a Radar Overlay Around ' + postTitle" :disabled="loading" :loading="loading">
+    <v-card title="Create Radar" :subtitle="'Create a Radar Overlay Around ' + postTitle" :disabled="loading"
+      :loading="loading">
       <template v-slot:loader="{ isActive }">
         <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
       </template>
@@ -12,9 +13,11 @@
           <v-radio label="Pre-defined size" value="predefined"></v-radio>
           <v-radio label="Custom size" value="custom"></v-radio>
         </v-radio-group>
-        <v-select label="Radar Size" :items="radarSizeOptions" v-model="radarSize" v-if="radiusSelectionType == 'predefined'"></v-select>
+        <v-select label="Radar Size" :items="radarSizeOptions" v-model="radarSize"
+          v-if="radiusSelectionType == 'predefined'"></v-select>
         <v-form>
-          <v-text-field label="Radar Size (miles)" v-if="radiusSelectionType == 'custom'" :rules="[rules.required, rules.numeric]" v-model="customRadius"></v-text-field>
+          <v-text-field label="Radar Size (miles)" v-if="radiusSelectionType == 'custom'"
+            :rules="[rules.required, rules.numeric]" v-model="customRadius"></v-text-field>
         </v-form>
         <v-checkbox label="Radar was a hit" v-model="wasHit"></v-checkbox>
         <!-- <v-alert icon="mdi-alert" text="Make sure you have location permissions enabled for this website." color="warning" density="compact"></v-alert> -->
@@ -24,12 +27,12 @@
               <v-col cols="12" md="6">
                 <v-btn color="primary" block variant="tonal" @click="submit">Submit</v-btn>
               </v-col>
-            <v-col cols="12" md="6">
-              <v-btn prepend-icon="mdi-close" variant="tonal" @click="model = false" block>Close</v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-actions>
+              <v-col cols="12" md="6">
+                <v-btn prepend-icon="mdi-close" variant="tonal" @click="model = false" block>Close</v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-actions>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -38,7 +41,7 @@
 <script lang="ts" setup>
 import { notify } from '@kyvg/vue3-notification';
 
-defineProps<{
+const props = defineProps<{
   postTitle: string,
 }>();
 
@@ -98,24 +101,39 @@ const rules = {
   numeric: (value: string) => !isNaN(parseFloat(value)) || 'Must be a number'
 }
 
-const submit = async() => {
+const submit = async () => {
   loading.value = true;
+  let miles = radarSize.value.split("mile")[0]
+  if (radiusSelectionType.value === 'custom') {
+    miles = customRadius.value
+    if (!miles.length || isNaN(parseFloat(miles))) {
+      // TODO: Better UX for this
+      notify({
+        type: "error",
+        text: "Invalid size entered",
+        title: "Error"
+      })
+      return
+    }
+  }
+  const distance = parseFloat(miles) * 1609.344;
+  if (props.postTitle === "Pin") {
+    // No need to get current position
+    if (wasHit.value) {
+      emit('hitSuccess', 0, 0, distance);
+    } else {
+      emit('hitFail', 0, 0, distance);
+    }
+    loading.value = false;
+    model.value = false;
+    notify({
+      text: "Success",
+      title: "Radar submitted"
+    })
+    return
+  }
   try {
     const position: GeolocationPosition = await new Promise((r) => navigator.geolocation.getCurrentPosition((position) => r(position)));
-    let miles = radarSize.value.split("mile")[0]
-    if (radiusSelectionType.value === 'custom') {
-      miles = customRadius.value
-      if (!miles.length || isNaN(parseFloat(miles))) {
-        // TODO: Better UX for this
-        notify({
-          type: "error",
-          text: "Invalid size entered",
-          title: "Error"
-        })
-        return
-      }
-    }
-    const distance = parseFloat(miles) * 1609.344;
     if (wasHit.value) {
       emit('hitSuccess', position.coords.latitude, position.coords.longitude, distance);
     } else {
@@ -128,7 +146,7 @@ const submit = async() => {
       title: "Radar submitted"
     })
     return
-  } catch {}
+  } catch { }
   notify({
     type: "error",
     text: "Could not locate you",
