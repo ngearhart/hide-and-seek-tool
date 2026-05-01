@@ -38,6 +38,7 @@ export default class Radar extends DrawableElement {
         this.destructiveGraphics.blendMode = BLEND_MODES.XOR;
         // this.destructiveGraphics.blendMode = BLEND_MODES.SRC_OUT;
         this.container = new Container();
+        // this.constructiveGraphics.mask = this.destructiveGraphics;
     }
 
     setupContainer(container: Container): undefined {
@@ -56,6 +57,7 @@ export default class Radar extends DrawableElement {
 
     // 6.178
     draw(utils: PixiUtils): undefined {
+        console.log('radar -- ' + this.radius)
         if (!this.isHit) {
             this.constructiveGraphics.clear();
             this.constructiveGraphics.beginFill(RADAR_COLOR, 1);
@@ -66,10 +68,15 @@ export default class Radar extends DrawableElement {
             this.constructiveGraphics.clear();
             this.constructiveGraphics.beginFill(RADAR_COLOR, 1);
             this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, HIT_RADIUS);
-            // this.constructiveGraphics.endFill();
+            this.constructiveGraphics.endFill();
+    
             // this.constructiveGraphics.beginFill(RADAR_COLOR, 0);
             // this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
             // this.constructiveGraphics.endFill();
+            // this.destructiveGraphics.clear();
+            // this.destructiveGraphics.beginFill(0xFFFFFF, 1);
+            // this.destructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius! * 2);
+            // this.destructiveGraphics.endFill();
             this.destructiveGraphics.clear();
             this.destructiveGraphics.beginFill(0xFFFFFF, 1);
             this.destructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
@@ -78,7 +85,7 @@ export default class Radar extends DrawableElement {
     }
 
     static fromGame(game: GameRecord): Radar[] {
-        return game.radarEntries?.map(radarEntry => 
+        return game.radarEntries?.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()).map(radarEntry => 
             new Radar(new LatLng(radarEntry.lat, radarEntry.long), radarEntry.meters, radarEntry.hit)
         ) ?? [];
     }

@@ -8,38 +8,42 @@ import { Voronoi } from 'd3';
 import VoronoiShape from './voronoi';
 import { useStore } from '@/stores/app';
 import { generateVolonoi } from '@/regions/regions';
-import { Container } from 'pixi.js';
+import { AlphaFilter, Container } from 'pixi.js';
 
 class _PixiOverlay {
     private rootContainer: Container;
 
     private overlay: Layer;
     private elements: DrawableElement[];
+    private opacity: number;
 
     private firstDraw: boolean;
-    private prevZoom: number;
 
     constructor() {
+        const store = useStore();
+        this.opacity = store.$state.overlayOpacity;
+
         this.rootContainer = new Container();
-        // rootContainer.filters = [ new PIXI.AlphaFilter(0.5) ];
+        this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
 
         this.elements = [];
         this.overlay = L.pixiOverlay((utils: PixiUtils) => this.setup(utils), this.rootContainer);
         this.firstDraw = true;
-        this.prevZoom = -1;
     }
 
     /**
      * Refresh all overlays forcefully even if the map doesn't redraw
      */
     private rebuild() {
+        const store = useStore();
+        this.opacity = store.$state.overlayOpacity;
         this.overlay.remove();
         this.rootContainer = new Container();
+        this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
 
         this.elements = [];
         this.overlay = L.pixiOverlay((utils: PixiUtils) => this.setup(utils), this.rootContainer);
         this.firstDraw = true;
-        this.prevZoom = -1;
     }
 
     private setup(utils: PixiUtils) {
@@ -52,7 +56,6 @@ class _PixiOverlay {
 
         this.elements.forEach(element => element.draw(utils));
         this.firstDraw = false;
-        this.prevZoom = zoom;
         renderer.render(container);
     }
 
@@ -65,8 +68,10 @@ class _PixiOverlay {
             this.rebuild();
         }
         this.rootContainer.removeChildren();
+        const radarElements = Radar.fromGame(game);
+        // radarElements.reverse();
         this.elements = [
-            ...Radar.fromGame(game),
+            ...radarElements,
             ...Boundary.fromGame(game),
         ];
         this.elements.forEach(element => element.setupContainer(this.rootContainer));

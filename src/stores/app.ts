@@ -12,6 +12,7 @@ type State = {
   enableStationCircles: boolean,
   regions: RegionDescriptor[],
   loadedRegionData: Region | null,
+  overlayOpacity: number,
 };
 
 export const useStore = defineStore('app', {
@@ -24,6 +25,7 @@ export const useStore = defineStore('app', {
     enableStationCircles: false,
     regions: [],
     loadedRegionData: null,
+    overlayOpacity: 0.5
   }),
   getters: {
     getMarkers() {
