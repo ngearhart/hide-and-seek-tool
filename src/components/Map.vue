@@ -115,9 +115,9 @@ import { flipCoords, loadRegion } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
-import addPixiOverlay, { PixiOverlay } from '@/graphics/main';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
+import { PixiManager } from '@/graphics/main';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -184,8 +184,8 @@ const updateMarkers = () => {
 
 const updateGameObjects = () => {
     updateMarkers();
-    PixiOverlay.update(gamesObj.value!);
-    localMap.value!.addLayer(PixiOverlay.getLayer());
+    PixiManager.update(gamesObj.value!);
+    localMap.value!.addLayer(PixiManager.getLayer());
 }
 
 const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {
@@ -506,7 +506,7 @@ onMounted(async () => {
     updateTileLayers(store.$state.mapLayers, localMap.value!);
     updateGameObjects();
     updateMarkers();
-    localMap.value!.addLayer(PixiOverlay.getLayer());
+    localMap.value!.addLayer(PixiManager.getLayer());
 
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;

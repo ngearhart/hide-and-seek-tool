@@ -1,7 +1,8 @@
-import { AlphaFilter, BLEND_MODES, Container, Graphics, type Renderer } from "pixi.js";
+import { AlphaFilter, Container, Graphics, type Renderer } from "pixi.js";
 import type { GameRecord } from "@/utils";
-import { DrawableElement, type PixiUtils } from "./base";
+import { DrawableElement } from "./base";
 import { LatLng } from "leaflet";
+import type { CallbackUtils } from "./pixiOverlay";
 
 const RADAR_COLOR = 0x000000;
 const HIT_RADIUS = 10000;
@@ -35,7 +36,7 @@ export default class Radar extends DrawableElement {
         this.isHit = isHit;
         this.constructiveGraphics = new Graphics();
         this.destructiveGraphics = new Graphics();
-        this.destructiveGraphics.blendMode = BLEND_MODES.XOR;
+        // this.destructiveGraphics.blendMode = BLEND_MODES.XOR;
         // this.destructiveGraphics.blendMode = BLEND_MODES.SRC_OUT;
         this.container = new Container();
         // this.constructiveGraphics.mask = this.destructiveGraphics;
@@ -50,13 +51,13 @@ export default class Radar extends DrawableElement {
     }
 
 
-    createWithMap(utils: PixiUtils): undefined {
+    createWithMap(utils: CallbackUtils): undefined {
         this.point = utils.latLngToLayerPoint(this.origin); //, utils.getMap().getZoom());
         this.radius = this.sizeMeters * SCALE_TO_MILES_ADJUSTED / METERS_TO_MILES;
     }
 
     // 6.178
-    draw(utils: PixiUtils): undefined {
+    draw(utils: CallbackUtils): undefined {
         console.log('radar -- ' + this.radius)
         if (!this.isHit) {
             this.constructiveGraphics.clear();

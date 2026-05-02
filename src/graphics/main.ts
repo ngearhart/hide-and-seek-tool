@@ -1,19 +1,19 @@
 import type { GameRecord } from '@/utils';
 import L, { Layer } from 'leaflet';
-import 'leaflet-pixi-overlay';
 import Radar from './radar';
-import type { DrawableElement, PixiUtils } from './base';
+import type { DrawableElement } from './base';
 import Boundary from './boundary';
 import { Voronoi } from 'd3';
 import VoronoiShape from './voronoi';
 import { useStore } from '@/stores/app';
 import { generateVolonoi } from '@/regions/regions';
 import { AlphaFilter, Container } from 'pixi.js';
+import { PixiOverlay, type CallbackUtils } from './pixiOverlay';
 
-class _PixiOverlay {
+class _PixiManager {
     private rootContainer: Container;
 
-    private overlay: Layer;
+    private overlay: PixiOverlay;
     private elements: DrawableElement[];
     private opacity: number;
 
@@ -24,10 +24,11 @@ class _PixiOverlay {
         this.opacity = store.$state.overlayOpacity;
 
         this.rootContainer = new Container();
-        this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
+        // this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
 
         this.elements = [];
-        this.overlay = L.pixiOverlay((utils: PixiUtils) => this.setup(utils), this.rootContainer);
+        this.overlay = new PixiOverlay(this.rootContainer);
+        this.overlay.afterDrawCallback((utils) => this.setup(utils));
         this.firstDraw = true;
     }
 
@@ -39,17 +40,18 @@ class _PixiOverlay {
         this.opacity = store.$state.overlayOpacity;
         this.overlay.remove();
         this.rootContainer = new Container();
-        this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
+        // this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
 
         this.elements = [];
-        this.overlay = L.pixiOverlay((utils: PixiUtils) => this.setup(utils), this.rootContainer);
+        this.overlay = new PixiOverlay(this.rootContainer);
+        this.overlay.afterDrawCallback((utils) => this.setup(utils));
         this.firstDraw = true;
     }
 
-    private setup(utils: PixiUtils) {
-        const zoom = utils.getMap().getZoom();
-        const container = utils.getContainer();
-        const renderer = utils.getRenderer();
+    private setup(utils: CallbackUtils) {
+        const zoom = utils.map.getZoom();
+        const container = utils.container;
+        const renderer = utils.renderer;
         if (this.firstDraw) {
             this.elements.forEach(element => element.createWithMap(utils));
         }
@@ -79,4 +81,4 @@ class _PixiOverlay {
     }
 }
 
-export const PixiOverlay = new _PixiOverlay();
+export const PixiManager = new _PixiManager();

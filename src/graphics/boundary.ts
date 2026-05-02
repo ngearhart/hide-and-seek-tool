@@ -1,7 +1,8 @@
 import { Container, Graphics } from "pixi.js";
-import { DrawableElement, type PixiUtils } from "./base";
+import { DrawableElement } from "./base";
 import { rotatePoint, type GameRecord } from "@/utils";
 import { LatLng, type LatLngTuple } from "leaflet";
+import type { CallbackUtils } from "./pixiOverlay";
 
 export default class Boundary extends DrawableElement {
     origin: L.LatLng;
@@ -24,7 +25,7 @@ export default class Boundary extends DrawableElement {
         container.addChild(this.graphics);
     }
 
-    createWithMap(utils: PixiUtils): undefined {
+    createWithMap(utils: CallbackUtils): undefined {
         // So sorry for this garbage implementation
         if ((this.directionDegrees - 45) % 90 === 0) {
             const a = this.directionDegrees;
@@ -65,7 +66,7 @@ export default class Boundary extends DrawableElement {
     }
 
     // 6.178
-    draw(utils: PixiUtils): undefined {
+    draw(utils: CallbackUtils): undefined {
         console.log("--- boundary " + this.origin);
         this.graphics.clear();
         this.graphics.beginFill(0x000000, 1);
