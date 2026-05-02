@@ -24,7 +24,9 @@ class _PixiManager {
         this.opacity = store.$state.overlayOpacity;
 
         this.rootContainer = new Container();
-        // this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
+        this.rootContainer.filters = [ new AlphaFilter({
+            alpha: this.opacity
+        }) ];
 
         this.elements = [];
         this.overlay = new PixiOverlay(this.rootContainer);
@@ -40,7 +42,9 @@ class _PixiManager {
         this.opacity = store.$state.overlayOpacity;
         this.overlay.remove();
         this.rootContainer = new Container();
-        // this.rootContainer.filters = [ new AlphaFilter(this.opacity) ];
+        this.rootContainer.filters = [ new AlphaFilter({
+            alpha: this.opacity
+        }) ];
 
         this.elements = [];
         this.overlay = new PixiOverlay(this.rootContainer);

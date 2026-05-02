@@ -60,28 +60,13 @@ export default class Radar extends DrawableElement {
     draw(utils: CallbackUtils): undefined {
         console.log('radar -- ' + this.radius)
         if (!this.isHit) {
-            this.constructiveGraphics.clear();
-            this.constructiveGraphics.beginFill(RADAR_COLOR, 1);
-            this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
-            this.constructiveGraphics.endFill();
+            this.constructiveGraphics.clear()
+                .circle(this.point!.x, this.point!.y, this.radius!).fill(RADAR_COLOR);
         } else {
             // Draw outer circle
-            this.constructiveGraphics.clear();
-            this.constructiveGraphics.beginFill(RADAR_COLOR, 1);
-            this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, HIT_RADIUS);
-            this.constructiveGraphics.endFill();
-    
-            // this.constructiveGraphics.beginFill(RADAR_COLOR, 0);
-            // this.constructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
-            // this.constructiveGraphics.endFill();
-            // this.destructiveGraphics.clear();
-            // this.destructiveGraphics.beginFill(0xFFFFFF, 1);
-            // this.destructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius! * 2);
-            // this.destructiveGraphics.endFill();
-            this.destructiveGraphics.clear();
-            this.destructiveGraphics.beginFill(0xFFFFFF, 1);
-            this.destructiveGraphics.drawCircle(this.point!.x, this.point!.y, this.radius!);
-            this.destructiveGraphics.endFill();
+            this.constructiveGraphics.clear()
+                .circle(this.point!.x, this.point!.y, HIT_RADIUS).fill(RADAR_COLOR)
+                .circle(this.point!.x, this.point!.y, this.radius!).cut();
         }
     }
 
