@@ -67,7 +67,6 @@ export default class Boundary extends DrawableElement {
 
     // 6.178
     draw(utils: CallbackUtils): undefined {
-        console.log("--- boundary " + this.origin);
         this.graphics.clear();
         this.graphics.beginFill(0x000000, 1);
         if ((this.directionDegrees - 45) % 90 === 0) {

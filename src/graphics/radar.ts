@@ -24,54 +24,38 @@ export default class Radar extends DrawableElement {
     private point?: L.Point;
     private radius?: number;
 
-    private constructiveGraphics: Graphics;
-    private destructiveGraphics: Graphics;
-
-    private container: Container;
+    private graphics: Graphics;
 
     constructor(origin: L.LatLng, sizeMeters: number, isHit: boolean) {
         super();
         this.origin = origin;
         this.sizeMeters = sizeMeters;
         this.isHit = isHit;
-        this.constructiveGraphics = new Graphics();
-        this.destructiveGraphics = new Graphics();
-        // this.destructiveGraphics.blendMode = BLEND_MODES.XOR;
-        // this.destructiveGraphics.blendMode = BLEND_MODES.SRC_OUT;
-        this.container = new Container();
-        // this.constructiveGraphics.mask = this.destructiveGraphics;
+        this.graphics = new Graphics();
     }
 
     setupContainer(container: Container): undefined {
-        container.addChild(this.container);
-        this.container.addChild(this.constructiveGraphics);
-        if (this.isHit) {
-            this.container.addChild(this.destructiveGraphics);
-        }
+        container.addChild(this.graphics);
     }
-
 
     createWithMap(utils: CallbackUtils): undefined {
         this.point = utils.latLngToLayerPoint(this.origin); //, utils.getMap().getZoom());
         this.radius = this.sizeMeters * SCALE_TO_MILES_ADJUSTED / METERS_TO_MILES;
     }
 
-    // 6.178
     draw(utils: CallbackUtils): undefined {
-        console.log('radar -- ' + this.radius)
         if (!this.isHit) {
-            this.constructiveGraphics.clear()
+            this.graphics.clear()
                 .circle(this.point!.x, this.point!.y, this.radius!).fill(RADAR_COLOR);
         } else {
-            // Draw outer circle
-            this.constructiveGraphics.clear()
+            this.graphics.clear()
                 .circle(this.point!.x, this.point!.y, HIT_RADIUS).fill(RADAR_COLOR)
                 .circle(this.point!.x, this.point!.y, this.radius!).cut();
         }
     }
 
     static fromGame(game: GameRecord): Radar[] {
-        return game.radarEntries?.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()).map(radarEntry => 
+        return game.radarEntries?.map(radarEntry => 
             new Radar(new LatLng(radarEntry.lat, radarEntry.long), radarEntry.meters, radarEntry.hit)
         ) ?? [];
     }

@@ -9,6 +9,7 @@ import { useStore } from '@/stores/app';
 import { generateVolonoi } from '@/regions/regions';
 import { AlphaFilter, Container } from 'pixi.js';
 import { PixiOverlay, type CallbackUtils } from './pixiOverlay';
+import Polygon from './polygon';
 
 class _PixiManager {
     private rootContainer: Container;
@@ -74,11 +75,10 @@ class _PixiManager {
             this.rebuild();
         }
         this.rootContainer.removeChildren();
-        const radarElements = Radar.fromGame(game);
-        // radarElements.reverse();
         this.elements = [
-            ...radarElements,
+            ...Radar.fromGame(game),
             ...Boundary.fromGame(game),
+            ...Polygon.fromGame(game),
         ];
         this.elements.forEach(element => element.setupContainer(this.rootContainer));
         this.firstDraw = true;

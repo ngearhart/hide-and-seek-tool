@@ -305,14 +305,6 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
     } as GameRecord, oldGameObj, gamesDbRef.value);
 }
 
-const refreshPolygons = () => {
-    if (gamesObj.value?.polygonEntries && gamesObj.value!.polygonEntries.length > 0) {
-        gamesObj.value!.polygonEntries.forEach(polygonEntry => {
-            L.polygon(polygonEntry.points).addTo(localMap.value!);
-        });
-    }
-}
-
 const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-btn--spaced v-btn--spaced-start v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer dialog-button";
 
 // I know this is gross but this is the leaflet canonical way.
@@ -485,8 +477,11 @@ onMounted(async () => {
         if (e.type == "draw:created" && (e as any).layerType == "polygon") {
             const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
             const newEntries = gamesObj.value?.polygonEntries ?? [];
+
+            let newPoly = e.layer.editing.latlngs[e.layer.editing.latlngs.length - 1][0];
+
             newEntries.push({
-                points: e.layer.editing.latlngs,
+                points: newPoly,
                 created: new Date().toUTCString(),
                 creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
             });
