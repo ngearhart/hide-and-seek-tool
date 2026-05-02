@@ -67,19 +67,16 @@ export default class Boundary extends DrawableElement {
 
     // 6.178
     draw(utils: CallbackUtils): undefined {
-        this.graphics.clear();
-        this.graphics.beginFill(0x000000, 1);
         if ((this.directionDegrees - 45) % 90 === 0) {
             
         } else {
-            this.graphics.drawRect(
+            this.graphics.rect(
                 Math.min(this.rectanglePoints[0].x, this.rectanglePoints[1].x),
                 Math.min(this.rectanglePoints[0].y, this.rectanglePoints[1].y),
                 Math.abs(this.rectanglePoints[1].x - this.rectanglePoints[0].x), 
                 Math.abs(this.rectanglePoints[1].y - this.rectanglePoints[0].y)
-            )
+            ).fill(0x000000);
         }
-        this.graphics.endFill();
     }
 
     static fromGame(game: GameRecord): Boundary[] {
