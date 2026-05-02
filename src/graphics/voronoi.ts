@@ -1,9 +1,10 @@
 import { Graphics, type Container } from "pixi.js";
-import { DrawableElement, type PixiUtils } from "./base";
+import { DrawableElement } from "./base";
 import type { FeatureType } from "@/regions/features";
 
 import { Delaunay, Voronoi } from 'd3';
 import { flipCoords, type Region } from "@/regions/regions";
+import type { CallbackUtils } from "./pixiOverlay";
 
 export default class VoronoiShape extends DrawableElement {
 
@@ -28,7 +29,7 @@ export default class VoronoiShape extends DrawableElement {
         container.addChild(this.graphics);
     }
 
-    createWithMap(utils: PixiUtils): undefined {
+    createWithMap(utils: CallbackUtils): undefined {
         const points1 = 
                 this.vertices.map(point => utils.latLngToLayerPoint(point)).map(point => [point.x, point.y]).flat();
         const points = 
@@ -40,7 +41,7 @@ export default class VoronoiShape extends DrawableElement {
         this.voronoi = delaunay.voronoi([topCorner.x, topCorner.y, bottomCorner.x, bottomCorner.y]);
     }
 
-    draw(utils: PixiUtils): undefined {
+    draw(utils: CallbackUtils): undefined {
         this.graphics.clear();
         // this.graphics.beginFill(0xFFFFFF, 1);
         // this.vertices.map(point => utils.latLngToLayerPoint(point)).forEach(point => this.graphics.drawCircle(point.x, point.y, 10));

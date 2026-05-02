@@ -29,7 +29,7 @@ class _PixiManager {
         }) ];
 
         this.elements = [];
-        this.overlay = new PixiOverlay(this.rootContainer);
+        this.overlay = new PixiOverlay(this.rootContainer, { padding: 0.5 });
         this.overlay.afterDrawCallback((utils) => this.setup(utils));
         this.firstDraw = true;
     }
@@ -47,7 +47,7 @@ class _PixiManager {
         }) ];
 
         this.elements = [];
-        this.overlay = new PixiOverlay(this.rootContainer);
+        this.overlay = new PixiOverlay(this.rootContainer, { padding: 0.5 });
         this.overlay.afterDrawCallback((utils) => this.setup(utils));
         this.firstDraw = true;
     }

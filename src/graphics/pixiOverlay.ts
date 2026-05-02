@@ -1,3 +1,8 @@
+/**
+ * Huge shoutout to @beig for this
+ * https://github.com/manubb/Leaflet.PixiOverlay/issues/99#issuecomment-2839224957
+ */
+
 import {
   Bounds,
   Browser,
@@ -7,7 +12,9 @@ import {
   Layer,
   Map,
   Point,
+  type LatLngTuple,
   type LeafletEventHandlerFn,
+  type ZoomAnimEvent,
 } from 'leaflet';
 import {
   autoDetectRenderer,
@@ -34,7 +41,7 @@ export interface CallbackUtils {
   container: Container;
   getScale: () => number;
   layerPointToLatLng: (point: Point) => LatLng;
-  latLngToLayerPoint: (latLng: LatLng) => Point;
+  latLngToLayerPoint: (latLng: LatLng | LatLngTuple) => Point;
 }
 
 interface PixiOverlayOptions {
