@@ -1,5 +1,5 @@
 import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geojson"
-import type { LatLngTuple } from "leaflet";
+import type { LatLng, LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 
@@ -36,13 +36,44 @@ export function flipCoords(coords: Position): LatLngTuple {
     return [coords[1], coords[0]];
 }
 
-export function generateVolonoi(region: Region): { [feature in FeatureType]?: Voronoi<Delaunay.Point> } {
-    const result: { [feature in FeatureType]?: Voronoi<Delaunay.Point> } = {};
-    Object.keys(colors).forEach(featureType => {
-        // Note: This does the math in lat/lng - maybe should use projected coords instead
-        const vertices = region.features.filter(feature => feature.properties.Type === featureType).map(feature => feature.geometry.coordinates as Delaunay.Point);
-        const delaunay = Delaunay.from(vertices);
-        result[featureType as FeatureType] = delaunay.voronoi([-360, -360, 360, 360]);
+type VoronoiDict = { [feature in FeatureType]?: Voronoi<Delaunay.Point> };
+
+// export function generateDelaunay(region: Region, latLngToLayerPoint: (latLng: LatLng | LatLngTuple) => L.Point): VoronoiDict {
+//     return new Proxy({}, {
+//         get(target: VoronoiDict, key: FeatureType) {
+//             if (!(key in target)) {
+//                 const vertices = region.features.filter(feature => feature.properties.Type === key).map(feature => feature.geometry.coordinates as Delaunay.Point);
+//                 const points1 = 
+//                         vertices.map(point => latLngToLayerPoint(point)).map(point => [point.x, point.y]).flat();
+//                 const points = Float64Array.from(points1);
+//                 const delaunay = new Delaunay(points);
+//                 const topCorner = latLngToLayerPoint(flipCoords(region.bounds[0]));
+//                 const bottomCorner = latLngToLayerPoint(flipCoords(region.bounds[1]));
+//                 target[key] = delaunay.voronoi([topCorner.x, topCorner.y, bottomCorner.x, bottomCorner.y]);
+//             }
+//             return target[key];
+//         }
+//     });
+// }
+
+export function generateVoronoi(region: Region): VoronoiDict {
+    return new Proxy({}, {
+        get(target: VoronoiDict, key: FeatureType) {
+            if (!(key in target)) {
+                const vertices = region.features.filter(feature => feature.properties.Type === key).map(feature => feature.geometry.coordinates as Delaunay.Point);
+                const points1 = 
+                        vertices.map(point => [point[1], point[0]]).flat();
+                const points = Float64Array.from(points1);
+                const delaunay = new Delaunay(points);
+                const topCorner = flipCoords(region.bounds[1]);
+                const bottomCorner = flipCoords(region.bounds[0]);
+                target[key] = delaunay.voronoi([
+                    Math.min(topCorner[0], bottomCorner[0]),
+                    Math.min(topCorner[1], bottomCorner[1]),
+                    Math.max(bottomCorner[0], topCorner[0]),
+                    Math.max(bottomCorner[1], topCorner[1])]);
+            }
+            return target[key];
+        }
     });
-    return result;
 }

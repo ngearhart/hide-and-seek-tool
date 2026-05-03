@@ -3,26 +3,30 @@ import { DrawableElement } from "./base";
 import type { FeatureType } from "@/regions/features";
 
 import { Delaunay, Voronoi } from 'd3';
-import { flipCoords, type Region } from "@/regions/regions";
+import { flipCoords, generateVoronoi, type Region } from "@/regions/regions";
 import type { CallbackUtils } from "./pixiOverlay";
+import type { GameRecord } from "@/utils";
+import { useStore } from "@/stores/app";
+import type { Point } from "leaflet";
+
+const HIT_RADIUS = 10000;
 
 export default class VoronoiShape extends DrawableElement {
 
     voronoi: Voronoi<Delaunay.Point>;
     index: number;
-    region: Region
+    isHit: boolean;
 
     private graphics: Graphics;
-    private vertices: Delaunay.Point[];
+    private points: Point[];
 
-    constructor(voronoi: Voronoi<Delaunay.Point>, index: number, region: Region) {
+    constructor(voronoi: Voronoi<Delaunay.Point>, index: number, isHit: boolean) {
         super();
         this.voronoi = voronoi;
         this.index = index;
         this.graphics = new Graphics();
-
-        this.vertices = region.features.filter(feature => feature.properties.Type === "library").map(feature => flipCoords(feature.geometry.coordinates) as Delaunay.Point);
-        this.region = region;
+        this.isHit = isHit;
+        this.points = [];
     }
 
     setupContainer(container: Container): undefined {
@@ -30,29 +34,26 @@ export default class VoronoiShape extends DrawableElement {
     }
 
     createWithMap(utils: CallbackUtils): undefined {
-        const points1 = 
-                this.vertices.map(point => utils.latLngToLayerPoint(point)).map(point => [point.x, point.y]).flat();
-        const points = 
-            Float64Array.from(points1
-            );
-        const delaunay = new Delaunay(points);
-        const topCorner = utils.latLngToLayerPoint(flipCoords(this.region.bounds[0]));
-        const bottomCorner = utils.latLngToLayerPoint(flipCoords(this.region.bounds[1]));
-        this.voronoi = delaunay.voronoi([topCorner.x, topCorner.y, bottomCorner.x, bottomCorner.y]);
+        this.points = this.voronoi.cellPolygon(this.index).map(point => utils.latLngToLayerPoint(point));
     }
 
     draw(utils: CallbackUtils): undefined {
-        this.graphics.clear();
-        // this.graphics.beginFill(0xFFFFFF, 1);
-        // this.vertices.map(point => utils.latLngToLayerPoint(point)).forEach(point => this.graphics.drawCircle(point.x, point.y, 10));
-        // this.graphics.endFill();
-        // this.graphics.beginFill(0x000000, 1);
-        this.graphics.lineStyle(4 / utils.getScale(), 0x000000, 1);
-        // const points = this.voronoi.cellPolygon(this.index);
-        // this.graphics.drawPolygon(points.map(point => [point[0], point[1]]).flat());
-        Array.from(this.voronoi.cellPolygons()).forEach(polygon => {
-            this.graphics.drawPolygon(polygon.map(point => [point[0], point[1]]).flat());
-        })
-        this.graphics.endFill();
+        if (this.isHit) {
+            this.graphics.clear()
+                .circle(this.points[0].x, this.points[0].y, HIT_RADIUS).fill(0x00000)
+                .poly(this.points.flat()).cut();
+        } else {
+            this.graphics.clear().poly(this.points.flat()).fill(0x000000);
+        }
+    }
+    
+    static fromGame(game: GameRecord): VoronoiShape[] {
+        const store = useStore();
+        const voronoiGenerator = generateVoronoi(store.$state.loadedRegionData!);
+        return game.cellEntries?.map(cell => new VoronoiShape(
+            voronoiGenerator[cell.markerType]!,
+            store.getMarkers(cell.markerType).findIndex(marker => marker.properties.Name === cell.markerName),
+            cell.wasHit
+        )) ?? [];
     }
 }

@@ -7,9 +7,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AddCell: typeof import('./components/dialog/AddCell.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     BoundaryLine: typeof import('./components/BoundaryLine.vue')['default']
     ConfirmDelete: typeof import('./components/ConfirmDelete.vue')['default']
+    copy: typeof import('./components/Radar copy.vue')['default']
     CustomPinLabelEditor: typeof import('./components/dialog/CustomPinLabelEditor.vue')['default']
     EarthAnimation: typeof import('./components/misc/EarthAnimation.vue')['default']
     FindClosest: typeof import('./components/FindClosest.vue')['default']

@@ -93,6 +93,7 @@
     </ConfirmDelete>
     <CustomPinLabelEditor v-model="showCustomPinLabelEditor" :most-recent-pin-drop="mostRecentlyDroppedPin" ,
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"></CustomPinLabelEditor>
+    <AddCell v-model="showAddCellDialog" :marker="addCellDialogMarker" @create="submitCell"></AddCell>
 </template>
 
 <script lang="ts" setup>
@@ -111,13 +112,15 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion } from '@/regions/regions';
+import { flipCoords, loadRegion, type CustomProperty } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
+import AddCell from './dialog/AddCell.vue';
+import type { Feature, Point } from 'geojson';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -147,6 +150,9 @@ const boundaryLineLatLng = ref<number[] | null>(null);
 
 const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({ name: "", type: "", distance: 0 })
+
+const showAddCellDialog = shallowRef(false);
+const addCellDialogMarker = shallowRef<Feature<Point, CustomProperty> | null>(null);
 
 const drawingPolygon = shallowRef(false);
 
@@ -353,14 +359,6 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
             <button>Place boundary</button>
         </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="">
-        <span class="v-btn__prepend">
-            <i class="mdi-chart-pie-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
-        </span>
-        <span class="v-btn__content" data-no-activator="">
-            <button>Add cell</button>
-        </span>
-    </div>
     ${subtitle === 'Custom Pin' ? `
     <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="deleteCustomMarker(${latLng})">
             <span class="v-btn__prepend">
@@ -370,7 +368,16 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
             <button>Delete</button>
         </span>
     </div>
-    ` : ''}
+    ` : `
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="addCell('${name}', '${subtitle}')">
+        <span class="v-btn__prepend">
+            <i class="mdi-chart-pie-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Add cell</button>
+        </span>
+    </div>
+    `}
   </div>
 `)
 
@@ -390,6 +397,11 @@ const startPinRadar = (lat: number, long: number) => {
 const startBoundaryLine = (lat: number, long: number) => {
     boundaryLineLatLng.value = [lat, long]
     shouldShowBoundaryLineDialog.value = true
+}
+
+const addCell = (title: string, subtitle: string) => {
+    addCellDialogMarker.value = store.getMarkers(subtitle.toLowerCase() as FeatureType).find(feature => feature.properties.Name === title)!;
+    showAddCellDialog.value = true;
 }
 
 const startMeasuringOtherMarker = (lat: number, long: number) => {
@@ -416,6 +428,25 @@ const deleteCustomMarker = async (lat: number, long: number) => {
         newObj, oldObj, gamesDbRef.value
     );
 }
+
+const submitCell = async (wasHit: boolean) => {
+    const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value))
+    const newEntries = gamesObj.value?.cellEntries ?? [];
+    newEntries.push({
+        markerName: addCellDialogMarker.value!.properties.Name,
+        markerType: addCellDialogMarker.value!.properties.Type,
+        wasHit: wasHit,
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+    });
+
+    // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
+    await updateGame({
+        cellEntries: newEntries,
+        ...gamesObj.value
+    } as GameRecord, oldGameObj, gamesDbRef.value);
+}
+
 
 
 const findClosest = (key: string, type: string) => {
@@ -509,6 +540,7 @@ onMounted(async () => {
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
     (window as any)["deleteCustomMarker"] = deleteCustomMarker;
+    (window as any)["addCell"] = addCell;
 })
 
 const ensureRegionLoaded = () => {

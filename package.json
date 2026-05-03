@@ -17,6 +17,7 @@
     "@types/geojson": "^7946.0.16",
     "core-js": "^3.37.1",
     "d3": "^7.9.0",
+    "degree-picker": "^1.1.1",
     "firebase": "^11.5.0",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",

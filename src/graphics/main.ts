@@ -3,13 +3,11 @@ import L, { Layer } from 'leaflet';
 import Radar from './radar';
 import type { DrawableElement } from './base';
 import Boundary from './boundary';
-import { Voronoi } from 'd3';
-import VoronoiShape from './voronoi';
 import { useStore } from '@/stores/app';
-import { generateVolonoi } from '@/regions/regions';
 import { AlphaFilter, Container } from 'pixi.js';
 import { PixiOverlay, type CallbackUtils } from './pixiOverlay';
 import Polygon from './polygon';
+import VoronoiShape from './voronoi';
 
 class _PixiManager {
     private rootContainer: Container;
@@ -79,6 +77,7 @@ class _PixiManager {
             ...Radar.fromGame(game),
             ...Boundary.fromGame(game),
             ...Polygon.fromGame(game),
+            ...VoronoiShape.fromGame(game),
         ];
         this.elements.forEach(element => element.setupContainer(this.rootContainer));
         this.firstDraw = true;
