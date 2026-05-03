@@ -5,6 +5,7 @@ import { flipCoords } from './regions';
 import type { _RefDatabase, VueDatabaseDocumentData } from 'vuefire';
 import type { GameRecord } from '@/utils';
 
+
 export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "graveyard" | "park" | "custom";
 
 type Feature = {
@@ -31,7 +32,7 @@ export const features: Feature[] = [
   },
   {
     pluralLabel: "Movie Theaters",
-    singularLabel: "Movie Thearer",
+    singularLabel: "Movie Theater",
     key: "theater",
   },
   {

@@ -93,6 +93,7 @@
     </ConfirmDelete>
     <CustomPinLabelEditor v-model="showCustomPinLabelEditor" :most-recent-pin-drop="mostRecentlyDroppedPin" ,
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"></CustomPinLabelEditor>
+    <AddCell v-model="showAddCellDialog" :marker="addCellDialogMarker" @create="submitCell"></AddCell>
 </template>
 
 <script lang="ts" setup>
@@ -111,10 +112,15 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion } from '@/regions/regions';
+import { flipCoords, loadRegion, type CustomProperty } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
+import { updateTileLayers } from '@/graphics/mapTiles';
+import { storeToRefs } from 'pinia';
+import { PixiManager } from '@/graphics/main';
+import AddCell from './dialog/AddCell.vue';
+import type { Feature, Point } from 'geojson';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -145,6 +151,9 @@ const boundaryLineLatLng = ref<number[] | null>(null);
 const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({ name: "", type: "", distance: 0 })
 
+const showAddCellDialog = shallowRef(false);
+const addCellDialogMarker = shallowRef<Feature<Point, CustomProperty> | null>(null);
+
 const drawingPolygon = shallowRef(false);
 
 const shouldConfirmDeleteDialogShow = shallowRef(false);
@@ -153,90 +162,36 @@ const measuringOtherMarkerState = ref<number[] | null>()
 const measuringOtherMarkerDistanceResultDialog = shallowRef(false)
 const measuringOtherMarkerDistanceResult = shallowRef(0)
 
-const OVERLAY_OPACITY = 0.6;
 
+watch(storeToRefs(store).mapLayers, () => updateTileLayers(store.$state.mapLayers, localMap.value!))
+watch(storeToRefs(store).mapMarkers, () => updateMarkers())
+watch(gamesObj, () => updateGameObjects())
 
-store.$subscribe(() => {
-    completeRebuild()
-});
+let previousMarkers: L.Marker<any>[] = [];
 
-watch(gamesObj, () => {
-    completeRebuild()
-});
-
-const completeRebuild = () => {
-    if (store.$state.loadedRegionData?.center) {
-        buildMap()
-        refreshRadar()
-        refreshThermometer()
-        refreshPolygons()
-        refreshBoundaryLines()
-    } else {
-        ensureRegionLoaded()
-    }
+const updateMarkers = () => {
+    previousMarkers.forEach(m => m.remove());
+    let markers = getFeatureMarkers(getPopupFor, gamesObj);
+    previousMarkers = Object.values(markers).flat();
+    store.$state.mapMarkers.forEach(marker => {
+        markers[marker as FeatureType].forEach(m => {
+            if (marker == "stations") {
+                L.circle(m.getLatLng(), {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.2,
+                    radius: 402.336, // quarter mile in meters
+                }).addTo(localMap.value!);
+            }
+            m.addTo(localMap.value!);
+        });
+    });
 }
 
-const buildMap = () => {
-    if (localMap) {
-        console.info("Rebuilding map with layers " + store.$state.mapLayers)
-        const localMapVal = localMap.value!;
-        localMapVal.eachLayer(layer => layer.remove());
-        store.$state.mapLayers.forEach(layer => {
-            if (layer == "CartoDB_DarkMatter") {
-                var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 20
-                });
-                CartoDB_DarkMatter.addTo(localMapVal);
-            } else if (layer == "OpenRailwayMap") {
-                var OpenRailwayMap = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://www.OpenRailwayMap.org">OpenRailwayMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-                });
-                OpenRailwayMap.addTo(localMapVal);
-            } else if (layer == "Esri_WorldImagery") {
-                var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-                });
-                Esri_WorldImagery.addTo(localMapVal);
-            } else if (layer == "Jawg.Matrix") {
-                var Jawg_Matrix = L.tileLayer('https://tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
-                    attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    minZoom: 0,
-                    maxZoom: 22,
-                    accessToken: '2mOYvuNmhK7nVC5H0StYF6OmHWF3cfdnzxDcuNNh4iq3K8IoslHbtI5PmSsbgLPV'
-                } as any);
-                Jawg_Matrix.addTo(localMapVal);
-            } else if (layer == "Jawg.Sunny") {
-                var Jawg_Sunny = L.tileLayer('https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
-                    attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    minZoom: 0,
-                    maxZoom: 22,
-                    accessToken: '2mOYvuNmhK7nVC5H0StYF6OmHWF3cfdnzxDcuNNh4iq3K8IoslHbtI5PmSsbgLPV'
-                } as any);
-                Jawg_Sunny.addTo(localMapVal);
-            }
-        });
-
-        // Dynamically get markers, needed for loading custom markers.
-        let markers = getFeatureMarkers(getPopupFor, gamesObj);
-        store.$state.mapMarkers.forEach(marker => {
-            markers[marker as FeatureType].forEach(m => {
-                if (marker == "stations") {
-                    L.circle(m.getLatLng(), {
-                        color: 'red',
-                        fillColor: '#f03',
-                        fillOpacity: 0.2,
-                        radius: 402.336, // quarter mile in meters
-                    }).addTo(localMapVal);
-                }
-                m.addTo(localMapVal)
-            });
-        });
-
-        localMapVal.addLayer(drawnItems as any);
-    }
+const updateGameObjects = () => {
+    updateMarkers();
+    PixiManager.update(gamesObj.value!);
+    localMap.value!.addLayer(PixiManager.getLayer());
 }
 
 const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {
@@ -356,159 +311,7 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
     } as GameRecord, oldGameObj, gamesDbRef.value);
 }
 
-const displayRadar = (hit: boolean, lat: number, long: number, meters: number) => {
-    if (hit) {
-        console.log("Adding radar hit");
-        const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-        svgElement.setAttribute('viewBox', "0 0 100 100");
-        svgElement.innerHTML = `<mask id="circle-mask"><rect width="100" height="100" fill="white"/><circle cx="50" cy="50" r="10" fill="black"/></mask><rect width="100" height="100" fill="black" opacity="${OVERLAY_OPACITY}" mask="url(#circle-mask)"/>`;
-        // 0.093 SVG units per mile
-        // 1609.344 meters per mile
-        const offset = 0.095 * meters / 1609.344;
-        console.log(offset);
-        const svgElementBounds: LatLngBoundsExpression = [
-            [lat - offset, long - offset],
-            [lat + offset, long + offset]
-        ];
-        L.svgOverlay(svgElement, svgElementBounds).addTo(localMap.value!);
-
-        // also add extra squares
-        // west
-        L.polygon([
-            [lat - 1, long - offset],
-            [lat + 1, long - offset],
-            [lat + 1, long - offset - 1],
-            [lat - 1, long - offset - 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-        // east
-        L.polygon([
-            [lat - 1, long + offset],
-            [lat + 1, long + offset],
-            [lat + 1, long + offset + 1],
-            [lat - 1, long + offset + 1],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-        // north
-        L.polygon([
-            [lat + offset / 1.28, long - offset],
-            [lat + offset / 1.28, long + offset],
-            [lat + offset + 1, long + offset],
-            [lat + offset + 1, long - offset],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', stroke: false }).addTo(localMap.value!);
-        // south
-        L.polygon([
-            [lat - offset / 1.28, long - offset],
-            [lat - offset / 1.28, long + offset],
-            [lat - offset - 1, long + offset],
-            [lat - offset - 1, long - offset],
-        ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-    } else {
-        console.log("Adding radar miss");
-        L.circle([lat, long], {
-            stroke: false,
-            fillColor: 'black',
-            fillOpacity: OVERLAY_OPACITY,
-            radius: meters,
-        }).addTo(localMap.value!);
-    }
-};
-
-const displayThermometer = (lat: number, long: number, angle: number, hotter: boolean) => {
-    // // If angle = 0 and hotter
-    // const a = 0;
-    // L.polygon([
-    //     [lat - 1 * Math.sin(a), long],
-    //     [lat + 1 * Math.sin(a), long],
-    //     [lat + 1 * Math.sin(a), long + 1 * Math.cos(a)],
-    //     [lat - 1 * Math.sin(a), long + 1 * Math.cos(a)],
-    // ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-};
-
-const refreshRadar = () => {
-    if (gamesObj.value?.radarEntries && gamesObj.value!.radarEntries.length > 0) {
-        gamesObj.value!.radarEntries.forEach(radarEntry => {
-            displayRadar(radarEntry.hit, radarEntry.lat, radarEntry.long, radarEntry.meters);
-        });
-    }
-}
-
-const refreshThermometer = () => {
-    if (gamesObj.value?.thermometerEntries && gamesObj.value!.thermometerEntries.length > 0) {
-        gamesObj.value!.thermometerEntries.forEach(themometerEntry => {
-            displayThermometer(themometerEntry.lat, themometerEntry.long, themometerEntry.angle, themometerEntry.hotter);
-        });
-    }
-}
-
-const refreshPolygons = () => {
-    if (gamesObj.value?.polygonEntries && gamesObj.value!.polygonEntries.length > 0) {
-        gamesObj.value!.polygonEntries.forEach(polygonEntry => {
-            L.polygon(polygonEntry.points).addTo(localMap.value!);
-        });
-    }
-}
-
-const refreshBoundaryLines = () => {
-    if (gamesObj.value?.boundaryLineEntries && gamesObj.value!.boundaryLineEntries.length > 0) {
-        // So sorry for this garbage implementation
-        gamesObj.value!.boundaryLineEntries.forEach(boundaryLine => {
-            if ((boundaryLine.degrees - 45) % 90 === 0) {
-                const a = boundaryLine.degrees;
-                let delta = 0.2;
-                let x = boundaryLine.lat;
-                let y = boundaryLine.long;
-                let midPoint = [x, y];
-                let offsetPointEast = [x, y + delta];
-                let offsetPointNorth = [x + delta, y];
-                let offsetPointWest = [x, y - delta];
-                let offsetPointSouth = [x - delta, y];
-                L.polygon([
-                    // // [boundaryLine.lat, boundaryLine.long],
-                    // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long],
-                    // // [boundaryLine.lat + 1 * Math.cos(a), boundaryLine.long + 1 * Math.cos(a)],
-                    // // [boundaryLine.lat, boundaryLine.long + 1 * Math.cos(a)],
-
-                    // // [x, y],
-                    // // [x + Math.cos(a) + Math.sin(a), y],
-                    // // [x + Math.cos(a) + Math.sin(a), y + Math.cos(a) - Math.sin(a)],
-                    // // [x, y + Math.cos(a) - Math.sin(a)],
-                    // [x, y],
-                    rotatePoint(offsetPointEast, midPoint, a),
-                    rotatePoint(offsetPointNorth, midPoint, a),
-                    // rotatePoint(offsetPointWest, midPoint, a),
-                    rotatePoint(offsetPointSouth, midPoint, a),
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 0) {
-                L.rectangle([
-                    [boundaryLine.lat - 1, boundaryLine.long],
-                    [boundaryLine.lat + 1, boundaryLine.long + 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 90) {
-                L.rectangle([
-                    [boundaryLine.lat, boundaryLine.long - 1],
-                    [boundaryLine.lat + 1, boundaryLine.long + 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 180) {
-                L.rectangle([
-                    [boundaryLine.lat - 1, boundaryLine.long],
-                    [boundaryLine.lat + 1, boundaryLine.long - 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            } else if (boundaryLine.degrees === 270) {
-                L.rectangle([
-                    [boundaryLine.lat, boundaryLine.long + 1],
-                    [boundaryLine.lat - 1, boundaryLine.long - 1],
-
-                ], { fillOpacity: OVERLAY_OPACITY, fillColor: 'black', color: 'black', stroke: false }).addTo(localMap.value!);
-            }
-        });
-    }
-}
-
-const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer";
+const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-btn--spaced v-btn--spaced-start v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer dialog-button";
 
 // I know this is gross but this is the leaflet canonical way.
 const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
@@ -520,27 +323,61 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     </div>
   </div>
 ` : `
-  <div class="popup-container">
+  <div class="popup-container popup-${subtitle.toLowerCase().replace(' ', '')}">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
-    <div style="margin-top: 0.5em;" class="${popupButtonClasses} bg-purple" onclick="startMeasuringOtherMarker(${latLng})">
-      <button>Show distance to another marker</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startMeasuringOtherMarker(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-pin mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Measure to a pin</button>
+        </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-success" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
-      <button>Show distance from me</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="mapMeasureDistanceTo(${latLng}, '${name}')">
+        <span class="v-btn__prepend">
+            <i class="mdi-near-me mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Measure to me</button>
+        </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-error" onclick="startPinRadar(${latLng})">
-      <button>Add radar</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startPinRadar(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-radar mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Place radar</button>
+        </span>
     </div>
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-primary" onclick="startBoundaryLine(${latLng})">
-      <button>Add boundary line</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startBoundaryLine(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-line-scan mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Place boundary</button>
+        </span>
     </div>
     ${subtitle === 'Custom Pin' ? `
-    <div style="margin-top: 1em;" class="${popupButtonClasses} bg-red-darken-2" onclick="deleteCustomMarker(${latLng})">
-      <button>Delete</button>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="deleteCustomMarker(${latLng})">
+            <span class="v-btn__prepend">
+            <i class="mdi-view-dashboard-edit-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Delete</button>
+        </span>
     </div>
-    ` : ''}
+    ` : `
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="addCell('${name}', '${subtitle}')">
+        <span class="v-btn__prepend">
+            <i class="mdi-chart-pie-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Add cell</button>
+        </span>
+    </div>
+    `}
   </div>
 `)
 
@@ -562,14 +399,19 @@ const startBoundaryLine = (lat: number, long: number) => {
     shouldShowBoundaryLineDialog.value = true
 }
 
+const addCell = (title: string, subtitle: string) => {
+    addCellDialogMarker.value = store.getMarkers(subtitle.toLowerCase() as FeatureType).find(feature => feature.properties.Name === title)!;
+    showAddCellDialog.value = true;
+}
+
 const startMeasuringOtherMarker = (lat: number, long: number) => {
     measuringOtherMarkerState.value = [lat, long]
-    completeRebuild()
+    updateMarkers();
 }
 
 const cancelMeasuringOtherMarker = () => {
     measuringOtherMarkerState.value = null
-    completeRebuild()
+    updateMarkers();
 }
 
 const finishMeasuringOtherMarker = (lat: number, long: number) => {
@@ -585,8 +427,26 @@ const deleteCustomMarker = async (lat: number, long: number) => {
     await updateGame(
         newObj, oldObj, gamesDbRef.value
     );
-    completeRebuild()
 }
+
+const submitCell = async (wasHit: boolean) => {
+    const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value))
+    const newEntries = gamesObj.value?.cellEntries ?? [];
+    newEntries.push({
+        markerName: addCellDialogMarker.value!.properties.Name,
+        markerType: addCellDialogMarker.value!.properties.Type,
+        wasHit: wasHit,
+        created: new Date().toUTCString(),
+        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+    });
+
+    // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
+    await updateGame({
+        cellEntries: newEntries,
+        ...gamesObj.value
+    } as GameRecord, oldGameObj, gamesDbRef.value);
+}
+
 
 
 const findClosest = (key: string, type: string) => {
@@ -634,41 +494,25 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
+    if (store.$state.loadedRegionData && store.$state.loadedRegionData?.name != gamesObj.value?.region) {
+        // There is an odd case where the wrong region is loaded
+        ensureRegionLoaded();
+    }
     localMap.value = L.map('map').setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
     L.control.scale().addTo(localMap.value);
 
-    // var drawControl = new (L.Control as any).Draw({
-    //     position: 'topright',
-    //     draw: {
-    //         polyline: false,
-    //         polygon: true,
-    //         circle: false,
-    //         marker: false
-    //     },
-    //     edit: {
-    //         featureGroup: drawnItems,
-    //         remove: true
-    //     }
-    // });
-    // localMap.value.addControl(drawControl);
-
     localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
-        // var type = e.layerType,
-        //         layer = e.layer;
-
-        // if (type === 'marker') {
-        //     layer.bindPopup('A popup!');
-        // }
-
-        console.log(e);
         if (e.type == "draw:created" && (e as any).layerType == "polygon") {
             const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value));
             const newEntries = gamesObj.value?.polygonEntries ?? [];
+
+            let newPoly = e.layer.editing.latlngs[e.layer.editing.latlngs.length - 1][0];
+
             newEntries.push({
-                points: e.layer.editing.latlngs,
+                points: newPoly,
                 created: new Date().toUTCString(),
                 creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
             });
@@ -683,25 +527,12 @@ onMounted(async () => {
             );
             drawingPolygon.value = false
         }
-
-        // drawnItems.addLayer(layer);
     });
 
-    completeRebuild();
-
-    // map.locate({setView: true, maxZoom: 16});
-    // function onLocationFound(e) {
-    //     var radius = e.accuracy;
-
-    //     console.log(e.latlng);
-
-    //     L.marker(e.latlng).addTo(map)
-    //         .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-    //     L.circle(e.latlng, radius).addTo(map);
-    // }
-
-    // map.on('locationfound', onLocationFound);
+    updateTileLayers(store.$state.mapLayers, localMap.value!);
+    updateGameObjects();
+    updateMarkers();
+    localMap.value!.addLayer(PixiManager.getLayer());
 
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
@@ -709,6 +540,7 @@ onMounted(async () => {
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
     (window as any)["deleteCustomMarker"] = deleteCustomMarker;
+    (window as any)["addCell"] = addCell;
 })
 
 const ensureRegionLoaded = () => {

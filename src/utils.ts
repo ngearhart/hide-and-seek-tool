@@ -1,4 +1,5 @@
 import type { LatLng } from "leaflet";
+import type { FeatureType } from "./regions/features";
 
 export type UserRecord = {
     currentGameId: string,
@@ -45,6 +46,15 @@ type PinEntry = {
     customTitle?: string,
 }
 
+type CellEntry = {
+    markerName: string,
+    markerType: FeatureType,
+    wasHit: boolean,
+    created: string,
+    creatorName: string,
+}
+
+
 type Team = {
     name: string
 }
@@ -57,6 +67,7 @@ export type GameRecord = {
     thermometerEntries: ThermometerEntry[]
     polygonEntries: PolygonDrawingEntry[]
     customPins: PinEntry[]
+    cellEntries: CellEntry[]
     teams: Team[]
     region: string
 };

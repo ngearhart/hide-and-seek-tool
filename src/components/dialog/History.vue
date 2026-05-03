@@ -70,6 +70,9 @@ const events = computed(() => {
   if (props.gamesDbObj && props.gamesDbObj.boundaryLineEntries?.length > 0) {
     result.push(...props.gamesDbObj.boundaryLineEntries.map(boundaryLine => ({ type: "boundaryLine", created: boundaryLine.created, text: "Boundary Line", creator: boundaryLine.creatorName })))
   }
+  if (props.gamesDbObj && props.gamesDbObj.cellEntries?.length > 0) {
+    result.push(...props.gamesDbObj.cellEntries.map(cell => ({ type: "cell", created: cell.created, text: "Cell", creator: cell.creatorName })))
+  }
   return result;
 });
 
@@ -108,6 +111,8 @@ const deleteEvent = (value: string, gameObj: GameRecord) => {
     gameObj.customPins = gameObj.customPins.filter(item => new Date(item.created).getTime() != itemTimestamp);
   } else if (itemType == "boundaryLine") {
     gameObj.boundaryLineEntries = gameObj.boundaryLineEntries.filter(item => new Date(item.created).getTime() != itemTimestamp);
+  } else if (itemType == "cell") {
+    gameObj.cellEntries = gameObj.cellEntries.filter(item => new Date(item.created).getTime() != itemTimestamp);
   } else {
     console.error(`Called deleteEvent in history on unknown item type "${itemType}"`)
   }

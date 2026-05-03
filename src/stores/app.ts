@@ -4,13 +4,15 @@ import type { CustomProperty, Region, RegionDescriptor } from '@/regions/regions
 import type { Feature, Point } from 'geojson';
 import type { FeatureType } from '@/regions/features';
 import type { GameRecord } from '@/utils';
+import type { MapTileLayerType } from '@/graphics/mapTiles';
 
 type State = {
-  mapLayers: string[]
+  mapLayers: MapTileLayerType[]
   mapMarkers: string[],
   enableStationCircles: boolean,
   regions: RegionDescriptor[],
   loadedRegionData: Region | null,
+  overlayOpacity: number,
 };
 
 export const useStore = defineStore('app', {
@@ -23,6 +25,7 @@ export const useStore = defineStore('app', {
     enableStationCircles: false,
     regions: [],
     loadedRegionData: null,
+    overlayOpacity: 0.5
   }),
   getters: {
     getMarkers() {

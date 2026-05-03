@@ -8,6 +8,7 @@
 // @use 'vuetify/settings' with (
 //   $color-pack: false
 // );
+@use 'sass:color';
 
 .popup-container {
     .popup-title {
@@ -15,3 +16,57 @@
     }
 }
 
+
+div.dialog-button {
+  background: linear-gradient(-70deg, #37474F 82%, #212121 18%);
+}
+
+
+$lightFeatures: (
+    "transitstation": "#5E3408",
+    "museum": "#0D3B66",
+    "zoo": "#A663CC",
+    "graveyard": "#03071E",
+    "custompin": "#C2095A",
+);
+
+@each $name, $hex in $lightFeatures {
+    .leaflet-popup-content-wrapper:has(.popup-#{$name}) {
+        background: linear-gradient(180deg, #{$hex} 0%, #{$hex} 15%, #ECEFF1 80%);
+        color: white;
+    }
+}
+
+
+$darkFeatures: (
+    "airport": "#FFFCF2",
+    "movietheater": "#F4D666",
+    "hospital": "#EB5E28",
+    "library": "#FAF0CA",
+    "aquarium": "#669BBC",
+    "park": "#84A98C",
+);
+
+@each $name, $hex in $darkFeatures {
+    .leaflet-popup-content-wrapper:has(.popup-#{$name}) {
+        background: linear-gradient(180deg, #{$hex} 0%, #{$hex} 15%, #ECEFF1 80%);
+        color: black;
+    }
+}
+
+.popup-container {
+    font-weight: 500;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v51/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBGEe.woff2) format('woff2');
+
+}
+
+.popup-container .v-btn__content button {
+    text-transform: uppercase;
+    letter-spacing: 0.0892857143em;
+    text-indent: 0.0892857143em;
+    font-size: var(--v-btn-size);
+}

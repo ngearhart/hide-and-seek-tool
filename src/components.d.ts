@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AddCell: typeof import('./components/dialog/AddCell.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     BoundaryLine: typeof import('./components/BoundaryLine.vue')['default']
     ConfirmDelete: typeof import('./components/ConfirmDelete.vue')['default']
