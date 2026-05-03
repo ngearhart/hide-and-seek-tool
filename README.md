@@ -29,7 +29,7 @@ Feature Properties:
 
 ## PIXI.js
 
-Note: The Leaflet plugin only supports up to Pixi.js major version 7.
+Note: The Leaflet plugin only supports up to Pixi.js major version 7, so we have a custom version in `pixiOverlay.ts`.
 
 ## Developing
 H&SL was developed using Vuetify. See below for more info. Vuetify is available under the [MIT License](http://opensource.org/licenses/MIT), Copyright (c) 2016-present Vuetify, LLC.

@@ -38,24 +38,6 @@ export function flipCoords(coords: Position): LatLngTuple {
 
 type VoronoiDict = { [feature in FeatureType]?: Voronoi<Delaunay.Point> };
 
-// export function generateDelaunay(region: Region, latLngToLayerPoint: (latLng: LatLng | LatLngTuple) => L.Point): VoronoiDict {
-//     return new Proxy({}, {
-//         get(target: VoronoiDict, key: FeatureType) {
-//             if (!(key in target)) {
-//                 const vertices = region.features.filter(feature => feature.properties.Type === key).map(feature => feature.geometry.coordinates as Delaunay.Point);
-//                 const points1 = 
-//                         vertices.map(point => latLngToLayerPoint(point)).map(point => [point.x, point.y]).flat();
-//                 const points = Float64Array.from(points1);
-//                 const delaunay = new Delaunay(points);
-//                 const topCorner = latLngToLayerPoint(flipCoords(region.bounds[0]));
-//                 const bottomCorner = latLngToLayerPoint(flipCoords(region.bounds[1]));
-//                 target[key] = delaunay.voronoi([topCorner.x, topCorner.y, bottomCorner.x, bottomCorner.y]);
-//             }
-//             return target[key];
-//         }
-//     });
-// }
-
 export function generateVoronoi(region: Region): VoronoiDict {
     return new Proxy({}, {
         get(target: VoronoiDict, key: FeatureType) {
