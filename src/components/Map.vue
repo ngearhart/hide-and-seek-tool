@@ -116,7 +116,7 @@ import { flipCoords, loadRegion, type CustomProperty } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
-import { updateTileLayers } from '@/graphics/mapTiles';
+import { MAP_TILE_LAYERS, updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
@@ -400,8 +400,16 @@ const startBoundaryLine = (lat: number, long: number) => {
 }
 
 const addCell = (title: string, subtitle: string) => {
-    addCellDialogMarker.value = store.getMarkers(subtitle.toLowerCase() as FeatureType).find(feature => feature.properties.Name === title)!;
-    showAddCellDialog.value = true;
+    addCellDialogMarker.value = store.getMarkers(subtitle.toLowerCase().replace('movie theater', 'theater') as FeatureType).find(feature => feature.properties.Name === title)!;
+    if (!addCellDialogMarker.value) {
+        notify({
+            type: "error",
+            text: "Something went wrong",
+            title: "Error"
+        })
+    } else {
+        showAddCellDialog.value = true;
+    }
 }
 
 const startMeasuringOtherMarker = (lat: number, long: number) => {
@@ -528,6 +536,11 @@ onMounted(async () => {
             drawingPolygon.value = false
         }
     });
+
+    // Edge case: if store map layers are from an old version, clear them
+    if (store.$state.mapLayers.filter(layer => !(layer in Object.keys(MAP_TILE_LAYERS)))) {
+        store.$state.mapLayers = ["Jawg_Sunny"]  // Just reset
+    }
 
     updateTileLayers(store.$state.mapLayers, localMap.value!);
     updateGameObjects();
