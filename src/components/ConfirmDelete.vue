@@ -58,6 +58,7 @@ const confirm = async() => {
     newObj.customPins = [];
     newObj.polygonEntries = [];
     newObj.radarEntries = [];
+    newObj.cellEntries = [];
     await updateGame(newObj, oldObj, props.gamesDbRef);
     loading.value = false
     model.value = false

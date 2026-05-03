@@ -18,8 +18,7 @@ type State = {
 export const useStore = defineStore('app', {
   state: (): State => ({
     mapLayers: [
-      "CartoDB_DarkMatter",
-      "OpenRailwayMap"
+      "Jawg_Sunny",
     ],
     mapMarkers: [],
     enableStationCircles: false,
