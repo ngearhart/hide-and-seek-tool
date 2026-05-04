@@ -504,7 +504,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 onMounted(async () => {
     if (store.$state.loadedRegionData && store.$state.loadedRegionData?.name != gamesObj.value?.region) {
         // There is an odd case where the wrong region is loaded
-        ensureRegionLoaded();
+        await ensureRegionLoaded();
     }
     localMap.value = L.map('map').setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
@@ -538,7 +538,7 @@ onMounted(async () => {
     });
 
     // Edge case: if store map layers are from an old version, clear them
-    if (store.$state.mapLayers.filter(layer => !(layer in Object.keys(MAP_TILE_LAYERS)))) {
+    if (store.$state.mapLayers.filter(layer => !(layer in MAP_TILE_LAYERS)).length) {
         store.$state.mapLayers = ["Jawg_Sunny"]  // Just reset
     }
 
@@ -556,13 +556,13 @@ onMounted(async () => {
     (window as any)["addCell"] = addCell;
 })
 
-const ensureRegionLoaded = () => {
+const ensureRegionLoaded = async() => {
     const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
-    loadRegion(regionId).then((region) => {
-        store.$state.loadedRegionData = region;
-        // If we do not recenter here, the user will be stuck on null island (0, 0) until they reload
-        localMap.value!.setView(flipCoords(store.$state.loadedRegionData!.center), 13);
-    })
+    const region = await loadRegion(regionId);
+    store.$state.loadedRegionData = region;
+
+    // Used to be needed when region loaded was not synchronous with other mounted() calls
+    // localMap.value!.setView(flipCoords(store.$state.loadedRegionData!.center), 13);
 }
 
 </script>
