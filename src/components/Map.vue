@@ -112,7 +112,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion, type CustomProperty } from '@/regions/regions';
+import { flipCoords, loadRegion, loadRegionDescriptions, type CustomProperty } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
@@ -502,7 +502,10 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
-    if (store.$state.loadedRegionData && store.$state.loadedRegionData?.name != gamesObj.value?.region) {
+    if (!store.$state.regions.length) {
+        store.$state.regions = await loadRegionDescriptions();
+    }
+    if (!store.$state.loadedRegionData || store.$state.loadedRegionData?.name != gamesObj.value?.region) {
         // There is an odd case where the wrong region is loaded
         await ensureRegionLoaded();
     }
