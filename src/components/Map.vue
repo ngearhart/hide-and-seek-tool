@@ -509,7 +509,10 @@ onMounted(async () => {
         // There is an odd case where the wrong region is loaded
         await ensureRegionLoaded();
     }
-    localMap.value = L.map('map').setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
+    localMap.value = L.map('map', {
+        // It's much nicer on mobile to have unlimited zoom granularity, but it feels worse on desktops
+        zoomSnap: L.Browser.mobile ? 0 : 0.5
+    }).setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
