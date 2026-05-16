@@ -47,6 +47,10 @@ export default class VoronoiShape extends DrawableElement {
         }
     }
     
+    destroy(): undefined {
+        this.graphics.destroy();
+    }
+    
     static fromGame(game: GameRecord): VoronoiShape[] {
         const store = useStore();
         const voronoiGenerator = generateVoronoi(store.$state.loadedRegionData!);

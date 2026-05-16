@@ -38,6 +38,10 @@ export default class Boundary extends DrawableElement {
             0, -500, 1000, 1000
         ).fill(0x000000);
     }
+    
+    destroy(): undefined {
+        this.graphics.destroy();
+    }
 
     static fromGame(game: GameRecord): Boundary[] {
         return game.boundaryLineEntries?.map(boundaryLineEntry =>

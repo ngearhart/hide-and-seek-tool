@@ -6,10 +6,10 @@ import type { FeatureType } from '@/regions/features';
 import type { GameRecord } from '@/utils';
 import type { MapTileLayerType } from '@/graphics/mapTiles';
 
-type State = {
+export type State = {
   mapLayers: MapTileLayerType[]
   mapMarkers: string[],
-  enableStationCircles: boolean,
+  enableHidingSpotOverlay: boolean,
   regions: RegionDescriptor[],
   loadedRegionData: Region | null,
   overlayOpacity: number,
@@ -21,7 +21,7 @@ export const useStore = defineStore('app', {
       "Jawg_Sunny",
     ],
     mapMarkers: [],
-    enableStationCircles: false,
+    enableHidingSpotOverlay: false,
     regions: [],
     loadedRegionData: null,
     overlayOpacity: 0.5

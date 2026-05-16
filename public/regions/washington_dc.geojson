@@ -9,6 +9,7 @@
         [-77.615651180, 39.175834624],
         [-76.565770237, 38.600755595]
     ],
+    "hidingRadiusMiles": 0.25,
     "type": "FeatureCollection",
     "features": [
         {

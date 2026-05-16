@@ -39,7 +39,7 @@ export default class Radar extends DrawableElement {
     }
 
     createWithMap(utils: CallbackUtils): undefined {
-        this.point = utils.latLngToLayerPoint(this.origin); //, utils.getMap().getZoom());
+        this.point = utils.latLngToLayerPoint(this.origin);
         this.radius = this.sizeMeters * SCALE_TO_MILES_ADJUSTED / METERS_TO_MILES;
     }
 
@@ -52,6 +52,10 @@ export default class Radar extends DrawableElement {
                 .circle(this.point!.x, this.point!.y, HIT_RADIUS).fill(RADAR_COLOR)
                 .circle(this.point!.x, this.point!.y, this.radius!).cut();
         }
+    }
+
+    destroy(): undefined {
+        this.graphics.destroy();
     }
 
     static fromGame(game: GameRecord): Radar[] {

@@ -5,4 +5,5 @@ export abstract class DrawableElement {
     abstract setupContainer(container: Container): undefined;
     abstract createWithMap(utils: CallbackUtils): undefined;
     abstract draw(utils: CallbackUtils): undefined;
+    abstract destroy(): undefined;
 }

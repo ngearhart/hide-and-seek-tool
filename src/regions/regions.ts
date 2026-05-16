@@ -14,6 +14,7 @@ export type Region = FeatureCollection<Point, CustomProperty> & {
     size: string
     center: [number, number]
     bounds: [[number, number], [number, number]]
+    hidingRadiusMiles: number
 }
 
 export async function loadRegion(regionName: string): Promise<Region> {

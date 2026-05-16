@@ -34,6 +34,10 @@ export default class Polygon extends DrawableElement {
     draw(utils: CallbackUtils): undefined {
         this.graphics.clear().poly(this.convertedPoints).fill(COLOR);
     }
+    
+    destroy(): undefined {
+        this.graphics.destroy();
+    }
 
     static fromGame(game: GameRecord): Polygon[] {
         return game.polygonEntries?.map(polygonEntry => 
