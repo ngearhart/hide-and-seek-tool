@@ -10,7 +10,10 @@
           <v-radio label="Light" value="light"></v-radio> <!-- Jawg.Sunny  -->
           <v-radio label="Terrain" value="terrain"></v-radio> <!-- Esri_WorldImagery  -->
         </v-radio-group>
-        <v-checkbox label="Railroad Overlay" v-model="enableRailroadOverlay" v-on:update:model-value="updateMap"></v-checkbox>
+        <v-checkbox label="Railroad Overlay" v-model="enableRailroadOverlay" v-on:update:model-value="updateMap"
+          persistent-hint hint="Show all railroad lines, might be more than what is allowable in your game"></v-checkbox>
+        <v-checkbox label="Hiding Spot Overlay" v-model="enableHidingSpotOverlay" v-on:update:model-value="updateMap"
+          persistent-hint hint="Add circles outlining allowable hiding spots"></v-checkbox>
       </v-card-text>
       <v-card-actions>
         <v-container>
@@ -31,10 +34,11 @@ import { useStore } from '@/stores/app';
 
 const store = useStore();
 
-const model = defineModel()
+const model = defineModel();
 
 const mapStyle = shallowRef("dark");
 const enableRailroadOverlay = shallowRef(false);
+const enableHidingSpotOverlay = shallowRef(false);
 
 const updateMap = async() => {
   await new Promise(r => setTimeout(r, 200));
@@ -50,6 +54,8 @@ const updateMap = async() => {
   }
 
   store.$state.mapLayers = newLayers;
+
+  store.$state.enableHidingSpotOverlay = enableHidingSpotOverlay.value;
 };
 
 // Refresh on every view - store could be edited elsewhere.
@@ -66,6 +72,8 @@ watch(model, () => {
     if (store.$state.mapLayers.includes("OpenRailwayMap")) {
       enableRailroadOverlay.value = true;
     }
+
+    enableHidingSpotOverlay.value = store.$state.enableHidingSpotOverlay;
   }
 })
 

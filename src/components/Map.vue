@@ -165,6 +165,7 @@ const measuringOtherMarkerDistanceResult = shallowRef(0)
 
 watch(storeToRefs(store).mapLayers, () => updateTileLayers(store.$state.mapLayers, localMap.value!))
 watch(storeToRefs(store).mapMarkers, () => updateMarkers())
+watch(storeToRefs(store).enableHidingSpotOverlay, () => updateGameObjects())
 watch(gamesObj, () => updateGameObjects())
 
 let previousMarkers: L.Marker<any>[] = [];

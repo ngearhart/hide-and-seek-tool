@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { DrawableElement } from "./base";
+import { DrawableElement, type ContainerPool } from "./base";
 import { rotatePoint, type GameRecord } from "@/utils";
 import { LatLng, Point, type LatLngTuple } from "leaflet";
 import type { CallbackUtils } from "./pixiOverlay";
@@ -21,8 +21,8 @@ export default class Boundary extends DrawableElement {
         this.rectanglePoints = [];
     }
 
-    setupContainer(container: Container): undefined {
-        container.addChild(this.graphics);
+    setupContainer(containers: ContainerPool): undefined {
+        containers.excludedArea.addChild(this.graphics);
     }
 
     createWithMap(utils: CallbackUtils): undefined {
@@ -37,6 +37,10 @@ export default class Boundary extends DrawableElement {
         this.graphics.clear().rect(
             0, -500, 1000, 1000
         ).fill(0x000000);
+    }
+    
+    destroy(): undefined {
+        this.graphics.destroy();
     }
 
     static fromGame(game: GameRecord): Boundary[] {

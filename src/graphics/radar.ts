@@ -1,6 +1,6 @@
 import { AlphaFilter, Container, Graphics, type Renderer } from "pixi.js";
 import type { GameRecord } from "@/utils";
-import { DrawableElement } from "./base";
+import { DrawableElement, type ContainerPool } from "./base";
 import { LatLng } from "leaflet";
 import type { CallbackUtils } from "./pixiOverlay";
 
@@ -34,12 +34,12 @@ export default class Radar extends DrawableElement {
         this.graphics = new Graphics();
     }
 
-    setupContainer(container: Container): undefined {
-        container.addChild(this.graphics);
+    setupContainer(containers: ContainerPool): undefined {
+        containers.excludedArea.addChild(this.graphics);
     }
 
     createWithMap(utils: CallbackUtils): undefined {
-        this.point = utils.latLngToLayerPoint(this.origin); //, utils.getMap().getZoom());
+        this.point = utils.latLngToLayerPoint(this.origin);
         this.radius = this.sizeMeters * SCALE_TO_MILES_ADJUSTED / METERS_TO_MILES;
     }
 
@@ -52,6 +52,10 @@ export default class Radar extends DrawableElement {
                 .circle(this.point!.x, this.point!.y, HIT_RADIUS).fill(RADAR_COLOR)
                 .circle(this.point!.x, this.point!.y, this.radius!).cut();
         }
+    }
+
+    destroy(): undefined {
+        this.graphics.destroy();
     }
 
     static fromGame(game: GameRecord): Radar[] {
