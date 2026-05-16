@@ -1,5 +1,5 @@
 import { Graphics, type Container } from "pixi.js";
-import { DrawableElement } from "./base";
+import { DrawableElement, type ContainerPool } from "./base";
 import type { FeatureType } from "@/regions/features";
 
 import { Delaunay, Voronoi } from 'd3';
@@ -29,8 +29,8 @@ export default class VoronoiShape extends DrawableElement {
         this.points = [];
     }
 
-    setupContainer(container: Container): undefined {
-        container.addChild(this.graphics);
+    setupContainer(containers: ContainerPool): undefined {
+        containers.excludedArea.addChild(this.graphics);
     }
 
     createWithMap(utils: CallbackUtils): undefined {

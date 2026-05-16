@@ -12,6 +12,7 @@ import HidingCirclesElement from './hidingCircles';
 
 class _PixiManager {
     private rootContainer: Container;
+    private excludedAreaContainer: Container;
 
     private overlay: PixiOverlay;
     private elements: DrawableElement[];
@@ -24,7 +25,9 @@ class _PixiManager {
         this.opacity = store.$state.overlayOpacity;
 
         this.rootContainer = new Container();
-        this.rootContainer.filters = [ new AlphaFilter({
+        this.excludedAreaContainer = new Container();
+        this.rootContainer.addChild(this.excludedAreaContainer);
+        this.excludedAreaContainer.filters = [ new AlphaFilter({
             alpha: this.opacity
         }) ];
 
@@ -42,7 +45,9 @@ class _PixiManager {
         this.opacity = store.$state.overlayOpacity;
         this.overlay.remove();
         this.rootContainer = new Container();
-        this.rootContainer.filters = [ new AlphaFilter({
+        this.excludedAreaContainer = new Container();
+        this.rootContainer.addChild(this.excludedAreaContainer);
+        this.excludedAreaContainer.filters = [ new AlphaFilter({
             alpha: this.opacity
         }) ];
 
@@ -73,7 +78,6 @@ class _PixiManager {
         if (rebuild) {
             this.rebuild();
         }
-        this.rootContainer.removeChildren();
         // Clean up graphics objects from memory
         this.elements.forEach(element => element.destroy());
         this.elements = [
@@ -83,7 +87,10 @@ class _PixiManager {
             ...VoronoiShape.fromGame(game),
             ...HidingCirclesElement.fromStore(store.$state)
         ];
-        this.elements.forEach(element => element.setupContainer(this.rootContainer));
+        this.elements.forEach(element => element.setupContainer({
+            root: this.rootContainer,
+            excludedArea: this.excludedAreaContainer
+        }));
         this.firstDraw = true;
     }
 }

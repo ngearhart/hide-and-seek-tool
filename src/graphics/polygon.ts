@@ -1,6 +1,6 @@
 import { AlphaFilter, Container, Graphics, type PointData, type Renderer } from "pixi.js";
 import type { GameRecord } from "@/utils";
-import { DrawableElement } from "./base";
+import { DrawableElement, type ContainerPool } from "./base";
 import { LatLng } from "leaflet";
 import type { CallbackUtils } from "./pixiOverlay";
 
@@ -21,8 +21,8 @@ export default class Polygon extends DrawableElement {
         this.convertedPoints = [];
     }
 
-    setupContainer(container: Container): undefined {
-        container.addChild(this.graphics);
+    setupContainer(containers: ContainerPool): undefined {
+        containers.excludedArea.addChild(this.graphics);
     }
 
     createWithMap(utils: CallbackUtils): undefined {

@@ -1,6 +1,6 @@
 import { AlphaFilter, Container, Graphics, type Renderer } from "pixi.js";
 import type { GameRecord } from "@/utils";
-import { DrawableElement } from "./base";
+import { DrawableElement, type ContainerPool } from "./base";
 import { LatLng } from "leaflet";
 import type { CallbackUtils } from "./pixiOverlay";
 import { flipCoords, type Region } from "@/regions/regions";
@@ -32,8 +32,8 @@ export default class HidingCirclesElement extends DrawableElement {
         this.radius = region.hidingRadiusMiles * SCALE_TO_MILES_ADJUSTED;
     }
 
-    setupContainer(container: Container): undefined {
-        container.addChild(this.graphics);
+    setupContainer(containers: ContainerPool): undefined {
+        containers.root.addChild(this.graphics);
     }
 
     createWithMap(utils: CallbackUtils): undefined {
