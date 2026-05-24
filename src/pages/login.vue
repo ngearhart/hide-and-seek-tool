@@ -32,10 +32,8 @@ const REDIRECTING = 'Successfully logged in. Redirecting...'
 onMounted(async () => {
   const route = useRoute()
   const currentUser = await getCurrentUser()
-  console.log(currentUser)
   if (currentUser) {
     message.value = REDIRECTING
-    console.log("redirecting!")
     const result = await getRedirectResult(auth);
     if (result) {
       console.log('logged in')

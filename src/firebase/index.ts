@@ -1,7 +1,7 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
+import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions';
 import { connectDatabaseEmulator, getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
@@ -32,3 +32,7 @@ export default function getFirebase() {
   const existingApp = getApps()[0];
   return initialize(existingApp);
 }
+
+export function helloWorld() {
+  return httpsCallable(getFunctions(getFirebase()), 'helloWorld')
+} 

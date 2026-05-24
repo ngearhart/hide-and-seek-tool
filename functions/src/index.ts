@@ -19,7 +19,7 @@ const JAWG_API_TOKEN = defineSecret('JAWG_API_TOKEN');
 setGlobalOptions({ maxInstances: 10 });
 
 export const helloWorld = onCall((request) => {
-    const text = request.data.text;
+    const text = request.data?.text || null;
     // Authentication / user information is automatically added to the request.
     const uid = request.auth?.uid || null;
     const name = request.auth?.token.name || null;
@@ -35,7 +35,7 @@ export const helloWorld = onCall((request) => {
         "name": name,
         "picture": picture,
         "email": email,
-        "JAWG_API_TOKEN": JAWG_API_TOKEN,
+        "JAWG_API_TOKEN": JAWG_API_TOKEN.value(),
     }
     // response.send(`Hello from Firebase - I have JAWG Token ${JAWG_API_TOKEN.value()}`);
     //https://firebase.google.com/docs/hosting/manage-cache
