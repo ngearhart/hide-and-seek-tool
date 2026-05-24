@@ -21,7 +21,6 @@
 <script lang="ts" setup>
 
 import { useStopwatch } from 'vue-timer-hook';
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
@@ -30,7 +29,7 @@ const emit = defineEmits<{
   (e: 'submit', team: string): void
 }>();
 
-const user = useCurrentUserMock();
+const user = useCurrentUser();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);

@@ -105,9 +105,8 @@ import { useStore } from '@/stores/app';
 import { distance, rotatePoint } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useDatabaseObject } from 'vuefire';
+import { useCurrentUser, useDatabaseObject } from 'vuefire';
 
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
@@ -126,7 +125,7 @@ const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
 
 const drawnItems = reactive(new L.FeatureGroup());
-const user = useCurrentUserMock();
+const user = useCurrentUser();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));

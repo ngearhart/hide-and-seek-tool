@@ -67,18 +67,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 import { Notifications } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useDatabaseObject } from 'vuefire';
+import { useCurrentUser, useDatabaseObject } from 'vuefire';
 import { useRoute, useRouter } from 'vue-router'
 
 import { useNotification } from "@kyvg/vue3-notification";
 
 const { notify }  = useNotification();
 
-const user = useCurrentUserMock();
+const user = useCurrentUser();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);

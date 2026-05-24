@@ -54,3 +54,5 @@ database-debug.log
 serviceAccountKey.json
 tmp/
 img/
+
+firebase-debug.log

@@ -15,7 +15,7 @@ export default [
 
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**, **/lib/**'],
   },
 
   ...pluginVue.configs['flat/recommended'],

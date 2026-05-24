@@ -15,6 +15,7 @@ import VueAngle from 'vue-angle';
 
 // Types
 import type { App } from 'vue'
+import getFirebase from '@/firebase/index'
 
 export function registerPlugins (app: App) {
   app
@@ -24,7 +25,7 @@ export function registerPlugins (app: App) {
     .use(Notifications)
     .use(VueAngle)
     .use(VueFire, {
-      firebaseApp: firebaseApp,
+      firebaseApp: getFirebase(),
       modules: [
         VueFireAuth()
       ]

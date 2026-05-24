@@ -80,7 +80,7 @@ export default defineConfig({
   },
   // Uncomment to get sourcemaps to prod
   // build: {
-    // minify: false,
-    // sourcemap: true,
+  //   minify: false,
+  //   sourcemap: true,
   // },
 })

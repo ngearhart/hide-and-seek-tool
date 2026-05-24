@@ -26,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
@@ -43,7 +42,7 @@ const isGameCreatorOpen = ref(false);
 const isTeamJoinerOpen = ref(false);
 const gameCodeEntered = ref('');
 
-const user = useCurrentUserMock();
+const user = useCurrentUser();
 
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
