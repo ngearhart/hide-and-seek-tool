@@ -3,9 +3,12 @@ from models import PlaceFirebaseEntry, PlaceApiResponse
 from cache import get_place_by_place_id, save_place, save_list_for_region
 from collections import defaultdict
 from time import sleep
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-GOOG_API_KEY = ""
+GOOG_API_KEY = os.environ.get("GOOG_API_KEY") 
 
 # We get 10k places lookups/month
 # We get 5k place insights/month
