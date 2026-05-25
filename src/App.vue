@@ -3,9 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import { helloWorld } from './firebase';
-
-  
 // import { useCurrentUser, isCurrentRouteAuthenticated } from 'vuefire'
 
 // // App.vue
@@ -31,9 +28,5 @@ import { helloWorld } from './firebase';
 //     return router.push(route.query.redirect)
 //   }
 // })
-
-onMounted(() => {
-  helloWorld()().then(result => console.log(result));
-})
 
 </script>

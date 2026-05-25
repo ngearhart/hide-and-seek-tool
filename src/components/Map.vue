@@ -98,14 +98,14 @@
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L, { type LatLngBoundsExpression } from 'leaflet';
+import L, { LatLng, type LatLngBoundsExpression, type LatLngExpression } from 'leaflet';
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
 import { distance, rotatePoint } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useCurrentUser, useDatabaseObject } from 'vuefire';
+import { useCurrentUser, useDatabaseObject, useFirebaseApp } from 'vuefire';
 
 import type { GameRecord, UserRecord } from '@/utils';
 
@@ -120,9 +120,12 @@ import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
 import type { Feature, Point } from 'geojson';
+import { searchForFeatures } from '@/firebase';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
+
+const firebaseApp = useFirebaseApp();
 
 const drawnItems = reactive(new L.FeatureGroup());
 const user = useCurrentUser();
@@ -192,6 +195,33 @@ const updateGameObjects = () => {
     updateMarkers();
     PixiManager.update(gamesObj.value!);
     localMap.value!.addLayer(PixiManager.getLayer());
+    
+    searchForFeatures(firebaseApp, {
+        corner1: {
+            lat: store.$state.loadedRegionData!.bounds[0][1],
+            lng: store.$state.loadedRegionData!.bounds[0][0],
+        },
+        corner2: {
+            lat: store.$state.loadedRegionData!.bounds[1][1],
+            lng: store.$state.loadedRegionData!.bounds[1][0],
+        },
+        featureType: "airport",
+        regionName: store.$state.loadedRegionData!.name
+    }).then(response => {
+        (L as any).rectangle([
+            [store.$state.loadedRegionData?.bounds[0][1], store.$state.loadedRegionData?.bounds[0][0]],
+            [store.$state.loadedRegionData?.bounds[1][1], store.$state.loadedRegionData?.bounds[1][0]],
+        ], { color: 'blue' }).addTo(localMap.value!);
+        response.data.forEach(hex => {
+            (L as any).circle(hex.center, {color: 'red', radius: hex.radius}).addTo(localMap.value!);
+            (L as any).circle(hex.center, {color: 'red', radius: 50}).addTo(localMap.value!);
+            console.log('circle added at ' + hex.center.lat + ' ' + hex.radius)
+        })
+    });
+}
+
+const drawHexAt = (point: LatLng, radius: number) => {
+    
 }
 
 const onPinRadar = (success: boolean, userLat: number, userLng: number, distance: number) => {

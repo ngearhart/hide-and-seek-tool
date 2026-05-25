@@ -1,7 +1,9 @@
-import { setGlobalOptions } from "firebase-functions";
+import { setGlobalOptions, https } from "firebase-functions";
 import { onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
+import { FeatureTypes, SearchForFeaturesRequest } from "./models";
+import { generateTiles } from "./geo";
 
 const JAWG_API_TOKEN = defineSecret('JAWG_API_TOKEN');
 
@@ -40,4 +42,15 @@ export const helloWorld = onCall((request) => {
     // response.send(`Hello from Firebase - I have JAWG Token ${JAWG_API_TOKEN.value()}`);
     //https://firebase.google.com/docs/hosting/manage-cache
     //   res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+});
+
+
+export const searchForFeatures = onCall((request) => {
+    const requestData = SearchForFeaturesRequest.safeParse(request.data);
+
+    if (!requestData.success) {
+        throw new https.HttpsError("invalid-argument", requestData.error.message);
+    }
+
+    return generateTiles(requestData.data.corner1, requestData.data.corner2);
 });
