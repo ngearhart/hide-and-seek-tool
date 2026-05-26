@@ -1,4 +1,4 @@
-import { LatLngType, PointType, SearchAreaType } from "./models";
+import { FeatureType, LatLngType, PointType, SearchAreaType, UpdateCallback } from "./models";
 
 import * as logger from "firebase-functions/logger";
 
@@ -49,17 +49,26 @@ function addToPoint(point: PointType, addX: number, addY: number): PointType {
 }
 
 
-// SQUARE TILING
+// SQUARE TILING STACK
 // Base case: Start with 1 square that entirely envelopes the rectangle
-// Then, split into 4 smaller squares of half (?) radius
+// Then, split into 4 smaller squares of half side length
 
 type Rectangle = {
     topLeftPoint: PointType
     bottomRightPoint: PointType
 }
 
-function getCircles() {
-
+function rectToCirle(rect: Rectangle): SearchAreaType {
+    const sideLength = Math.max(rect.bottomRightPoint.x - rect.topLeftPoint.x, rect.bottomRightPoint.y - rect.topLeftPoint.y) / 2.0;
+    const midpoint: PointType = {
+        x: (rect.bottomRightPoint.x + rect.topLeftPoint.x) / 2.0,
+        y: (rect.bottomRightPoint.y + rect.topLeftPoint.y) / 2.0
+    }
+    const center = getLatLonFromXY(midpoint);
+    return {
+        center: center,
+        radius: convertDistanceToMeters(sideLength, center.lat) * Math.sqrt(2)
+    }
 }
 
 function subdivide(r: Rectangle): Rectangle[] {
@@ -102,33 +111,42 @@ function subdivide(r: Rectangle): Rectangle[] {
     ]
 }
 
-export function generateTiles(point1: LatLngType, point2: LatLngType, zoom: number = 0): SearchAreaType[] {
+function getPlacesInRectangleOrException(r: Rectangle, featureType: FeatureType): string[] {
+    if (Math.random() < 0.2) {
+        throw 'Random error';
+    }
+    return [];
+}
+
+export async function getPlaceIds(point1: LatLngType, point2: LatLngType, featureType: FeatureType, updateCallback?: (m: UpdateCallback) => Promise<void>): string[] {
     const { topLeft, bottomRight } = normalize(point1, point2);
-    const topLeftPoint = getXYfromLatLon(topLeft);
-    const bottomRightPoint = getXYfromLatLon(bottomRight);
+    const overallRect: Rectangle = {
+        topLeftPoint: getXYfromLatLon(topLeft),
+        bottomRightPoint: getXYfromLatLon(bottomRight)
+    };
     
-    return subdivide({ topLeftPoint, bottomRightPoint }).flatMap(rect => subdivide(rect)).map(rect => {
-        const sideLength = Math.max(rect.bottomRightPoint.x - rect.topLeftPoint.x, rect.bottomRightPoint.y - rect.topLeftPoint.y) / 2.0;
-        
-        const midpoint: PointType = {
-            x: (rect.bottomRightPoint.x + rect.topLeftPoint.x) / 2.0,
-            y: (rect.bottomRightPoint.y + rect.topLeftPoint.y) / 2.0
+    const areasToExplore: Rectangle[] = [overallRect];
+    const exploredAreas: SearchAreaType[] = [];
+
+    const placeIdsToReturn: string[] = [];
+
+    while (areasToExplore.length > 0) {
+        const currentRectangleToExplore = areasToExplore.pop()!;
+        const equivalentCircle = rectToCirle(currentRectangleToExplore);
+        try {
+            if (updateCallback) {
+                await updateCallback({
+                    state: "searching",
+                    visitedCircles: exploredAreas,
+                    currentCircle: equivalentCircle
+                })
+            }
+            placeIdsToReturn.push(...getPlacesInRectangleOrException(currentRectangleToExplore, featureType));
+            exploredAreas.push(equivalentCircle);
+        } catch {
+            // Too big of a search area - subdivide
+            areasToExplore.push(...subdivide(currentRectangleToExplore));
         }
-        return {
-            center: getLatLonFromXY(midpoint),
-            radius: convertDistanceToMeters(sideLength, topLeft.lat) * Math.sqrt(2)
-        }
-    })
-    
-    // const sideLength = Math.max(rect.bottomRightPoint.x - rect.topLeftPoint.x, rect.bottomRightPoint.y - rect.topLeftPoint.y) / 2.0;
-    // const midpoint: PointType = {
-    //     x: (bottomRightPoint.x + topLeftPoint.x) / 2.0,
-    //     y: (bottomRightPoint.y + topLeftPoint.y) / 2.0
-    // }
-    // return [
-    //     {
-    //         center: getLatLonFromXY(midpoint),
-    //         radius: convertDistanceToMeters(sideLength, topLeft.lat) * Math.sqrt(2)
-    //     },
-    // ]
+    }
+    return placeIdsToReturn;
 }

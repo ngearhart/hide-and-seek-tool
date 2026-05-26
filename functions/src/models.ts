@@ -65,3 +65,9 @@ export const Point = z.object({
     y: z.number(),
 });
 export type PointType = z.infer<typeof Point>;
+
+export type UpdateCallback = {
+    state: "searching" | "done"
+    visitedCircles: SearchAreaType[]
+    currentCircle?: SearchAreaType
+}

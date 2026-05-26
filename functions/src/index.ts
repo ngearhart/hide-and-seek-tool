@@ -3,7 +3,7 @@ import { onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
 import { FeatureTypes, SearchForFeaturesRequest } from "./models";
-import { generateTiles } from "./geo";
+import { generateTiles, getPlaceIds } from "./geo";
 
 const JAWG_API_TOKEN = defineSecret('JAWG_API_TOKEN');
 
@@ -45,12 +45,20 @@ export const helloWorld = onCall((request) => {
 });
 
 
-export const searchForFeatures = onCall((request) => {
+export const searchForFeatures = onCall(async (request, response) => {
     const requestData = SearchForFeaturesRequest.safeParse(request.data);
 
     if (!requestData.success) {
         throw new https.HttpsError("invalid-argument", requestData.error.message);
     }
 
-    return generateTiles(requestData.data.corner1, requestData.data.corner2);
+    if (request.acceptsStreaming) {
+        return await getPlaceIds(requestData.data.corner1, requestData.data.corner2, "airport", async(m) => {
+            response!.sendChunk(m);
+            await new Promise(res => setTimeout(res, 2000));
+        })
+    }
+
+    return []
+    // return await generateTiles(requestData.data.corner1, requestData.data.corner2);
 });

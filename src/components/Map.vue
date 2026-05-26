@@ -120,7 +120,7 @@ import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
 import type { Feature, Point } from 'geojson';
-import { searchForFeatures } from '@/firebase';
+import { searchForFeatures, searchForFeaturesStream } from '@/firebase';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -191,12 +191,38 @@ const updateMarkers = () => {
     });
 }
 
-const updateGameObjects = () => {
+const updateGameObjects = async() => {
     updateMarkers();
     PixiManager.update(gamesObj.value!);
     localMap.value!.addLayer(PixiManager.getLayer());
     
-    searchForFeatures(firebaseApp, {
+    // searchForFeatures(firebaseApp, {
+    //     corner1: {
+    //         lat: store.$state.loadedRegionData!.bounds[0][1],
+    //         lng: store.$state.loadedRegionData!.bounds[0][0],
+    //     },
+    //     corner2: {
+    //         lat: store.$state.loadedRegionData!.bounds[1][1],
+    //         lng: store.$state.loadedRegionData!.bounds[1][0],
+    //     },
+    //     featureType: "airport",
+    //     regionName: store.$state.loadedRegionData!.name
+    // }).then(response => {
+    //     (L as any).rectangle([
+    //         [store.$state.loadedRegionData?.bounds[0][1], store.$state.loadedRegionData?.bounds[0][0]],
+    //         [store.$state.loadedRegionData?.bounds[1][1], store.$state.loadedRegionData?.bounds[1][0]],
+    //     ], { color: 'blue' }).addTo(localMap.value!);
+    //     response.data.forEach(hex => {
+    //         (L as any).circle(hex.center, {color: 'red', radius: hex.radius}).addTo(localMap.value!);
+    //         (L as any).circle(hex.center, {color: 'red', radius: 50}).addTo(localMap.value!);
+    //         console.log('circle added at ' + hex.center.lat + ' ' + hex.radius)
+    //     })
+    // });
+    (L as any).rectangle([
+        [store.$state.loadedRegionData?.bounds[0][1], store.$state.loadedRegionData?.bounds[0][0]],
+        [store.$state.loadedRegionData?.bounds[1][1], store.$state.loadedRegionData?.bounds[1][0]],
+    ], { color: 'blue' }).addTo(localMap.value!);
+    const stream = await searchForFeaturesStream(firebaseApp, {
         corner1: {
             lat: store.$state.loadedRegionData!.bounds[0][1],
             lng: store.$state.loadedRegionData!.bounds[0][0],
@@ -207,17 +233,15 @@ const updateGameObjects = () => {
         },
         featureType: "airport",
         regionName: store.$state.loadedRegionData!.name
-    }).then(response => {
-        (L as any).rectangle([
-            [store.$state.loadedRegionData?.bounds[0][1], store.$state.loadedRegionData?.bounds[0][0]],
-            [store.$state.loadedRegionData?.bounds[1][1], store.$state.loadedRegionData?.bounds[1][0]],
-        ], { color: 'blue' }).addTo(localMap.value!);
-        response.data.forEach(hex => {
+    })
+    for await (const chunk of stream.stream) {
+        console.log(chunk);
+        Array.from(chunk.visitedCircles).forEach(hex => {
             (L as any).circle(hex.center, {color: 'red', radius: hex.radius}).addTo(localMap.value!);
-            (L as any).circle(hex.center, {color: 'red', radius: 50}).addTo(localMap.value!);
-            console.log('circle added at ' + hex.center.lat + ' ' + hex.radius)
-        })
-    });
+        });
+        (L as any).circle(chunk.currentCircle.center, {color: 'red', radius: chunk.currentCircle.radius}).addTo(localMap.value!);
+    }
+    console.log("done");
 }
 
 const drawHexAt = (point: LatLng, radius: number) => {

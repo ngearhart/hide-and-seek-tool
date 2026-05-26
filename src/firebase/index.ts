@@ -1,7 +1,7 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFunctionsEmulator, getFunctions, httpsCallable, type HttpsCallableResult } from 'firebase/functions';
+import { connectFunctionsEmulator, getFunctions, httpsCallable, type HttpsCallableResult, type HttpsCallableStreamResult } from 'firebase/functions';
 import { connectDatabaseEmulator, getDatabase } from 'firebase/database';
 import type { LatLngExpression } from 'leaflet';
 import type { FeatureType } from '@/regions/features';
@@ -63,3 +63,8 @@ type SearchForFeaturesResponse = SearchArea[];
 export function searchForFeatures(firebaseApp: FirebaseApp, request: SearchForFeaturesRequest): Promise<HttpsCallableResult<SearchForFeaturesResponse>> {
   return httpsCallable(getFunctions(firebaseApp), 'searchForFeatures')(request) as Promise<HttpsCallableResult<SearchForFeaturesResponse>>
 } 
+
+export function searchForFeaturesStream(firebaseApp: FirebaseApp, request: SearchForFeaturesRequest): Promise<HttpsCallableStreamResult<SearchForFeaturesResponse>> {
+  return httpsCallable(getFunctions(firebaseApp), 'searchForFeatures').stream(request) as Promise<HttpsCallableStreamResult<SearchForFeaturesResponse>>;
+} 
+
