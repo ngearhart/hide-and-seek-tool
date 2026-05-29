@@ -1,32 +1,11 @@
-import type { OverpassJson, OverpassNode, OverpassRelation, OverpassWay } from "overpass-ts";
+import type { OverpassJson } from "overpass-ts";
 import { overpassJson } from "overpass-ts";
-import { MapFeature } from "./models";
+import { MapFeature, WayOrRelation, ZNode } from "../models";
 
 import * as z from "zod";
 
-const bounds = "38.600755595, -77.615651180, 39.175834624, -76.565770237";
 
-const TagsWithName = z.looseObject({
-    name: z.string(),
-    iata: z.string().optional()
-})
-
-const ZLatLngPoint = z.object({
-    lat: z.number(),
-    lon: z.number()
-})
-
-const WayOrRelation = z.looseObject({
-    tags: TagsWithName,
-    center: ZLatLngPoint
-})
-
-const ZNode = z.looseObject({
-    ...ZLatLngPoint.shape,
-    tags: TagsWithName
-})
-
-async function getAirports(): Promise<MapFeature[]> {
+export default async function getAirports(bounds: string): Promise<MapFeature[]> {
     const response: OverpassJson = await overpassJson(`
         [out:json][timeout:25];
     nwr["aeroway"="aerodrome"]["iata"~".+"](${bounds});
@@ -81,6 +60,3 @@ async function getAirports(): Promise<MapFeature[]> {
     }).filter(element => element != null && element.properties.Name != null) as MapFeature[];
     // The API will filter out airports without IATA tags but still
 }
-
-// json request
-getAirports().then(data => console.log(JSON.stringify(data, null, 2)));

@@ -77,3 +77,23 @@ export type UpdateCallback = {
     visitedCircles: SearchAreaType[]
     currentCircle?: SearchAreaType
 }
+
+export const TagsWithName = z.looseObject({
+    name: z.string(),
+    iata: z.string().optional()
+})
+
+export const ZLatLngPoint = z.object({
+    lat: z.number(),
+    lon: z.number()
+})
+
+export const WayOrRelation = z.looseObject({
+    tags: TagsWithName,
+    center: ZLatLngPoint
+})
+
+export const ZNode = z.looseObject({
+    ...ZLatLngPoint.shape,
+    tags: TagsWithName
+})
