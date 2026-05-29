@@ -25,6 +25,7 @@
     "firebase-functions": "^7.2.5",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
+    "overpass-ts": "^4.3.8",
     "pinia-plugin-persistedstate": "^4.2.0",
     "pixi.js": "^8.18.1",
     "roboto-fontface": "*",

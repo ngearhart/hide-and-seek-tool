@@ -1,4 +1,5 @@
 
+import { Feature, GeoJsonProperties, Point } from "geojson";
 import { LatLngExpression } from "leaflet";
 import * as z from "zod";
 
@@ -39,7 +40,12 @@ export function convertPlace(apiResponse: PlaceApiResponse): PlaceFirebaseEntry 
     }
 }
 
-
+type CustomProperty = GeoJsonProperties & {
+    Name: string
+    Type: FeatureType
+    Description: string
+}
+export type MapFeature = Feature<Point, CustomProperty>;
 
 export const LatLng = z.object({
     lat: z.number(),
