@@ -2,14 +2,14 @@ import { featureDistance } from "../geo";
 import { FeatureType, MapFeature, WayOrRelation, ZNode } from "../models";
 import getAirports from "./airport";
 import type { OverpassJson } from "overpass-ts";
-import { overpassJson } from "overpass-ts";
+import { overpassJson, OverpassGatewayTimeoutError } from "overpass-ts";
 
 import * as z from "zod";
 
 
 const REDUCTION_RADIUS_MI = 0.05;
 
-function getFeatureDefault(query: string) {
+function getFeatureDefault(query: string, featureType: FeatureType) {
     return async (bounds: string): Promise<MapFeature[]> => {
         const response: OverpassJson = await overpassJson(`
             [out:json][timeout:25];
@@ -28,7 +28,7 @@ function getFeatureDefault(query: string) {
                     "type": "Feature",
                     "properties": {
                         "Name": parsedElement.data.tags.name,
-                        "Type": "museum",
+                        "Type": featureType,
                     },
                     "geometry": {
                         "type": "Point",
@@ -48,7 +48,7 @@ function getFeatureDefault(query: string) {
                     "type": "Feature",
                     "properties": {
                         "Name": parsedElement.data.tags.name,
-                        "Type": "airport",
+                        "Type": featureType,
                     },
                     "geometry": {
                         "type": "Point",
@@ -64,10 +64,18 @@ function getFeatureDefault(query: string) {
     }
 }
 
-
+// https://wiki.openstreetmap.org/wiki/Key:amenity
 const FEAT_DICT: { [featureType in FeatureType]: (bounds: string) => Promise<MapFeature[]> } = {
     "airport": getAirports,
-    "museum": getFeatureDefault(`nwr["tourism"="museum"]`)
+    "museum": getFeatureDefault(`nwr["tourism"="museum"]`, "museum"),
+    "theater": getFeatureDefault(`nwr["amenity"="cinema"]`, "theater"),
+    "hospital": getFeatureDefault(`nwr["amenity"="hospital"]["emergency"="yes"]`, "hospital"),
+    "library": getFeatureDefault(`nwr["amenity"="library"]`, "library"),
+    "zoo": getFeatureDefault(`nwr["tourism"="zoo"]`, "zoo"),
+    "aquarium": getFeatureDefault(`nwr["tourism"="aquarium"]`, "aquarium"),
+    "graveyard": getFeatureDefault(`nwr["amenity"="graveyard"]`, "graveyard"),
+    "park": getFeatureDefault(`nwr["leisure"="park"]`, "park"),
+    "custom": (bounds: string) => new Promise(res => res([])),
 }
 
 export default async function getFeatures(bounds: string, featureType: FeatureType): Promise<MapFeature[]> {
@@ -89,7 +97,7 @@ export default async function getFeatures(bounds: string, featureType: FeatureTy
 }
 
 const bounds = "38.600755595, -77.615651180, 39.175834624, -76.565770237";
-getFeatures(bounds, "museum").then(data => {
+getFeatures(bounds, "hospital").then(data => {
     console.log(JSON.stringify(data, null, 2));
     console.log("Total feature count = " + data.length);
 });

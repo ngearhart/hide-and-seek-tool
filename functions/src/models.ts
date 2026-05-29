@@ -1,5 +1,5 @@
 
-import { Feature, GeoJsonProperties, Point } from "geojson";
+import { Feature, GeoJsonProperties, Point as GeoJsonPoint } from "geojson";
 import { LatLngExpression } from "leaflet";
 import * as z from "zod";
 
@@ -45,7 +45,7 @@ type CustomProperty = GeoJsonProperties & {
     Type: FeatureType
     Description: string
 }
-export type MapFeature = Feature<Point, CustomProperty>;
+export type MapFeature = Feature<GeoJsonPoint, CustomProperty>;
 
 export const LatLng = z.object({
     lat: z.number(),
