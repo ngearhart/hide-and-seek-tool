@@ -52,14 +52,6 @@ export function normalizeInverse(point1: LatLngType, point2: LatLngType): { bott
     }
 }
 
-function addToPoint(point: PointType, addX: number, addY: number): PointType {
-    return {
-        x: point.x + addX,
-        y: point.y + addY
-    }
-}
-
-
 // SQUARE TILING STACK
 // Base case: Start with 1 square that entirely envelopes the rectangle
 // Then, split into 4 smaller squares of half side length
@@ -83,7 +75,7 @@ function rectToCirle(rect: Rectangle): SearchAreaType {
 }
 
 function subdivide(r: Rectangle): Rectangle[] {
-    const sideLength = Math.max(r.bottomRightPoint.x - r.topLeftPoint.x, r.bottomRightPoint.y - r.topLeftPoint.y) / 2.0;
+    // const sideLength = Math.max(r.bottomRightPoint.x - r.topLeftPoint.x, r.bottomRightPoint.y - r.topLeftPoint.y) / 2.0;
 
     const midpoint: PointType = {
         x: (r.bottomRightPoint.x + r.topLeftPoint.x) / 2.0,
@@ -129,7 +121,7 @@ function getPlacesInRectangleOrException(r: Rectangle, featureType: FeatureType)
     return [];
 }
 
-export async function getPlaceIds(point1: LatLngType, point2: LatLngType, featureType: FeatureType, updateCallback?: (m: UpdateCallback) => Promise<void>): string[] {
+export async function getPlaceIds(point1: LatLngType, point2: LatLngType, featureType: FeatureType, updateCallback?: (m: UpdateCallback) => Promise<void>): Promise<string[]> {
     const { topLeft, bottomRight } = normalize(point1, point2);
     const overallRect: Rectangle = {
         topLeftPoint: getXYfromLatLon(topLeft),

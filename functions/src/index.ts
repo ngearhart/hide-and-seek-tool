@@ -1,9 +1,8 @@
 import { setGlobalOptions, https } from "firebase-functions";
 import { onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { defineSecret } from "firebase-functions/params";
 import { SearchForFeaturesRequest } from "./models";
-import { getPlaceIds, normalizeInverse } from "./geo";
+import { normalizeInverse } from "./geo";
 import getFeatures from "./features";
 import { OverpassApiStatusError, OverpassGatewayTimeoutError } from "overpass-ts";
 

@@ -2,7 +2,7 @@ import { featureDistance } from "../geo";
 import { FeatureType, MapFeature, WayOrRelation, ZNode } from "../models";
 import getAirports from "./airport";
 import type { OverpassJson } from "overpass-ts";
-import { overpassJson, OverpassGatewayTimeoutError } from "overpass-ts";
+import { overpassJson } from "overpass-ts";
 
 import * as z from "zod";
 
