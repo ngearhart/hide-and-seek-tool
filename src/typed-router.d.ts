@@ -44,6 +44,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/regionEditor': RouteRecordInfo<
+      '/regionEditor',
+      '/regionEditor',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/rules': RouteRecordInfo<
       '/rules',
       '/rules',
@@ -86,6 +93,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/login.vue': {
       routes:
         | '/login'
+      views:
+        | never
+    }
+    'src/pages/regionEditor.vue': {
+      routes:
+        | '/regionEditor'
       views:
         | never
     }

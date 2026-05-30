@@ -5,6 +5,8 @@ import { connectFunctionsEmulator, getFunctions, httpsCallable, type HttpsCallab
 import { connectDatabaseEmulator, getDatabase } from 'firebase/database';
 import type { LatLngExpression } from 'leaflet';
 import type { FeatureType } from '@/regions/features';
+import type { Feature, Point } from 'geojson';
+import type { CustomProperty } from '@/regions/regions';
 
 const firebaseConfig = {
     apiKey: "AIzaSyC19R-M2RZKhGK9Xcv3SkeF_0plmzcmz8o",
@@ -53,18 +55,8 @@ type SearchForFeaturesRequest = {
     corner2: LatLngExpression
 }
 
-type SearchArea = {
-    center: LatLngExpression,
-    radius: number
-};
+type SearchForFeaturesResponse = Feature<Point, CustomProperty>[];
 
-type SearchForFeaturesResponse = SearchArea[];
-
-export function searchForFeatures(firebaseApp: FirebaseApp, request: SearchForFeaturesRequest): Promise<HttpsCallableResult<SearchForFeaturesResponse>> {
-  return httpsCallable(getFunctions(firebaseApp), 'searchForFeatures')(request) as Promise<HttpsCallableResult<SearchForFeaturesResponse>>
-} 
-
-export function searchForFeaturesStream(firebaseApp: FirebaseApp, request: SearchForFeaturesRequest): Promise<HttpsCallableStreamResult<SearchForFeaturesResponse>> {
-  return httpsCallable(getFunctions(firebaseApp), 'searchForFeatures').stream(request) as Promise<HttpsCallableStreamResult<SearchForFeaturesResponse>>;
-} 
-
+export function loadNewFeatures(firebaseApp: FirebaseApp, request: SearchForFeaturesRequest): Promise<HttpsCallableResult<SearchForFeaturesResponse>> {
+  return httpsCallable(getFunctions(firebaseApp), 'loadNewFeatures')(request) as Promise<HttpsCallableResult<SearchForFeaturesResponse>>
+}

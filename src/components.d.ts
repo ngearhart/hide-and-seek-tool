@@ -23,6 +23,7 @@ declare module 'vue' {
     MapActionButton: typeof import('./components/MapActionButton.vue')['default']
     MarkerEditor: typeof import('./components/dialog/MarkerEditor.vue')['default']
     Radar: typeof import('./components/Radar.vue')['default']
+    RegionEditorMap: typeof import('./components/RegionEditorMap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TeamJoiner: typeof import('./components/game/TeamJoiner.vue')['default']

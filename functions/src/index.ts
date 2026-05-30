@@ -30,6 +30,8 @@ export const loadNewFeatures = onCall(async (request) => {
     const boundPoints = normalizeInverse(requestData.data.corner1, requestData.data.corner2);
     const bounds = [boundPoints.bottomLeft.lat, boundPoints.bottomLeft.lng, boundPoints.topRight.lat, boundPoints.topRight.lng].join(", ");
 
+    logger.info(`Request received for type: ${requestData.data.featureType} for bounds: ${bounds}`);
+
     try {
         return await getFeatures(bounds, requestData.data.featureType);
     } catch (e) {

@@ -33,7 +33,8 @@
       "port": 9000
     },
     "hosting": {
-      "port": 3000
+      "port": 3000,
+      "host": "0.0.0.0"
     },
     "ui": {
       "enabled": true,

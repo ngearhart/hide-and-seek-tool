@@ -43,11 +43,11 @@ export function normalizeInverse(point1: LatLngType, point2: LatLngType): { bott
     return {
         bottomLeft: {
             lat: Math.min(point1.lat, point2.lat),
-            lng: Math.max(point1.lng, point2.lng)
+            lng: Math.min(point1.lng, point2.lng)
         },
         topRight: {
             lat: Math.max(point1.lat, point2.lat),
-            lng: Math.min(point1.lng, point2.lng)
+            lng: Math.max(point1.lng, point2.lng)
         },
     }
 }
