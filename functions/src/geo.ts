@@ -1,7 +1,5 @@
 import { FeatureType, LatLngType, MapFeature, PointType, SearchAreaType, UpdateCallback } from "./models";
 
-import * as logger from "firebase-functions/logger";
-
 const ZOOM = 12;
 
 function getXYfromLatLon(latLngPoint: LatLngType, zoom: number = ZOOM): PointType {
@@ -37,6 +35,19 @@ function normalize(point1: LatLngType, point2: LatLngType): { topLeft: LatLngTyp
         bottomRight: {
             lat: Math.min(point1.lat, point2.lat),
             lng: Math.max(point1.lng, point2.lng)
+        },
+    }
+}
+
+export function normalizeInverse(point1: LatLngType, point2: LatLngType): { bottomLeft: LatLngType, topRight: LatLngType} {
+    return {
+        bottomLeft: {
+            lat: Math.min(point1.lat, point2.lat),
+            lng: Math.max(point1.lng, point2.lng)
+        },
+        topRight: {
+            lat: Math.max(point1.lat, point2.lat),
+            lng: Math.min(point1.lng, point2.lng)
         },
     }
 }

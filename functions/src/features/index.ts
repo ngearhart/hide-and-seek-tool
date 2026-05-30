@@ -66,6 +66,7 @@ function getFeatureDefault(query: string, featureType: FeatureType) {
 
 // https://wiki.openstreetmap.org/wiki/Key:amenity
 const FEAT_DICT: { [featureType in FeatureType]: (bounds: string) => Promise<MapFeature[]> } = {
+    "station": getFeatureDefault(`nwr["public_transport"="station"]["railway"="station"]`, "station"),
     "airport": getAirports,
     "museum": getFeatureDefault(`nwr["tourism"="museum"]`, "museum"),
     "theater": getFeatureDefault(`nwr["amenity"="cinema"]`, "theater"),
@@ -95,9 +96,3 @@ export default async function getFeatures(bounds: string, featureType: FeatureTy
         []
     );
 }
-
-const bounds = "38.600755595, -77.615651180, 39.175834624, -76.565770237";
-getFeatures(bounds, "hospital").then(data => {
-    console.log(JSON.stringify(data, null, 2));
-    console.log("Total feature count = " + data.length);
-});

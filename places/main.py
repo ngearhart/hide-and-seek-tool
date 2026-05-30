@@ -8,7 +8,7 @@ from time import sleep
 GOOG_API_KEY = ""
 
 # We get 10k places lookups/month
-# We get 5k place insights/month
+# We get 5k place insights/month, then $32/thousand requests
 API_USAGE = defaultdict(int)
 
 PLACE_TYPES = {

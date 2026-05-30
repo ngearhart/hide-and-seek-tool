@@ -2,10 +2,10 @@ import { setGlobalOptions, https } from "firebase-functions";
 import { onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
-import { FeatureTypes, SearchForFeaturesRequest } from "./models";
-import { generateTiles, getPlaceIds } from "./geo";
-
-const JAWG_API_TOKEN = defineSecret('JAWG_API_TOKEN');
+import { SearchForFeaturesRequest } from "./models";
+import { getPlaceIds, normalizeInverse } from "./geo";
+import getFeatures from "./features";
+import { OverpassApiStatusError, OverpassGatewayTimeoutError } from "overpass-ts";
 
 
 // For cost control, you can set the maximum number of containers that can be
@@ -20,45 +20,27 @@ const JAWG_API_TOKEN = defineSecret('JAWG_API_TOKEN');
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
-export const helloWorld = onCall((request) => {
-    const text = request.data?.text || null;
-    // Authentication / user information is automatically added to the request.
-    const uid = request.auth?.uid || null;
-    const name = request.auth?.token.name || null;
-    const picture = request.auth?.token.picture || null;
-    const email = request.auth?.token.email || null;
-
-
-    logger.info("Hello logs!", { structuredData: true });
-    return {
-        "hi": "hi",
-        "text": text,
-        "uid": uid,
-        "name": name,
-        "picture": picture,
-        "email": email,
-        "JAWG_API_TOKEN": JAWG_API_TOKEN.value(),
-    }
-    // response.send(`Hello from Firebase - I have JAWG Token ${JAWG_API_TOKEN.value()}`);
-    //https://firebase.google.com/docs/hosting/manage-cache
-    //   res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-});
-
-
-export const searchForFeatures = onCall(async (request, response) => {
+export const loadNewFeatures = onCall(async (request) => {
     const requestData = SearchForFeaturesRequest.safeParse(request.data);
 
+    
     if (!requestData.success) {
         throw new https.HttpsError("invalid-argument", requestData.error.message);
     }
+    
+    const boundPoints = normalizeInverse(requestData.data.corner1, requestData.data.corner2);
+    const bounds = [boundPoints.bottomLeft.lat, boundPoints.bottomLeft.lng, boundPoints.topRight.lat, boundPoints.topRight.lng].join(", ");
 
-    if (request.acceptsStreaming) {
-        return await getPlaceIds(requestData.data.corner1, requestData.data.corner2, "airport", async(m) => {
-            response!.sendChunk(m);
-            await new Promise(res => setTimeout(res, 2000));
-        })
+    try {
+        return await getFeatures(bounds, requestData.data.featureType);
+    } catch (e) {
+        logger.error(e);
+        if (e instanceof OverpassGatewayTimeoutError) {
+            throw new https.HttpsError("resource-exhausted", "API Gateway Timeout - Try again Later");
+        } else if (e instanceof OverpassApiStatusError) {
+            throw new https.HttpsError("resource-exhausted", "API Status Error - Try again Later");
+        } else {
+            throw new https.HttpsError("internal", "Unknown API error");
+        }
     }
-
-    return []
-    // return await generateTiles(requestData.data.corner1, requestData.data.corner2);
 });
