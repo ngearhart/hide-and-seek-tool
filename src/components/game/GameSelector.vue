@@ -17,6 +17,11 @@
               <v-btn block color="primary" v-on:click="launchGameCreatorDialog">+ Create a new game</v-btn>
             </v-col>
           </v-row>
+          <v-row align="center" justify="center">
+            <v-col cols="12" md="12">
+              <v-btn block color="primary" v-on:click="launchRegionEditor">Launch region editor</v-btn>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
     </v-card>
@@ -35,6 +40,8 @@ import { useStore } from '@/stores/app';
 
 const { notify }  = useNotification()
 
+const props = defineProps<{ currentTab: string }>()
+
 // const games = ref(getDatabase(), 'games');
 
 const isDialogOpen = ref(false);
@@ -49,6 +56,7 @@ const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
+const router = useRouter();
 const store = useStore();
 
 const generateSlug = () => {
@@ -62,6 +70,10 @@ const generateSlug = () => {
 
 const launchGameCreatorDialog = () => {
   isGameCreatorOpen.value = true;
+}
+
+const launchRegionEditor = () => {
+  router.push("/regionEditor");
 }
 
 const createNewGame = async (teams: { name: string }[], region: string) => {
@@ -151,25 +163,35 @@ const joinTeam = async(team: string) => {
   })
 }
 
-onMounted(async () => {
-  console.log('Startup - checking if user is in game')
+const checkUserInGameStatus = async() => {
+  if (props.currentTab === 'RegionEditor') {
+    console.log('[Game Selector] User is in region editor - no action required')
+    return
+  }
+  console.log('[Game Selector] Checking if user is in game')
   const userRef = await get(
     userRecordDbRef.value
   );
   if (!userRef.exists() || !userRef.val().currentGameId?.length) {
-    console.log('Startup - User not in game. Launching join game dialog.')
+    console.log('[Game Selector] User not in game. Launching join game dialog.')
     isDialogOpen.value = true;
     return;
   }
-  console.log('Startup - user is in game. Checking if user on team')
+  console.log('[Game Selector] User is in game. Checking if user on team')
   
   // Check for team membership, in edge case where user is in game but not on a team
   if (!userRef.val().teamName?.length) {
-    console.log('Startup - User not on a team. Launching team join dialog.')
+    console.log('[Game Selector] - User not on a team. Launching team join dialog.')
     isTeamJoinerOpen.value = true;
     return;
   }
-  console.log('Startup - user is all good to go.')
-});
+  console.log('[Game Selector] - User is all good to go.')
+}
+
+watch(() => props.currentTab, checkUserInGameStatus);
+
+// onMounted(async () => {
+//   await checkUserInGameStatus();
+// });
 
 </script>

@@ -2,6 +2,9 @@ import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geoj
 import type { LatLng, LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
+import { ref } from 'vue';
+import { getDatabase, ref as dbRef, set } from 'firebase/database';
+import { useDatabaseObject } from "vuefire";
 
 export type CustomProperty = GeoJsonProperties & {
     Name: string
@@ -17,6 +20,14 @@ export type Region = FeatureCollection<Point, CustomProperty> & {
     hidingRadiusMiles: number
 }
 
+export type NullableRegion = FeatureCollection<Point, CustomProperty> & {
+    name?: string
+    size?: string
+    center?: [number, number]
+    bounds?: [[number, number], [number, number]]
+    hidingRadiusMiles?: number
+}
+
 export async function loadRegion(regionName: string): Promise<Region> {
     const regionJson = await fetch(`/regions/${regionName}.geojson`).then((res) => res.json())
     console.log(`Loaded region ${regionName}`)
@@ -26,6 +37,10 @@ export async function loadRegion(regionName: string): Promise<Region> {
 export type RegionDescriptor = {
     name: string
     path: string
+}
+
+export function getNullRegion(): NullableRegion {
+    return { type: "FeatureCollection", features: [] }
 }
 
 export async function loadRegionDescriptions(): Promise<RegionDescriptor[]> {
@@ -59,4 +74,19 @@ export function generateVoronoi(region: Region): VoronoiDict {
             return target[key];
         }
     });
+}
+
+export function useRegions() {
+    const regionsDbRef = computed(() => dbRef(getDatabase(), 'regions'));
+    const regionsObj = useDatabaseObject<Region[] | null>(regionsDbRef);
+
+    const nameList = computed(() => regionsObj.value?.map(val => val.name) ?? []);
+
+    const get = (regionName: string) => regionsObj.data.value?.find(region => region.name === regionName);
+
+    const save = async(region: Region) => {
+
+    };
+
+    return { regionsObj, get, save, nameList };
 }

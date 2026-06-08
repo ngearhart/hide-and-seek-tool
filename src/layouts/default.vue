@@ -55,13 +55,13 @@
     </v-app-bar>
 
     <v-main>
-      <router-view v-if="gamesObj && gamesObj.region" />
+      <router-view v-if="currentTab === 'RegionEditor' || (gamesObj && gamesObj.region)" />
       <EarthAnimation v-else>
         hi
       </EarthAnimation>
     </v-main>
     <AppFooter />
-    <GameSelector />
+    <GameSelector :current-tab="currentTab" />
     <Notifications position="bottom right" />
   </v-app>
 </template>
@@ -94,6 +94,7 @@ let links = [
   'Timer',
   'Rules',
   'Curses',
+  'Region Editor'
 ]
 
 const exitGame = async() => {
