@@ -36,8 +36,9 @@
             </v-card>
         </v-container>
     </div>
-    <div class="menu-parent" v-if="!L.Browser.mobile && step != 'selecting'">
-        <v-card title="Choose Center"
+    <v-container bg fill-height grid-list-md text-xs-center class="menu-parent"
+        v-if="!L.Browser.mobile && step != 'selecting'">
+        <v-card :title="'Region \'' + editedRegion.name + '\': Choose Center'"
             subtitle="Click on the map to choose a point which roughly represents the center of your region"
             class="menu" v-if="step === 'centering'">
             <v-card-text>
@@ -45,23 +46,25 @@
                 <v-btn color="primary" block :disabled="!editedRegion.center" @click="step = 'bounds'">Confirm</v-btn>
             </v-card-text>
         </v-card>
-        <v-card title="Choose Bounds"
+        <v-card :title="'Region \'' + editedRegion.name + '\': Choose Bounds'"
             subtitle="Click on the map to choose the bounds of your region; must fully enclose all playable area"
             class="menu" v-if="step === 'bounds'">
             <v-card-text>
                 <v-checkbox v-model="enableRailroadOverlay" label="Enable Railroad Overlay"></v-checkbox>
-                <v-btn color="primary" block @click="startBoundsShape">Draw Bounds</v-btn>
+                <v-btn color="primary" block @click="startBoundsShape" class="mb-5">Draw Bounds</v-btn>
                 <v-btn color="primary" block :disabled="!editedRegion.bounds" @click="step = 'features'">Confirm</v-btn>
             </v-card-text>
         </v-card>
-        <!-- <v-card title="Region Editor" subtitle="Design Your Game Region" class="menu">
+        <v-card :title="'Region \'' + editedRegion.name + '\': Load Features'" subtitle="Load and modify map features"
+            class="menu" v-if="step === 'features'">
             <v-card-text>
-                <v-select label="Feature to Edit" :items="features.filter(item => item.key !== 'custom')" v-model="featureToEdit"
-                    item-title="pluralLabel" item-value="key"></v-select>
-                <v-btn color="primary" :disabled="loading" :loading="loading" @click="loadFromBackend">Load from Open Street Map Data</v-btn>
+                <v-select label="Feature to Edit" :items="features.filter(item => item.key !== 'custom')"
+                    v-model="featureToEdit" item-title="pluralLabel" item-value="key"></v-select>
+                <v-btn color="primary" :disabled="loading" :loading="loading" @click="loadFeatures">Load from Open
+                    Street Map Data</v-btn>
             </v-card-text>
-        </v-card> -->
-    </div>
+        </v-card>
+    </v-container>
 </template>
 
 <script lang="ts" setup>
@@ -77,7 +80,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, Region, useRegions, type NullableRegion } from '@/regions/regions';
+import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, useRegions, type NullableRegion } from '@/regions/regions';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { features } from '@/regions/features';
 import { loadNewFeatures } from '@/firebase';
@@ -108,6 +111,7 @@ const enableRailroadOverlay = shallowRef(false);
 const regions = useRegions();
 
 let centerMarker: L.Marker<any> | null = null;
+let boundsRect: L.Rectangle | null = null;
 
 onMounted(async () => {
     // Load existing regions
@@ -157,8 +161,29 @@ watch(step, () => {
         L.control.scale().addTo(localMap.value);
         localMap.value.on('click', onMapClick);
 
+        localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
+            if (e.type == "draw:created" && (e as any).layerType == "rectangle") {
+                let rect = e.layer._bounds;
+                editedRegion.value.bounds = [
+                    [rect._southWest.lat, rect._southWest.lng],
+                    [rect._northEast.lat, rect._northEast.lng],
+                ];
+                boundsRect = L.rectangle(rect, { color: "#ff7800", weight: 5, fillOpacity: 0.1 })
+                boundsRect.addTo(localMap.value!);
+            }
+        });
+
         // Sorry Dark Mode enjoyers - you will be forced to use Sunny on this mode
         updateTileLayers(["Jawg_Sunny"], localMap.value!);
+
+        if (step.value === 'bounds' || step.value === 'features') {
+            centerMarker = L.marker(editedRegion.value.center!).addTo(localMap.value!)
+                .bindPopup("Region Center");
+        }
+        if (step.value === 'features') {
+            boundsRect = L.rectangle(editedRegion.value.bounds!, { color: "#ff7800", weight: 5, fillOpacity: 0.1 })
+            boundsRect.addTo(localMap.value!);
+        }
     }
 })
 
@@ -175,7 +200,6 @@ watch(editedRegion, () => {
 }, { deep: true });
 
 const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
-    console.log('hi')
     if (step.value === 'centering') {
         editedRegion.value.center = [e.latlng.lat, e.latlng.lng];
     }
@@ -192,6 +216,9 @@ const submitRegionSelection = () => {
 };
 
 const startBoundsShape = () => {
+    if (boundsRect) {
+        boundsRect.remove();
+    }
     const rect = new (L as any).Draw.Rectangle(localMap.value!, {});
     (window as any).type = null; // https://github.com/Leaflet/Leaflet.draw/issues/898
     rect.initialize(localMap.value!);
@@ -204,7 +231,7 @@ const ensureRegionLoaded = async () => {
     store.$state.loadedRegionData = region;
 }
 
-const loadFromBackend = async () => {
+const loadFeatures = async () => {
     loading.value = true
     const features = await loadNewFeaturesWithRetries();
     if (!features) {
@@ -227,10 +254,10 @@ const loadNewFeaturesWithRetries = async () => {
     for (let attempt = 0; attempt < 5; attempt++) {
         try {
             return await loadNewFeatures(firebaseApp, {
-                corner1: { lat: store.$state.loadedRegionData!.bounds[0][1], lng: store.$state.loadedRegionData!.bounds[0][0] },
-                corner2: { lat: store.$state.loadedRegionData!.bounds[1][1], lng: store.$state.loadedRegionData!.bounds[1][0] },
+                corner1: { lat: editedRegion.value.bounds![0][0], lng: editedRegion.value.bounds![0][1] },
+                corner2: { lat: editedRegion.value.bounds![1][0], lng: editedRegion.value.bounds![1][1] },
                 featureType: featureToEdit.value,
-                regionName: store.$state.loadedRegionData!.name
+                regionName: editedRegion.value.name!
             });
         } catch (error) {
             await new Promise(res => setTimeout(res, 1000));
@@ -253,12 +280,21 @@ const loadNewFeaturesWithRetries = async () => {
     z-index: -1; */
 
     position: absolute;
-    top: 10em;
-    left: 10em;
+    top: 0;
+    left: 0;
     z-index: 1000;
-    min-width: 20em;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-items: start;
+    pointer-events: none;
+    /* min-width: 20em;
     transform: translateY(-50%);
-    margin-left: 1em;
+    margin-left: 1em; */
+}
+
+.menu-parent>.v-card {
+    pointer-events: auto;
 }
 
 /* .menu {
