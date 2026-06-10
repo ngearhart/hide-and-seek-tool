@@ -1,5 +1,5 @@
 import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geojson"
-import type { LatLng, LatLngTuple } from "leaflet";
+import type { LatLng, LatLngBounds, LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 import { ref } from 'vue';
@@ -15,16 +15,16 @@ export type CustomProperty = GeoJsonProperties & {
 export type Region = FeatureCollection<Point, CustomProperty> & {
     name: string
     size: string
-    center: [number, number]
-    bounds: [[number, number], [number, number]]
+    center: LatLng
+    bounds: LatLngBounds
     hidingRadiusMiles: number
 }
 
 export type NullableRegion = FeatureCollection<Point, CustomProperty> & {
     name?: string
     size?: string
-    center?: [number, number]
-    bounds?: [[number, number], [number, number]]
+    center?: LatLng
+    bounds?: LatLngBounds
     hidingRadiusMiles?: number
 }
 

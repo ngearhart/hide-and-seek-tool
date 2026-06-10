@@ -58,13 +58,50 @@
         <v-card :title="'Region \'' + editedRegion.name + '\': Load Features'" subtitle="Load and modify map features"
             class="menu" v-if="step === 'features'">
             <v-card-text>
-                <v-select label="Feature to Edit" :items="features.filter(item => item.key !== 'custom')"
+                <v-select label="Feature to Edit"
+                    :items="features.filter(item => item.key !== 'custom').map(item => ({ ...item, pluralLabel: (editedRegion.features.find(i => i.properties.Type === item.key) ? '✅ ' : '❌ ') + item.pluralLabel }))"
                     v-model="featureToEdit" item-title="pluralLabel" item-value="key"></v-select>
-                <v-btn color="primary" :disabled="loading" :loading="loading" @click="loadFeatures">Load from Open
-                    Street Map Data</v-btn>
+                <v-btn color="primary" :disabled="loading" :loading="loading" @click="() => hasFeaturesOfCurrentType ? showOverwriteWarningDialog = true : loadFeatures()">
+                    {{ hasFeaturesOfCurrentType ? 'Overwrite with ' : 'Load from'}} Open Street Map Data
+                </v-btn>
             </v-card-text>
         </v-card>
     </v-container>
+     <v-dialog
+      width="auto"
+      v-model="showOverwriteWarningDialog"
+    >
+      <template v-slot:default="{ isActive }">
+        <v-card
+          prepend-icon="mdi-alert"
+          title="Warning"
+        >
+          <v-divider class="mt-3"></v-divider>
+
+          <v-card-text class="px-4" style="height: 100px;">
+            Loading from the Open Street Map data will overwrite any custom edits you have made.
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-btn
+              text="Cancel"
+              @click="isActive.value = false"
+            ></v-btn>
+
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="surface-variant"
+              text="Continue"
+              variant="flat"
+              @click="isActive.value = false; loadFeatures()"
+            ></v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -105,6 +142,8 @@ const step = shallowRef<'selecting' | 'centering' | 'bounds' | 'features'>('sele
 const existingRegionSelection = shallowRef<string | null>(null);
 const newRegionName = shallowRef<string | null>(null);
 const editedRegion = ref<NullableRegion>(getNullRegion());
+const showOverwriteWarningDialog = shallowRef(false);
+const hasFeaturesOfCurrentType = computed(() => editedRegion.value.features.find(i => i.properties.Type === featureToEdit.value));
 
 const enableRailroadOverlay = shallowRef(false);
 
@@ -112,6 +151,7 @@ const regions = useRegions();
 
 let centerMarker: L.Marker<any> | null = null;
 let boundsRect: L.Rectangle | null = null;
+let featureMarkers: L.Marker<any>[] = [];
 
 onMounted(async () => {
     // Load existing regions
@@ -164,10 +204,7 @@ watch(step, () => {
         localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
             if (e.type == "draw:created" && (e as any).layerType == "rectangle") {
                 let rect = e.layer._bounds;
-                editedRegion.value.bounds = [
-                    [rect._southWest.lat, rect._southWest.lng],
-                    [rect._northEast.lat, rect._northEast.lng],
-                ];
+                editedRegion.value.bounds = rect;
                 boundsRect = L.rectangle(rect, { color: "#ff7800", weight: 5, fillOpacity: 0.1 })
                 boundsRect.addTo(localMap.value!);
             }
@@ -199,9 +236,18 @@ watch(editedRegion, () => {
     }
 }, { deep: true });
 
+const refreshFeatureMarkers = () => {
+    featureMarkers.forEach(marker => marker.remove());
+    featureMarkers = editedRegion.value.features.filter(f => f.properties.Type === featureToEdit.value).map(feature => {
+        return L.marker(flipCoords(feature.geometry.coordinates)).addTo(localMap.value!)
+            .bindPopup(feature.properties.Name);
+    })
+}
+watch(featureToEdit, refreshFeatureMarkers);
+
 const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
     if (step.value === 'centering') {
-        editedRegion.value.center = [e.latlng.lat, e.latlng.lng];
+        editedRegion.value.center = new L.LatLng(e.latlng.lat, e.latlng.lng);
     }
 };
 
@@ -243,19 +289,20 @@ const loadFeatures = async () => {
         loading.value = false
         return
     }
-    features.data.forEach(feature => {
-        L.marker(flipCoords(feature.geometry.coordinates)).addTo(localMap.value!)
-            .bindPopup(feature.properties.Name);
-    })
-    loading.value = false
+    editedRegion.value.features = [
+        ...editedRegion.value.features.filter(f => f.properties.Type !== featureToEdit.value),
+        ...features.data
+    ]
+    loading.value = false;
+    refreshFeatureMarkers();
 }
 
 const loadNewFeaturesWithRetries = async () => {
     for (let attempt = 0; attempt < 5; attempt++) {
         try {
             return await loadNewFeatures(firebaseApp, {
-                corner1: { lat: editedRegion.value.bounds![0][0], lng: editedRegion.value.bounds![0][1] },
-                corner2: { lat: editedRegion.value.bounds![1][0], lng: editedRegion.value.bounds![1][1] },
+                corner1: { lat: editedRegion.value.bounds!.getSouthWest().lat, lng: editedRegion.value.bounds!.getSouthWest().lng },
+                corner2: { lat: editedRegion.value.bounds!.getNorthEast().lat, lng: editedRegion.value.bounds!.getNorthEast().lng },
                 featureType: featureToEdit.value,
                 regionName: editedRegion.value.name!
             });
