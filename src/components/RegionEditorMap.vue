@@ -61,46 +61,58 @@
                 <v-select label="Feature to Edit"
                     :items="features.filter(item => item.key !== 'custom').map(item => ({ ...item, pluralLabel: (editedRegion.features.find(i => i.properties.Type === item.key) ? '✅ ' : '❌ ') + item.pluralLabel }))"
                     v-model="featureToEdit" item-title="pluralLabel" item-value="key"></v-select>
-                <v-btn color="primary" :disabled="loading" :loading="loading" @click="() => hasFeaturesOfCurrentType ? showOverwriteWarningDialog = true : loadFeatures()">
-                    {{ hasFeaturesOfCurrentType ? 'Overwrite with ' : 'Load from'}} Open Street Map Data
+                <v-btn class="mb-5" color="primary" :disabled="loading" :loading="loading"
+                    @click="() => hasFeaturesOfCurrentType ? showOverwriteWarningDialog = true : loadFeatures()">
+                    {{ hasFeaturesOfCurrentType ? 'Overwrite with ' : 'Load from' }} Open Street Map Data
                 </v-btn>
+                <v-btn color="primary" block @click="step = 'final'">Confirm</v-btn>
             </v-card-text>
         </v-card>
     </v-container>
-     <v-dialog
-      width="auto"
-      v-model="showOverwriteWarningDialog"
-    >
-      <template v-slot:default="{ isActive }">
-        <v-card
-          prepend-icon="mdi-alert"
-          title="Warning"
-        >
-          <v-divider class="mt-3"></v-divider>
+    <v-dialog width="auto" v-model="showOverwriteWarningDialog">
+        <template v-slot:default="{ isActive }">
+            <v-card prepend-icon="mdi-alert" title="Warning">
+                <v-divider class="mt-3"></v-divider>
 
-          <v-card-text class="px-4" style="height: 100px;">
-            Loading from the Open Street Map data will overwrite any custom edits you have made.
-          </v-card-text>
+                <v-card-text class="px-4" style="height: 100px;">
+                    Loading from the Open Street Map data will overwrite any custom edits you have made.
+                </v-card-text>
 
-          <v-divider></v-divider>
+                <v-divider></v-divider>
 
-          <v-card-actions>
-            <v-btn
-              text="Cancel"
-              @click="isActive.value = false"
-            ></v-btn>
+                <v-card-actions>
+                    <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
 
-            <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
 
-            <v-btn
-              color="surface-variant"
-              text="Continue"
-              variant="flat"
-              @click="isActive.value = false; loadFeatures()"
-            ></v-btn>
-          </v-card-actions>
-        </v-card>
-      </template>
+                    <v-btn color="surface-variant" text="Continue" variant="flat"
+                        @click="isActive.value = false; loadFeatures()"></v-btn>
+                </v-card-actions>
+            </v-card>
+        </template>
+    </v-dialog>
+    <v-dialog width="auto" :model-value="step === 'final'">
+        <template v-slot:default="{ isActive }">
+            <v-card prepend-icon="mdi-alert" title="Warning">
+                <v-divider class="mt-3"></v-divider>
+
+                <v-card-text class="px-4" style="height: 100px;">
+                    <p>Yo!</p>
+                    <v-textarea label="Data"></v-textarea>
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                    <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn color="surface-variant" text="Save" variant="flat"
+                        @click="isActive.value = false; loadFeatures()"></v-btn>
+                </v-card-actions>
+            </v-card>
+        </template>
     </v-dialog>
 </template>
 
@@ -137,7 +149,7 @@ const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 const featureToEdit = shallowRef<import('@/regions/features').FeatureType>("airport");
 const loading = shallowRef(false);
 
-const step = shallowRef<'selecting' | 'centering' | 'bounds' | 'features'>('selecting');
+const step = shallowRef<'selecting' | 'centering' | 'bounds' | 'features' | 'final'>('selecting');
 
 const existingRegionSelection = shallowRef<string | null>(null);
 const newRegionName = shallowRef<string | null>(null);
@@ -269,12 +281,6 @@ const startBoundsShape = () => {
     (window as any).type = null; // https://github.com/Leaflet/Leaflet.draw/issues/898
     rect.initialize(localMap.value!);
     rect.enable();
-}
-
-const ensureRegionLoaded = async () => {
-    const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
-    const region = await loadRegion(regionId);
-    store.$state.loadedRegionData = region;
 }
 
 const loadFeatures = async () => {
