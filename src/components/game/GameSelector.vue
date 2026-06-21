@@ -73,7 +73,10 @@ const launchGameCreatorDialog = () => {
 }
 
 const launchRegionEditor = () => {
-  router.push("/regionEditor");
+  // router.push("/regionEditor");
+  // isDialogOpen.value = false;
+  // TODO!
+  window.location.assign('/regionEditor');
 }
 
 const createNewGame = async (teams: { name: string }[], region: string) => {

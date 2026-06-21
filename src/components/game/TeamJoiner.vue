@@ -12,6 +12,7 @@
                             <v-col cols="12" md="12" v-for="team in teams" :key="team.name">
                                 <v-btn block color="primary" @click="submit(team.name)">{{ team.name }}</v-btn>
                             </v-col>
+                            <v-skeleton-loader type="table-row" v-if="!teams?.length"></v-skeleton-loader>
                         </v-row>
                     </v-container>
                 </v-card-text>

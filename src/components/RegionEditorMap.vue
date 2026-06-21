@@ -11,7 +11,7 @@
                         <v-row align="center" justify="center">
                             <v-col cols="12" md="8">
                                 <v-select clearable :disabled="!!newRegionName" v-model="existingRegionSelection"
-                                    :items="regions.nameList.value" label="Existing Region"></v-select>
+                                    :items="regions.regionMap.value" item-title="name" item-value="id" label="Existing Region"></v-select>
                             </v-col>
 
                             <v-col cols="12" md="4">
@@ -91,25 +91,25 @@
             </v-card>
         </template>
     </v-dialog>
-    <v-dialog width="auto" :model-value="step === 'final'">
-        <template v-slot:default="{ isActive }">
-            <v-card prepend-icon="mdi-alert" title="Warning">
+    <v-dialog max-width="1800" :model-value="step === 'final'">
+        <template v-slot:default>
+            <v-card prepend-icon="mdi-book-edit" title="Finalize">
                 <v-divider class="mt-3"></v-divider>
 
-                <v-card-text class="px-4" style="height: 100px;">
-                    <p>Yo!</p>
-                    <v-textarea label="Data"></v-textarea>
+                <v-card-text>
+                    <p>The following is the raw data produced by this editor. You may edit it to make custom changes or enhancements.</p>
+                    <json-editor-vue v-model="rawEditedRegion" :mode="Mode.text" class="jse-theme-dark" :read-only="saving" :main-menu-bar="false" :stringified="false"></json-editor-vue>
                 </v-card-text>
 
                 <v-divider></v-divider>
 
                 <v-card-actions>
-                    <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
+                    <v-btn prepend-icon="mdi-keyboard-return" text="Back" @click="step = 'features'" :disabled="saving"></v-btn>
 
                     <v-spacer></v-spacer>
 
-                    <v-btn color="surface-variant" text="Save" variant="flat"
-                        @click="isActive.value = false; loadFeatures()"></v-btn>
+                    <v-btn prepend-icon="mdi-content-save-all" color="surface-variant" text="Save" variant="flat" :disabled="saving || !rawEditedRegion" :loading="saving"
+                        @click="submitRegion"></v-btn>
                 </v-card-actions>
             </v-card>
         </template>
@@ -129,11 +129,14 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, useRegions, type NullableRegion } from '@/regions/regions';
+import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, useRegion, useRegions, type NullableRegion, type Region } from '@/regions/regions';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { features } from '@/regions/features';
 import { loadNewFeatures } from '@/firebase';
 import { notify } from '@kyvg/vue3-notification';
+import JsonEditorVue from 'json-editor-vue';
+import { Mode } from 'vanilla-jsoneditor';
+import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
@@ -157,6 +160,10 @@ const editedRegion = ref<NullableRegion>(getNullRegion());
 const showOverwriteWarningDialog = shallowRef(false);
 const hasFeaturesOfCurrentType = computed(() => editedRegion.value.features.find(i => i.properties.Type === featureToEdit.value));
 
+const regionFirebaseObj = computed(() => useRegion(editedRegion.value.id));
+const rawEditedRegion = ref<NullableRegion | null>(getNullRegion());
+const saving = shallowRef<boolean>(false);
+
 const enableRailroadOverlay = shallowRef(false);
 
 const regions = useRegions();
@@ -164,23 +171,7 @@ const regions = useRegions();
 let centerMarker: L.Marker<any> | null = null;
 let boundsRect: L.Rectangle | null = null;
 let featureMarkers: L.Marker<any>[] = [];
-
-onMounted(async () => {
-    // Load existing regions
-    if (!store.$state.regions.length) {
-        store.$state.regions = await loadRegionDescriptions();
-    }
-
-    // localMap.value = L.map('map', {
-    //     // It's much nicer on mobile to have unlimited zoom granularity, but it feels worse on desktops
-    //     zoomSnap: L.Browser.mobile ? 0 : 0.5
-    // }).setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
-
-    // L.control.scale().addTo(localMap.value);
-
-    // Sorry Dark Mode enjoyers - you will be forced to use Sunny on this mode
-    // updateTileLayers(["Jawg_Sunny"], localMap.value!);
-})
+let clickMapCooldown: boolean = false;
 
 watch(enableRailroadOverlay, () => {
     if (enableRailroadOverlay.value) {
@@ -216,7 +207,7 @@ watch(step, () => {
         localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
             if (e.type == "draw:created" && (e as any).layerType == "rectangle") {
                 let rect = e.layer._bounds;
-                editedRegion.value.bounds = rect;
+                editedRegion.value.bounds = [rect.getSouthWest(), rect.getNorthEast()];
                 boundsRect = L.rectangle(rect, { color: "#ff7800", weight: 5, fillOpacity: 0.1 })
                 boundsRect.addTo(localMap.value!);
             }
@@ -225,19 +216,27 @@ watch(step, () => {
         // Sorry Dark Mode enjoyers - you will be forced to use Sunny on this mode
         updateTileLayers(["Jawg_Sunny"], localMap.value!);
 
-        if (step.value === 'bounds' || step.value === 'features') {
+        if (editedRegion.value.center) {
             centerMarker = L.marker(editedRegion.value.center!).addTo(localMap.value!)
                 .bindPopup("Region Center");
         }
-        if (step.value === 'features') {
-            boundsRect = L.rectangle(editedRegion.value.bounds!, { color: "#ff7800", weight: 5, fillOpacity: 0.1 })
-            boundsRect.addTo(localMap.value!);
+        if (editedRegion.value.bounds) {
+            boundsRect = L.rectangle(editedRegion.value.bounds!, { color: "#ff7800", weight: 5, fillOpacity: 0.1 }).addTo(localMap.value!);
+        }
+        if (step.value === 'final') {
+            rawEditedRegion.value = JSON.parse(JSON.stringify(editedRegion.value));
         }
     }
 })
 
 watch(editedRegion, () => {
-    if (editedRegion.value.center) {
+    if (editedRegion.value.bounds && localMap.value) {
+        if (boundsRect) {
+            boundsRect.remove();
+        }
+        boundsRect = L.rectangle(editedRegion.value.bounds!, { color: "#ff7800", weight: 5, fillOpacity: 0.1 }).addTo(localMap.value!);
+    }
+    if (editedRegion.value.center && localMap.value) {
         if (centerMarker) {
             centerMarker.remove();
         }
@@ -258,19 +257,23 @@ const refreshFeatureMarkers = () => {
 watch(featureToEdit, refreshFeatureMarkers);
 
 const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
+    if (clickMapCooldown) return;
     if (step.value === 'centering') {
         editedRegion.value.center = new L.LatLng(e.latlng.lat, e.latlng.lng);
     }
 };
 
-const submitRegionSelection = () => {
+const submitRegionSelection = async () => {
     if (existingRegionSelection.value) {
-        editedRegion.value = reactive(regions.get(existingRegionSelection.value)!);
+        const newRegionToUse = useRegion(existingRegionSelection.value);
+        editedRegion.value = reactive(JSON.parse(JSON.stringify(await newRegionToUse.getWithListConvertion())));
     } else if (newRegionName.value) {
         editedRegion.value = reactive(getNullRegion());
         editedRegion.value.name = newRegionName.value;
     }
+    clickMapCooldown = true;
     step.value = 'centering';
+    setTimeout(() => clickMapCooldown = false, 500);
 };
 
 const startBoundsShape = () => {
@@ -306,9 +309,10 @@ const loadFeatures = async () => {
 const loadNewFeaturesWithRetries = async () => {
     for (let attempt = 0; attempt < 5; attempt++) {
         try {
+            const bounds = new L.LatLngBounds(editedRegion.value.bounds!);
             return await loadNewFeatures(firebaseApp, {
-                corner1: { lat: editedRegion.value.bounds!.getSouthWest().lat, lng: editedRegion.value.bounds!.getSouthWest().lng },
-                corner2: { lat: editedRegion.value.bounds!.getNorthEast().lat, lng: editedRegion.value.bounds!.getNorthEast().lng },
+                corner1: { lat: bounds.getSouthWest().lat, lng: bounds.getSouthWest().lng },
+                corner2: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng },
                 featureType: featureToEdit.value,
                 regionName: editedRegion.value.name!
             });
@@ -317,6 +321,12 @@ const loadNewFeaturesWithRetries = async () => {
         }
     }
     return null;
+}
+
+const submitRegion = async() => {
+    saving.value = true;
+    await regionFirebaseObj.value.save(editedRegion.value as Region);
+    saving.value = false;
 }
 
 </script>

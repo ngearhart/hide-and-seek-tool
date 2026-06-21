@@ -1,11 +1,11 @@
 {
-  "version": "15.16.0",
+  "version": "15.22.0",
   "database": {
     "version": "4.11.2",
     "path": "database_export"
   },
   "auth": {
-    "version": "15.16.0",
+    "version": "15.22.0",
     "path": "auth_export"
   }
 }
