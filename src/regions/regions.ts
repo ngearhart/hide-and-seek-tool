@@ -3,8 +3,8 @@ import type { LatLng, LatLngBounds, LatLngBoundsExpression, LatLngBoundsLiteral,
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 import { ref } from 'vue';
-import { getDatabase, ref as dbRef, set, get } from 'firebase/database';
-import { useCurrentUser, useDatabaseObject } from "vuefire";
+import { getDatabase, ref as dbRef, set, get, push } from 'firebase/database';
+import { useCurrentUser, useDatabaseObject, useDatabaseList } from "vuefire";
 import { notify } from "@kyvg/vue3-notification";
 import { computedAsync } from '@vueuse/core'
 
@@ -89,40 +89,64 @@ const generateSlug = (length: number) => {
     return slug;
 }
 
+function useRegionSharing() {
+    const user = useCurrentUser();
+
+    const userRegionListDbRef = computed(() => dbRef(getDatabase(), `users/${user.value?.uid}/regions`));
+
+    const regionIdList = computedAsync(async() => {
+        if (!user.value) {
+            return []
+        }
+        const userRegionList = await get(userRegionListDbRef.value);
+        return Object.values(userRegionList.val());
+    })
+
+    const shareWithCurrentUser = async(regionId: string) => {
+        if (regionIdList.value && !regionIdList.value.includes(regionId)) {
+            await push(userRegionListDbRef.value, regionId);
+        }
+        return true;
+    }
+    
+    const shareWithOtherUser = async(userId: string, regionId: string) => {
+        if (!regionIdList.value || !regionIdList.value.includes(regionId)) {
+            return false;
+        }
+        const otherUserRef = dbRef(getDatabase(), `users/${userId}/regions`);
+        const existingRegions = await get(otherUserRef);
+        if (existingRegions.exists() && !Object.values(existingRegions.val()).includes(regionId)) {
+            await push(otherUserRef, regionId);
+        }
+        return true;
+    }
+
+    return { regionIdList, shareWithCurrentUser, shareWithOtherUser }
+}
+
 // DB layout is /regions/<ID>/{object}
 export function useRegions() {
+    const sharing = useRegionSharing();
 
-    const user = useCurrentUser();
-    const regionsDbRef = computed(() => dbRef(getDatabase(), 'regions'));
-    const regionsObj = useDatabaseObject<{ [key: string]: Region } | null>(regionsDbRef);
+    const regionsDbRef = dbRef(getDatabase(), 'regions');
     
-    // TODO: consider just putting a list of shared region ids in the user object
-    const regionMap = computedAsync(async() => {
-        const unfilteredRegions = Object.values(regionsObj.value ?? {}).map(region => ({
-            name: (region as Region).name,
-            id: (region as Region).id,
-            promise: get(dbRef(getDatabase(), `regionSharing/${(region as Region).id}`))
-        }));
-        const dbPermRefs = await Promise.all(unfilteredRegions.map(r => r.promise));
-        return unfilteredRegions.map(r => ({name: r.name, id: r.id})).filter()
-    });
+    const regionMap: globalThis.Ref<Region[] | undefined> = computedAsync(async() => {
+        const regions = await get(regionsDbRef);
+        return Object.values((regions.val() ?? {}) as { [key: string]: Region })
+        .filter(region => sharing.regionIdList.value!.includes(region.id));
+    })
 
     return { regionMap };
 }
 
 export function useRegion(regionId: globalThis.MaybeRefOrGetter<string>) {
-    const user = useCurrentUser();
+    const sharing = useRegionSharing();
     
     const regionRef = computed(() => dbRef(getDatabase(), `regions/${toValue(regionId)}`));
-    const regionObj = useDatabaseObject<Region | null>(regionRef);
 
     const save = async(region: Region) => {
         region.id = toValue(regionId);
-        const regionSharingDbRef = dbRef(getDatabase(), `regionSharing/${region.id}`);
-        const regionSharingObj = await get(regionSharingDbRef);
-        if (!regionSharingObj.exists()) {
-            await set(regionSharingDbRef, [user.value?.uid]);
-        } else if (!regionSharingObj.val().includes(user.value?.uid)){
+        if (!await sharing.shareWithCurrentUser(region.id)){
             notify({
                 type: "error",
                 text: "You do not have permission to edit this region",
@@ -152,5 +176,5 @@ export function useRegion(regionId: globalThis.MaybeRefOrGetter<string>) {
         return regionWithWeirdList as Region;
     }
 
-    return { regionObj, save, getWithListConvertion };
+    return { save, getWithListConvertion };
 }
