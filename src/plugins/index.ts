@@ -8,7 +8,7 @@
 import vuetify from './vuetify'
 import pinia from '../stores'
 import router from '../router'
-import { VueFire, VueFireAuth } from 'vuefire'
+import { VueFire, VueFireAppCheck, VueFireAuth } from 'vuefire'
 import firebaseApp from '@/firebase/index'
 import Notifications from '@kyvg/vue3-notification';
 import VueAngle from 'vue-angle';
@@ -16,6 +16,7 @@ import VueAngle from 'vue-angle';
 // Types
 import type { App } from 'vue'
 import getFirebase from '@/firebase/index'
+import { ReCaptchaV3Provider } from 'firebase/app-check'
 
 export function registerPlugins (app: App) {
   app
@@ -27,7 +28,12 @@ export function registerPlugins (app: App) {
     .use(VueFire, {
       firebaseApp: getFirebase(),
       modules: [
-        VueFireAuth()
+        VueFireAuth(),
+        VueFireAppCheck({
+          provider: new ReCaptchaV3Provider(import.meta.env.RECAPTCHA_KEY),
+          isTokenAutoRefreshEnabled: true,
+          debug: !import.meta.env.PROD
+        })
       ]
     })
 }

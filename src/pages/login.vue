@@ -38,18 +38,18 @@ onMounted(async () => {
     if (result) {
       console.log('logged in')
       // notify({
-      //   'title': 'Success',
-      //   'text': 'You are logged in.'
-      // })
-    } // Otherwise, you are already logged in.
-
-    const to =
-        route.query.redirect && typeof route.query.redirect === 'string'
-        ? route.query.redirect
-        : '/'
-
-    router.push(to)
-  } else {
+        //   'title': 'Success',
+        //   'text': 'You are logged in.'
+        // })
+      } // Otherwise, you are already logged in.
+      
+      const to =
+      route.query.redirect && typeof route.query.redirect === 'string'
+      ? route.query.redirect
+      : '/'
+      
+      router.push({ path: to })
+    } else {
     message.value = LOGGING_IN
     const provider = new firebase.auth.GoogleAuthProvider()
     signInWithRedirect(auth, provider).then(() => {

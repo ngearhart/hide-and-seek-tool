@@ -114,6 +114,39 @@
             </v-card>
         </template>
     </v-dialog>
+    <v-dialog max-width="1000" :model-value="step === 'sharing'">
+        <template v-slot:default>
+            <v-card prepend-icon="mdi-share-all" title="Share with Other Users">
+                <v-card-text>
+                    <v-container>
+                        <v-row align="center" justify="center">
+                            <v-col cols="12" md="8">
+                                <v-select clearable :disabled="!!newRegionName" v-model="existingRegionSelection"
+                                    :items="regions.regionMap.value" item-title="name" item-value="id" label="Existing Region"></v-select>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-btn block color="primary" v-on:click="submitRegionSelection"
+                                    :disabled="!!newRegionName || !existingRegionSelection">Edit
+                                    Existing Region</v-btn>
+                            </v-col>
+                        </v-row>
+                        <v-row align="center" justify="center">
+                            <v-col cols="12" md="8">
+                                <v-text-field label="New Region Name" :disabled="!!existingRegionSelection"
+                                    v-model="newRegionName"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="4">
+                                <v-btn block color="primary" v-on:click="submitRegionSelection"
+                                    :disabled="!!existingRegionSelection || !newRegionName">+ Create a new
+                                    region</v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+            </v-card>
+        </template>
+    </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -152,7 +185,7 @@ const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 const featureToEdit = shallowRef<import('@/regions/features').FeatureType>("airport");
 const loading = shallowRef(false);
 
-const step = shallowRef<'selecting' | 'centering' | 'bounds' | 'features' | 'final'>('selecting');
+const step = shallowRef<'selecting' | 'centering' | 'bounds' | 'features' | 'final' | 'sharing'>('selecting');
 
 const existingRegionSelection = shallowRef<string | null>(null);
 const newRegionName = shallowRef<string | null>(null);
@@ -225,6 +258,7 @@ watch(step, () => {
         }
         if (step.value === 'final') {
             rawEditedRegion.value = JSON.parse(JSON.stringify(editedRegion.value));
+            delete rawEditedRegion.value?.id;
         }
     }
 })
@@ -325,8 +359,12 @@ const loadNewFeaturesWithRetries = async () => {
 
 const submitRegion = async() => {
     saving.value = true;
-    await regionFirebaseObj.value.save(editedRegion.value as Region);
+    await regionFirebaseObj.value.save({
+        ...rawEditedRegion.value,
+        id: editedRegion.value.id!
+    } as Region);
     saving.value = false;
+    step.value = 'sharing'
 }
 
 </script>

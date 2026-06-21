@@ -24,7 +24,7 @@ export type Region = FeatureCollection<Point, CustomProperty> & {
 }
 
 export type NullableRegion = FeatureCollection<Point, CustomProperty> & {
-    id: string
+    id?: string
     name?: string
     size?: string
     center?: LatLng
@@ -99,11 +99,11 @@ function useRegionSharing() {
             return []
         }
         const userRegionList = await get(userRegionListDbRef.value);
-        return Object.values(userRegionList.val());
+        return Object.values(userRegionList.val() ?? {});
     })
 
     const shareWithCurrentUser = async(regionId: string) => {
-        if (regionIdList.value && !regionIdList.value.includes(regionId)) {
+        if (!regionIdList.value || !regionIdList.value.includes(regionId)) {
             await push(userRegionListDbRef.value, regionId);
         }
         return true;
@@ -131,9 +131,10 @@ export function useRegions() {
     const regionsDbRef = dbRef(getDatabase(), 'regions');
     
     const regionMap: globalThis.Ref<Region[] | undefined> = computedAsync(async() => {
+        const regionIdList = sharing.regionIdList.value! ?? [];
         const regions = await get(regionsDbRef);
         return Object.values((regions.val() ?? {}) as { [key: string]: Region })
-        .filter(region => sharing.regionIdList.value!.includes(region.id));
+        .filter(region => regionIdList.includes(region.id));
     })
 
     return { regionMap };

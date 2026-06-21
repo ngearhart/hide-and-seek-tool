@@ -73,7 +73,7 @@ const launchGameCreatorDialog = () => {
 }
 
 const launchRegionEditor = () => {
-  // router.push("/regionEditor");
+  // router.push({ path: "/regionEditor" });
   // isDialogOpen.value = false;
   // TODO!
   window.location.assign('/regionEditor');
@@ -192,6 +192,7 @@ const checkUserInGameStatus = async() => {
 }
 
 watch(() => props.currentTab, checkUserInGameStatus);
+watch(() => user, checkUserInGameStatus);
 
 // onMounted(async () => {
 //   await checkUserInGameStatus();
