@@ -120,26 +120,14 @@
                 <v-card-text>
                     <v-container>
                         <v-row align="center" justify="center">
-                            <v-col cols="12" md="8">
-                                <v-select clearable :disabled="!!newRegionName" v-model="existingRegionSelection"
-                                    :items="regions.regionMap.value" item-title="name" item-value="id" label="Existing Region"></v-select>
+                            <v-col cols="12" md="6">
+                                <v-text-field label="User ID" v-model="userIdToAdd"></v-text-field>
                             </v-col>
-
-                            <v-col cols="12" md="4">
-                                <v-btn block color="primary" v-on:click="submitRegionSelection"
-                                    :disabled="!!newRegionName || !existingRegionSelection">Edit
-                                    Existing Region</v-btn>
+                            <v-col cols="12" md="3">
+                                <v-btn block prepend-icon="mdi-share" color="primary" v-on:click="submitShareChange(true)" :disabled="!userIdToAdd.length || loading" :loading="loading">Share</v-btn>
                             </v-col>
-                        </v-row>
-                        <v-row align="center" justify="center">
-                            <v-col cols="12" md="8">
-                                <v-text-field label="New Region Name" :disabled="!!existingRegionSelection"
-                                    v-model="newRegionName"></v-text-field>
-                            </v-col>
-                            <v-col cols="12" md="4">
-                                <v-btn block color="primary" v-on:click="submitRegionSelection"
-                                    :disabled="!!existingRegionSelection || !newRegionName">+ Create a new
-                                    region</v-btn>
+                            <v-col cols="12" md="3">
+                                <v-btn block prepend-icon="mdi-cancel" color="red" v-on:click="submitShareChange(false)" :disabled="!userIdToAdd.length || loading" :loading="loading">Unshare</v-btn>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -153,7 +141,6 @@
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
 import { useCurrentUser, useDatabaseObject, useFirebaseApp } from 'vuefire';
@@ -162,7 +149,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, useRegion, useRegions, type NullableRegion, type Region } from '@/regions/regions';
+import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, useRegion, useRegions, useRegionSharing, type NullableRegion, type Region } from '@/regions/regions';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { features } from '@/regions/features';
 import { loadNewFeatures } from '@/firebase';
@@ -171,7 +158,6 @@ import JsonEditorVue from 'json-editor-vue';
 import { Mode } from 'vanilla-jsoneditor';
 import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
 
-const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
 
 const firebaseApp = useFirebaseApp();
@@ -179,8 +165,8 @@ const firebaseApp = useFirebaseApp();
 const user = useCurrentUser();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
-const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
-const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
+// const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
+// const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
 const featureToEdit = shallowRef<import('@/regions/features').FeatureType>("airport");
 const loading = shallowRef(false);
@@ -199,7 +185,10 @@ const saving = shallowRef<boolean>(false);
 
 const enableRailroadOverlay = shallowRef(false);
 
+const userIdToAdd = shallowRef("");
+
 const regions = useRegions();
+const regionSharing = useRegionSharing(); 
 
 let centerMarker: L.Marker<any> | null = null;
 let boundsRect: L.Rectangle | null = null;
@@ -309,6 +298,25 @@ const submitRegionSelection = async () => {
     step.value = 'centering';
     setTimeout(() => clickMapCooldown = false, 500);
 };
+
+const submitShareChange = async(shareStatus: boolean) => {
+    loading.value = true
+    if (await regionSharing[shareStatus ? "shareWithOtherUser" : "unshareWithOtherUser"](userIdToAdd.value, editedRegion.value.id!)) {
+        notify({
+            type: 'success',
+            title: "Success",
+            text: "Region sharing modified"
+        })
+        userIdToAdd.value = ''
+    } else {
+        notify({
+            type: 'error',
+            title: "Error",
+            text: "An error occured while trying to change region sharing. Try again later"
+        })
+    }
+    loading.value = false
+}
 
 const startBoundsShape = () => {
     if (boundsRect) {

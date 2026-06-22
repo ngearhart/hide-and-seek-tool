@@ -47,7 +47,10 @@
             <v-btn color="primary" v-on:click="switchTeam" prepend-icon="mdi-swap-horizontal" block>Change team</v-btn>
           </v-list-item>
           <v-list-item>
-            <v-btn color="red" v-on:click="exitGame" prepend-icon="mdi-close" block>Exit game</v-btn>
+            <v-btn color="yellow" v-on:click="exitGame" prepend-icon="mdi-close" block>Exit game</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn color="red" v-on:click="logOut" prepend-icon="mdi-logout" block>Log out</v-btn>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -70,8 +73,9 @@
 import type { GameRecord, UserRecord } from '@/utils';
 import { Notifications } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useCurrentUser, useDatabaseObject } from 'vuefire';
+import { useCurrentUser, useDatabaseObject, useFirebaseAuth } from 'vuefire';
 import { useRoute, useRouter } from 'vue-router'
+import { signOut } from 'firebase/auth'
 
 import { useNotification } from "@kyvg/vue3-notification";
 
@@ -87,6 +91,8 @@ const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 const route = useRoute()
 const router = useRouter()
 const currentTab = ref('');
+
+const auth = useFirebaseAuth()!;
 
 
 let links = [
@@ -140,5 +146,10 @@ const copyGameCodeToClipboard = async() => {
     await navigator.clipboard.writeText(userRecordObj?.value?.currentGameId);
   }
 };
+
+const logOut = async() => {
+  await signOut(auth);
+  window.location.reload();
+}
 
 </script>

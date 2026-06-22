@@ -89,7 +89,7 @@ const generateSlug = (length: number) => {
     return slug;
 }
 
-function useRegionSharing() {
+export function useRegionSharing() {
     const user = useCurrentUser();
 
     const userRegionListDbRef = computed(() => dbRef(getDatabase(), `users/${user.value?.uid}/regions`));
@@ -99,7 +99,8 @@ function useRegionSharing() {
             return []
         }
         const userRegionList = await get(userRegionListDbRef.value);
-        return Object.values(userRegionList.val() ?? {});
+        const result = Object.values(userRegionList.val() ?? {});
+        return result;
     })
 
     const shareWithCurrentUser = async(regionId: string) => {
@@ -110,7 +111,7 @@ function useRegionSharing() {
     }
     
     const shareWithOtherUser = async(userId: string, regionId: string) => {
-        if (!regionIdList.value || !regionIdList.value.includes(regionId)) {
+        if (!regionIdList.value || !regionIdList.value.includes(regionId) || userId == user.value?.uid) {
             return false;
         }
         const otherUserRef = dbRef(getDatabase(), `users/${userId}/regions`);
@@ -121,7 +122,20 @@ function useRegionSharing() {
         return true;
     }
 
-    return { regionIdList, shareWithCurrentUser, shareWithOtherUser }
+    const unshareWithOtherUser = async(userId: string, regionId: string) => {
+        if (!regionIdList.value || !regionIdList.value.includes(regionId) || userId == user.value?.uid) {
+            return false;
+        }
+        const otherUserRef = dbRef(getDatabase(), `users/${userId}/regions`);
+        const existingRegions = await get(otherUserRef);
+        if (existingRegions.exists() && Object.values(existingRegions.val()).includes(regionId)) {
+            const newObj = Object.values(existingRegions.val()).filter(v => v !== regionId);
+            await set(otherUserRef, newObj);
+        }
+        return true;
+    }
+
+    return { regionIdList, shareWithCurrentUser, shareWithOtherUser, unshareWithOtherUser }
 }
 
 // DB layout is /regions/<ID>/{object}

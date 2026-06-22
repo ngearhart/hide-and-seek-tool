@@ -30,7 +30,7 @@ export function registerPlugins (app: App) {
       modules: [
         VueFireAuth(),
         VueFireAppCheck({
-          provider: new ReCaptchaV3Provider(import.meta.env.RECAPTCHA_KEY),
+          provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_KEY),
           isTokenAutoRefreshEnabled: true,
           debug: !import.meta.env.PROD
         })
