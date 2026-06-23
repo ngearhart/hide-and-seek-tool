@@ -3,7 +3,7 @@ import { DrawableElement, type ContainerPool } from "./base";
 import type { FeatureType } from "@/regions/features";
 
 import { Delaunay, Voronoi } from 'd3';
-import { flipCoords, generateVoronoi, type Region } from "@/regions/regions";
+import { flipCoords, generateVoronoi, getRegionFeatures, type Region } from "@/regions/regions";
 import type { CallbackUtils } from "./pixiOverlay";
 import type { GameRecord } from "@/utils";
 import { useStore } from "@/stores/app";
@@ -51,12 +51,12 @@ export default class VoronoiShape extends DrawableElement {
         this.graphics.destroy();
     }
     
-    static fromGame(game: GameRecord): VoronoiShape[] {
+    static fromGame(game: GameRecord, region: Region): VoronoiShape[] {
         const store = useStore();
-        const voronoiGenerator = generateVoronoi(store.$state.loadedRegionData!);
+        const voronoiGenerator = generateVoronoi(region);
         return game.cellEntries?.map(cell => new VoronoiShape(
             voronoiGenerator[cell.markerType]!,
-            store.getMarkers(cell.markerType).findIndex(marker => marker.properties.Name === cell.markerName),
+            getRegionFeatures(region, cell.markerType).findIndex(marker => marker.properties.Name === cell.markerName),
             cell.wasHit
         )) ?? [];
     }

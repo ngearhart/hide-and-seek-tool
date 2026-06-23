@@ -89,6 +89,10 @@ const generateSlug = (length: number) => {
     return slug;
 }
 
+export function getRegionFeatures(region: Region, featureType: FeatureType) {
+    return region.features.filter(feat => feat.properties.Type === featureType);
+}
+
 export function useRegionSharing() {
     const user = useCurrentUser();
 
@@ -154,13 +158,13 @@ export function useRegions() {
     return { regionMap };
 }
 
-export function useRegion(regionId: globalThis.MaybeRefOrGetter<string>) {
+export function useRegion(regionId: globalThis.MaybeRefOrGetter<string | undefined>) {
     const sharing = useRegionSharing();
     
     const regionRef = computed(() => dbRef(getDatabase(), `regions/${toValue(regionId)}`));
 
     const save = async(region: Region) => {
-        region.id = toValue(regionId);
+        region.id = toValue(regionId)!;
         if (!await sharing.shareWithCurrentUser(region.id)){
             notify({
                 type: "error",
@@ -191,5 +195,6 @@ export function useRegion(regionId: globalThis.MaybeRefOrGetter<string>) {
         return regionWithWeirdList as Region;
     }
 
-    return { save, getWithListConvertion };
+
+    return { regionRef, save, getWithListConvertion };
 }

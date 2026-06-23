@@ -111,7 +111,7 @@ import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion, loadRegionDescriptions, type CustomProperty } from '@/regions/regions';
+import { flipCoords, getRegionFeatures, loadRegion, loadRegionDescriptions, useRegion, type CustomProperty, type Region } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
@@ -120,19 +120,18 @@ import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
 import type { Feature, Point } from 'geojson';
-import { searchForFeatures, searchForFeaturesStream } from '@/firebase';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
 
-const firebaseApp = useFirebaseApp();
-
-const drawnItems = reactive(new L.FeatureGroup());
 const user = useCurrentUser();
 const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
 const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
+
+const region = computed(() => useRegion(gamesObj.value?.region));
+const regionObj = useDatabaseObject<Region | null>(region.value.regionRef);
 
 const showCustomPinLabelEditor = shallowRef(false);
 const mostRecentlyDroppedPin = ref<L.LatLng | null>(null);
@@ -174,7 +173,7 @@ let previousMarkers: L.Marker<any>[] = [];
 
 const updateMarkers = () => {
     previousMarkers.forEach(m => m.remove());
-    let markers = getFeatureMarkers(getPopupFor, gamesObj);
+    let markers = getFeatureMarkers(getPopupFor, gamesObj, regionObj);
     previousMarkers = Object.values(markers).flat();
     store.$state.mapMarkers.forEach(marker => {
         markers[marker as FeatureType].forEach(m => {
@@ -193,7 +192,7 @@ const updateMarkers = () => {
 
 const updateGameObjects = async() => {
     updateMarkers();
-    PixiManager.update(gamesObj.value!);
+    PixiManager.update(gamesObj.value!, regionObj.value!);
     localMap.value!.addLayer(PixiManager.getLayer());
 }
 
@@ -224,7 +223,7 @@ const onLocationFound = (e: any) => {
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
-        for (let marker of store.getMarkers(locatingClosestType.value.key as FeatureType)) {
+        for (let marker of getRegionFeatures(regionObj.value!, locatingClosestType.value.key as FeatureType)) {
             let d = distance(e.latlng.lat, e.latlng.lng, marker.geometry.coordinates[1], marker.geometry.coordinates[0])
             if (d < minDistanceMiles) {
                 minDistanceMiles = d
@@ -403,7 +402,7 @@ const startBoundaryLine = (lat: number, long: number) => {
 }
 
 const addCell = (title: string, subtitle: string) => {
-    addCellDialogMarker.value = store.getMarkers(subtitle.toLowerCase().replace('movie theater', 'theater') as FeatureType).find(feature => feature.properties.Name === title)!;
+    addCellDialogMarker.value = getRegionFeatures(regionObj.value!, subtitle.toLowerCase().replace('movie theater', 'theater') as FeatureType).find(feature => feature.properties.Name === title)!;
     if (!addCellDialogMarker.value) {
         notify({
             type: "error",
@@ -505,17 +504,10 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
 }
 
 onMounted(async () => {
-    if (!store.$state.regions.length) {
-        store.$state.regions = await loadRegionDescriptions();
-    }
-    if (!store.$state.loadedRegionData || store.$state.loadedRegionData?.name != gamesObj.value?.region) {
-        // There is an odd case where the wrong region is loaded
-        await ensureRegionLoaded();
-    }
     localMap.value = L.map('map', {
         // It's much nicer on mobile to have unlimited zoom granularity, but it feels worse on desktops
         zoomSnap: L.Browser.mobile ? 0 : 0.5
-    }).setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
+    }).setView([regionObj.value?.center.lat ?? 0, regionObj.value?.center.lng ?? 0], 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
@@ -564,14 +556,4 @@ onMounted(async () => {
     (window as any)["deleteCustomMarker"] = deleteCustomMarker;
     (window as any)["addCell"] = addCell;
 })
-
-const ensureRegionLoaded = async() => {
-    const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
-    const region = await loadRegion(regionId);
-    store.$state.loadedRegionData = region;
-
-    // Used to be needed when region loaded was not synchronous with other mounted() calls
-    // localMap.value!.setView(flipCoords(store.$state.loadedRegionData!.center), 13);
-}
-
 </script>

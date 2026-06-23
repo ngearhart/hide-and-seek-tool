@@ -9,6 +9,7 @@ import { PixiOverlay, type CallbackUtils } from './pixiOverlay';
 import Polygon from './polygon';
 import VoronoiShape from './voronoi';
 import HidingCirclesElement from './hidingCircles';
+import type { Region } from '@/regions/regions';
 
 class _PixiManager {
     private rootContainer: Container;
@@ -73,7 +74,7 @@ class _PixiManager {
         return this.overlay;
     }
 
-    update(game: GameRecord, rebuild: boolean=true) {
+    update(game: GameRecord, region: Region, rebuild: boolean=true) {
         const store = useStore();
         if (rebuild) {
             this.rebuild();
@@ -84,8 +85,8 @@ class _PixiManager {
             ...Radar.fromGame(game),
             ...Boundary.fromGame(game),
             ...Polygon.fromGame(game),
-            ...VoronoiShape.fromGame(game),
-            ...HidingCirclesElement.fromStore(store.$state)
+            ...VoronoiShape.fromGame(game, region),
+            ...HidingCirclesElement.fromRegion(store.$state, region)
         ];
         this.elements.forEach(element => element.setupContainer({
             root: this.rootContainer,

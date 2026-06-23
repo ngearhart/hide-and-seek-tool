@@ -132,7 +132,6 @@ const joinGame = async() => {
   try {
     const existingGame = await get(gamesDbRef.value);
     if (existingGame.exists()) {
-      store.$state.loadedRegionData = null;
       isDialogOpen.value = false;
       notify({
         title: "Joined game",

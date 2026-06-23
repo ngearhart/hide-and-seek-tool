@@ -31,22 +31,30 @@
         <v-list>
           <v-list-item>
             <template v-slot:default>
+              Copy User ID
+            </template>
+            <template v-slot:append>
+              <v-btn icon="mdi-clipboard-multiple-outline" variant="text" @click="copyUidToClipboard"></v-btn>
+            </template>
+          </v-list-item>
+          <v-list-item v-if="userRecordObj?.currentGameId">
+            <template v-slot:default>
               Current game code: {{ userRecordObj?.currentGameId }}
             </template>
             <template v-slot:append>
               <v-btn icon="mdi-clipboard-multiple-outline" variant="text" @click="copyGameCodeToClipboard"></v-btn>
             </template>
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="userRecordObj?.teamName">
             Team: {{ userRecordObj?.teamName }}
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="gamesObj?.region">
             Region: {{ gamesObj?.region }}
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="userRecordObj?.teamName">
             <v-btn color="primary" v-on:click="switchTeam" prepend-icon="mdi-swap-horizontal" block>Change team</v-btn>
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="userRecordObj?.teamName">
             <v-btn color="yellow" v-on:click="exitGame" prepend-icon="mdi-close" block>Exit game</v-btn>
           </v-list-item>
           <v-list-item>
@@ -100,7 +108,6 @@ let links = [
   'Timer',
   'Rules',
   'Curses',
-  'Region Editor'
 ]
 
 const exitGame = async() => {
@@ -143,7 +150,13 @@ watch(currentTab, redirect);
 
 const copyGameCodeToClipboard = async() => {
   if (userRecordObj?.value?.currentGameId) {
-    await navigator.clipboard.writeText(userRecordObj?.value?.currentGameId);
+    await navigator.clipboard.writeText(userRecordObj.value.currentGameId);
+  }
+};
+
+const copyUidToClipboard = async() => {
+  if (user.value?.uid) {
+    await navigator.clipboard.writeText(user.value.uid);
   }
 };
 
