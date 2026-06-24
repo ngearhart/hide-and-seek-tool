@@ -1,6 +1,5 @@
 {
   "hosting": {
-    // "public": "dist",
     "source": ".",
     "ignore": [
       "firebase.json",
@@ -8,14 +7,6 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-      {
-        "source": "/api",
-        "function": {
-          "functionId": "helloWorld",
-          "region": "us-central1",
-          "pinTag": true
-        }
-      },
       {
         "source": "**",
         "destination": "/index.html"

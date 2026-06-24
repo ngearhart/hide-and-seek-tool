@@ -1,0 +1,19 @@
+# https://github.com/marketplace/actions/deploy-firebase-functions
+
+name: Deploy to Firebase Functions on merge
+on:
+  push:
+    branches:
+      - main
+jobs:
+  main:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: cd functions && npm ci && npm run build
+    - uses: jsryudev/deploy-firebase-functions@v20.0.1
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HIDE_AND_SEEK_64012 }}
+        FIREBASE_PROJECT: hide-and-seek-64012
+        FUNCTIONS_DIR: functions
