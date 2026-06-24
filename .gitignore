@@ -56,3 +56,5 @@ tmp/
 img/
 
 firebase-debug.log
+
+local/database_export
