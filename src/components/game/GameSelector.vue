@@ -193,8 +193,4 @@ const checkUserInGameStatus = async() => {
 watch(() => props.currentTab, checkUserInGameStatus);
 watch(() => user, checkUserInGameStatus);
 
-// onMounted(async () => {
-//   await checkUserInGameStatus();
-// });
-
 </script>
