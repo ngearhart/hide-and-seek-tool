@@ -132,6 +132,17 @@
                         </v-row>
                     </v-container>
                 </v-card-text>
+                
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                    <v-btn prepend-icon="mdi-keyboard-return" text="Back" @click="step = 'final'" :disabled="saving"></v-btn>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn prepend-icon="mdi-exit-to-app" color="surface-variant" text="Exit Region Editor" variant="flat" :disabled="saving || !rawEditedRegion" :loading="saving"
+                        @click="exit"></v-btn>
+                </v-card-actions>
             </v-card>
         </template>
     </v-dialog>
@@ -154,6 +165,7 @@ import JsonEditorVue from 'json-editor-vue';
 import { Mode } from 'vanilla-jsoneditor';
 import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
 
+const router = useRouter();
 const localMap = shallowRef<L.Map | null>(null);
 
 const firebaseApp = useFirebaseApp();
@@ -361,8 +373,17 @@ const submitRegion = async() => {
         ...rawEditedRegion.value,
         id: editedRegion.value.id!
     } as Region);
+    notify({
+        type: 'success',
+        title: "Success",
+        text: "Successfully saved region"
+    })
     saving.value = false;
     step.value = 'sharing'
+}
+
+const exit = () => {
+    window.location.replace('/');
 }
 
 </script>
