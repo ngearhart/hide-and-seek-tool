@@ -141,15 +141,11 @@
 import 'leaflet/dist/leaflet.css';
 import L, { LatLngBounds } from 'leaflet';
 
-import { useStore } from '@/stores/app';
-import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useCurrentUser, useDatabaseObject, useFirebaseApp } from 'vuefire';
-
-import type { GameRecord, UserRecord } from '@/utils';
+import { useFirebaseApp } from 'vuefire';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, getNullRegion, loadRegion, loadRegionDescriptions, useRegion, useRegions, useRegionSharing, type NullableRegion, type Region } from '@/regions/regions';
+import { flipCoords, getNullRegion, useRegion, useRegions, useRegionSharing, type NullableRegion, type Region } from '@/regions/regions';
 import { updateTileLayers } from '@/graphics/mapTiles';
 import { features } from '@/regions/features';
 import { loadNewFeatures } from '@/firebase';
@@ -161,12 +157,6 @@ import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
 const localMap = shallowRef<L.Map | null>(null);
 
 const firebaseApp = useFirebaseApp();
-
-const user = useCurrentUser();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
-// const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
-// const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
 const featureToEdit = shallowRef<import('@/regions/features').FeatureType>("airport");
 const loading = shallowRef(false);

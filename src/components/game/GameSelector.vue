@@ -36,28 +36,22 @@ import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
 
 import { useNotification } from "@kyvg/vue3-notification";
-import { useStore } from '@/stores/app';
+import { useUserManager } from '@/firebase/user';
 
 const { notify }  = useNotification()
 
 const props = defineProps<{ currentTab: string }>()
 
-// const games = ref(getDatabase(), 'games');
 
 const isDialogOpen = ref(false);
 const isGameCreatorOpen = ref(false);
 const isTeamJoinerOpen = ref(false);
 const gameCodeEntered = ref('');
 
-const user = useCurrentUser();
-
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const userManager = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(userManager.userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
-const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
-const router = useRouter();
-const store = useStore();
 
 const generateSlug = () => {
     let slug = '';
@@ -84,10 +78,7 @@ const createNewGame = async (teams: { name: string }[], region: string) => {
     // Create game ID
     gameCodeEntered.value = generateSlug();
 
-    console.info("Current user:");
-    console.info(user);
-
-    await set(userRecordDbRef.value, {
+    await userManager.save({
       currentGameId: gameCodeEntered.value
     });
   
@@ -108,8 +99,9 @@ const createNewGame = async (teams: { name: string }[], region: string) => {
     isTeamJoinerOpen.value = true;
   } catch (e) {
     console.error(e);
-    await set(userRecordDbRef.value, {
-      currentGameId: null
+    await userManager.save({
+      currentGameId: null,
+      teamName: null
     });
   }
 }
@@ -125,7 +117,7 @@ const joinGame = async() => {
     return
   }
 
-  await set(userRecordDbRef.value, {
+  await userManager.save({
     currentGameId: gameCodeEntered.value
   });
 
@@ -140,8 +132,9 @@ const joinGame = async() => {
       isTeamJoinerOpen.value = true;
       return
     } else {
-      await set(userRecordDbRef.value, {
-        currentGameId: null
+      await userManager.save({
+        currentGameId: null,
+        teamName: null
       });
     }
   } catch {}
@@ -153,7 +146,7 @@ const joinGame = async() => {
 }
 
 const joinTeam = async(team: string) => {
-  await set(userRecordDbRef.value, {
+  await userManager.save({
     currentGameId: userRecordObj.value?.currentGameId,
     teamName: team
   });
@@ -172,7 +165,7 @@ const checkUserInGameStatus = async() => {
   }
   console.log('[Game Selector] Checking if user is in game')
   const userRef = await get(
-    userRecordDbRef.value
+    userManager.userRecordDbRef.value
   );
   if (!userRef.exists() || !userRef.val().currentGameId?.length) {
     console.log('[Game Selector] User not in game. Launching join game dialog.')
@@ -191,6 +184,6 @@ const checkUserInGameStatus = async() => {
 }
 
 watch(() => props.currentTab, checkUserInGameStatus);
-watch(() => user, checkUserInGameStatus);
+watch(() => userManager.user, checkUserInGameStatus);
 
 </script>

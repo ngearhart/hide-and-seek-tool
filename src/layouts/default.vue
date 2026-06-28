@@ -18,12 +18,12 @@
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn color="primary" v-bind="props">
-            <div v-if="user" style="margin-right: 10px;" class="hidden-sm-and-down">
-              Logged in as {{ user.providerData[0].displayName }}
+            <div v-if="userManager.user.value" style="margin-right: 10px;" class="hidden-sm-and-down">
+              Logged in as {{ userManager.user.value?.providerData[0].displayName }}
             </div>
 
             <v-avatar color="grey-darken-1" size="32">
-              <v-img alt="Your avatar" :src="user?.photoURL ?? ''"></v-img>
+              <v-img alt="Your avatar" :src="userManager.user.value?.photoURL ?? ''"></v-img>
             </v-avatar>
           </v-btn>
         </template>
@@ -86,12 +86,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { signOut } from 'firebase/auth'
 
 import { useNotification } from "@kyvg/vue3-notification";
+import { useUserManager } from '@/firebase/user';
 
 const { notify }  = useNotification();
 
-const user = useCurrentUser();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const userManager = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(userManager.userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
@@ -111,8 +111,9 @@ let links = [
 ]
 
 const exitGame = async() => {
-  await set(userRecordDbRef.value, {
-    currentGameId: null
+  await userManager.save({
+    currentGameId: null,
+    teamName: null
   });
   notify({
     title: "Notice",
@@ -124,7 +125,7 @@ const exitGame = async() => {
 
 // This is a little bit of a hack but whatever.
 const switchTeam = async() => {
-  await set(userRecordDbRef.value, {
+  await userManager.save({
     currentGameId: userRecordObj.value?.currentGameId,
     teamName: null
   });
@@ -155,8 +156,8 @@ const copyGameCodeToClipboard = async() => {
 };
 
 const copyUidToClipboard = async() => {
-  if (user.value?.uid) {
-    await navigator.clipboard.writeText(user.value.uid);
+  if (userManager.user.value?.uid) {
+    await navigator.clipboard.writeText(userManager.user.value.uid);
   }
 };
 

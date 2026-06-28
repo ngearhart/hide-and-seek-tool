@@ -5,7 +5,7 @@
         @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon" />
     <div id="map" style="width: 100%; height: 100%">
         <!-- Elements to show the page loading -->
-        <v-container style="height: 100%;">
+        <v-container style="height: 100%;" v-if="!localMap">
             <v-row class="align-center" style="height: 100%;">
                 <v-col class="d-flex justify-center">
                     <v-card elevation="6" mode="out-in" rounded="pill" width="330">
@@ -138,13 +138,13 @@ import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
 import type { Feature, Point } from 'geojson';
+import { useUserManager } from '@/firebase/user';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
 
-const user = useCurrentUser();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const userManager = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(userManager.userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
@@ -287,7 +287,7 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         hotter: hotter,
         angle: angle,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
@@ -307,7 +307,7 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         hit: hit,
         meters: meters,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
     await updateGame({
@@ -324,7 +324,7 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         long: long,
         degrees: degrees,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     await updateGame({
@@ -467,7 +467,7 @@ const submitCell = async (wasHit: boolean) => {
         markerType: addCellDialogMarker.value!.properties.Type,
         wasHit: wasHit,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
@@ -497,7 +497,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             lat: e.latlng.lat,
             long: e.latlng.lng,
             created: new Date().toUTCString(),
-            creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
+            creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown'
         });
         mostRecentlyDroppedPin.value = e.latlng;
         updateGame(
@@ -523,18 +523,17 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
     }
 }
 
-onValue(region.value.regionRef.value, (regionRef) => {
-    if (!regionRef.exists()) {
-        console.log("[Map Startup] Region Ref does not exist - cannot intialize map");
-        return;
-    }
-
+const startupMapData = (region: Region) => {
     if (localMap.value) {
         // We only want to run this once on startup.
         return;
     }
 
-    const region: Region = regionRef.val();
+    // Edge case for vite HMR - somehow it misses this element
+    if (!document.getElementById("map")) {
+        setTimeout(() => startupMapData(region), 2000);
+        return;
+    }
 
     localMap.value = L.map('map', {
         // It's much nicer on mobile to have unlimited zoom granularity, but it feels worse on desktops
@@ -555,7 +554,7 @@ onValue(region.value.regionRef.value, (regionRef) => {
             newEntries.push({
                 points: newPoly,
                 created: new Date().toUTCString(),
-                creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+                creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
             });
 
             updateGame(
@@ -579,6 +578,22 @@ onValue(region.value.regionRef.value, (regionRef) => {
     updateGameObjects();
     updateMarkers();
     localMap.value!.addLayer(PixiManager.getLayer());
+
+}
+
+onValue(region.value.regionRef.value, (regionRef) => {
+    if (!regionRef.exists()) {
+        console.log("[Map Startup] Region Ref does not exist - cannot intialize map");
+        return;
+    }
+    startupMapData(regionRef.val());
+})
+
+// Edge case - when the user first joins the game
+watch(toRef(userRecordObj.value?.currentGameId), () => {
+    if (userRecordObj.value?.currentGameId && !localMap.value) {
+        startupMapData(regionObj.value!);
+    }
 })
 
 onMounted(() => {

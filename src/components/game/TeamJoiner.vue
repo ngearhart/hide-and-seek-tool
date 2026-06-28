@@ -23,17 +23,17 @@
 
 <script lang="ts" setup>
 
+import { useUserManager } from '@/firebase/user';
 import type { GameRecord, UserRecord } from '@/utils';
-import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
-import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
+import { getDatabase, ref as dbRef } from 'firebase/database';
+import { useDatabaseObject } from 'vuefire';
 
 const emit = defineEmits<{
   (e: 'submit', team: string): void
 }>();
 
-const user = useCurrentUser();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const user = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(user.userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);

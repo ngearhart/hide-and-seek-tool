@@ -19,7 +19,7 @@ import { OverpassApiStatusError, OverpassGatewayTimeoutError } from "overpass-ts
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
-export const loadNewFeatures = onCall({ enforceAppCheck: true }, async (request) => {
+export const loadNewFeatures = onCall({ enforceAppCheck: process.env.FUNCTIONS_EMULATOR !== "true" }, async (request) => {
     const requestData = SearchForFeaturesRequest.safeParse(request.data);
 
     if (!requestData.success) {

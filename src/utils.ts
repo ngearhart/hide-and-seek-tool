@@ -4,7 +4,14 @@ import type { FeatureType } from "./regions/features";
 export type UserRecord = {
     currentGameId: string,
     teamName: string,
+    regions: string[]
 };
+
+export type NullableUserRecord = {
+    currentGameId?: string | null,
+    teamName?: string | null,
+    regions?: string[]
+}
 
 type RadarEntry = {
     lat: number,

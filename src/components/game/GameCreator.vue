@@ -49,7 +49,6 @@
 
 <script lang="ts" setup>
 import { useRegions } from '@/regions/regions';
-import { useStore } from '@/stores/app';
 
 
 const emit = defineEmits<{
