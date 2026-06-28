@@ -172,9 +172,12 @@ export function useRegion(regionId: globalThis.MaybeRefOrGetter<string | undefin
             return
         }
 
-        await set(
-            regionRef.value,
-            region
+        await set(regionRef.value,
+            {
+                ...region,
+                // TODO!
+                hidingRadiusMiles: 0.25
+            }
         )
     };
 

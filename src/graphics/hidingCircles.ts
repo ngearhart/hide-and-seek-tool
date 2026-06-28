@@ -38,7 +38,8 @@ export default class HidingCirclesElement extends DrawableElement {
 
     createWithMap(utils: CallbackUtils): undefined {
         this.center = utils.latLngToLayerPoint(this.region.center);
-        this.points = this.region.features.filter(feat => feat.properties.Type === "station").map(feat => flipCoords(feat.geometry.coordinates))
+        this.points = this.region.features.filter(feat => feat.properties.Type === "station")
+            .map(feat => flipCoords(feat.geometry.coordinates))
             .map(coords => utils.latLngToLayerPoint(coords));
     }
 
