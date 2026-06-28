@@ -1,5 +1,5 @@
 import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geojson"
-import type { LatLng, LatLngBounds, LatLngBoundsExpression, LatLngBoundsLiteral, LatLngTuple } from "leaflet";
+import { LatLngBounds, type LatLng, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 import { ref } from 'vue';
@@ -19,7 +19,7 @@ export type Region = FeatureCollection<Point, CustomProperty> & {
     name: string
     size: string
     center: LatLng
-    bounds: LatLngBoundsLiteral
+    bounds: [LatLng, LatLng]
     hidingRadiusMiles: number
 }
 
@@ -28,7 +28,7 @@ export type NullableRegion = FeatureCollection<Point, CustomProperty> & {
     name?: string
     size?: string
     center?: LatLng
-    bounds?: LatLngBoundsLiteral
+    bounds?: [LatLng, LatLng]
     hidingRadiusMiles?: number
 }
 
@@ -67,13 +67,11 @@ export function generateVoronoi(region: Region): VoronoiDict {
                         vertices.map(point => [point[1], point[0]]).flat();
                 const points = Float64Array.from(points1);
                 const delaunay = new Delaunay(points);
-                const topCorner = flipCoords(region.bounds[1] as Position);
-                const bottomCorner = flipCoords(region.bounds[0] as Position);
+                const bounds = new LatLngBounds(region.bounds[0], region.bounds[1]);
                 target[key] = delaunay.voronoi([
-                    Math.min(topCorner[0], bottomCorner[0]),
-                    Math.min(topCorner[1], bottomCorner[1]),
-                    Math.max(bottomCorner[0], topCorner[0]),
-                    Math.max(bottomCorner[1], topCorner[1])]);
+                    bounds.getSouthWest().lat, bounds.getSouthWest().lng,
+                    bounds.getNorthEast().lat, bounds.getNorthEast().lng
+                ]);
             }
             return target[key];
         }

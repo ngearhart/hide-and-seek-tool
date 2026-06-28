@@ -3,7 +3,25 @@
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
         @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw"
         @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon" />
-    <div id="map" style="width: 100%; height: 100%"></div>
+    <div id="map" style="width: 100%; height: 100%">
+        <!-- Elements to show the page loading -->
+        <v-container style="height: 100%;">
+            <v-row class="align-center" style="height: 100%;">
+                <v-col class="d-flex justify-center">
+                    <v-card elevation="6" mode="out-in" rounded="pill" width="330">
+                        <div class="d-flex align-center pa-3 justify-space-between">
+                            <div class="mt-n2">
+                                <v-card-title>Loading...</v-card-title>
+                            </div>
+                            <v-progress-circular :size="100" :width="12" bg-color="surface-light" class="ma-3"
+                                color="orange-accent-2" reveal rounded indeterminate>
+                            </v-progress-circular>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
     <v-snackbar v-model="droppingPin" color="green" :close-on-content-click="false" timeout="-1">
         Tap on the map to drop a pin
         <template v-slot:actions>
@@ -104,7 +122,7 @@ import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
 import { distance, rotatePoint } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
-import { getDatabase, ref as dbRef, set } from 'firebase/database';
+import { getDatabase, ref as dbRef, set, get, onValue } from 'firebase/database';
 import { useCurrentUser, useDatabaseObject, useFirebaseApp } from 'vuefire';
 
 import type { GameRecord, UserRecord } from '@/utils';
@@ -172,25 +190,27 @@ watch(gamesObj, () => updateGameObjects())
 let previousMarkers: L.Marker<any>[] = [];
 
 const updateMarkers = () => {
-    previousMarkers.forEach(m => m.remove());
-    let markers = getFeatureMarkers(getPopupFor, gamesObj, regionObj);
-    previousMarkers = Object.values(markers).flat();
-    store.$state.mapMarkers.forEach(marker => {
-        markers[marker as FeatureType].forEach(m => {
-            if (marker == "stations") {
-                L.circle(m.getLatLng(), {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.2,
-                    radius: 402.336, // quarter mile in meters
-                }).addTo(localMap.value!);
-            }
-            m.addTo(localMap.value!);
+    if (gamesObj.value && regionObj.value) {
+        previousMarkers.forEach(m => m.remove());
+        let markers = getFeatureMarkers(getPopupFor, gamesObj, regionObj);
+        previousMarkers = Object.values(markers).flat();
+        store.$state.mapMarkers.forEach(marker => {
+            markers[marker as FeatureType].forEach(m => {
+                if (marker == "stations") {
+                    L.circle(m.getLatLng(), {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.2,
+                        radius: 402.336, // quarter mile in meters
+                    }).addTo(localMap.value!);
+                }
+                m.addTo(localMap.value!);
+            });
         });
-    });
+    }
 }
 
-const updateGameObjects = async() => {
+const updateGameObjects = async () => {
     updateMarkers();
     PixiManager.update(gamesObj.value!, regionObj.value!);
     localMap.value!.addLayer(PixiManager.getLayer());
@@ -503,11 +523,23 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
     }
 }
 
-onMounted(async () => {
+onValue(region.value.regionRef.value, (regionRef) => {
+    if (!regionRef.exists()) {
+        console.log("[Map Startup] Region Ref does not exist - cannot intialize map");
+        return;
+    }
+
+    if (localMap.value) {
+        // We only want to run this once on startup.
+        return;
+    }
+
+    const region: Region = regionRef.val();
+
     localMap.value = L.map('map', {
         // It's much nicer on mobile to have unlimited zoom granularity, but it feels worse on desktops
         zoomSnap: L.Browser.mobile ? 0 : 0.5
-    }).setView([regionObj.value?.center.lat ?? 0, regionObj.value?.center.lng ?? 0], 13);  // Region default
+    }).setView([region.center.lat, region.center.lng], 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
@@ -547,7 +579,9 @@ onMounted(async () => {
     updateGameObjects();
     updateMarkers();
     localMap.value!.addLayer(PixiManager.getLayer());
+})
 
+onMounted(() => {
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
     (window as any)["startBoundaryLine"] = startBoundaryLine;

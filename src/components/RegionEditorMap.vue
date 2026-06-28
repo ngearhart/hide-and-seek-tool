@@ -139,7 +139,7 @@
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import L, { LatLngBounds } from 'leaflet';
 
 import { useStore } from '@/stores/app';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
@@ -243,7 +243,7 @@ watch(step, () => {
                 .bindPopup("Region Center");
         }
         if (editedRegion.value.bounds) {
-            boundsRect = L.rectangle(editedRegion.value.bounds!, { color: "#ff7800", weight: 5, fillOpacity: 0.1 }).addTo(localMap.value!);
+            boundsRect = L.rectangle(new LatLngBounds(editedRegion.value.bounds![0], editedRegion.value.bounds![1]), { color: "#ff7800", weight: 5, fillOpacity: 0.1 }).addTo(localMap.value!);
         }
         if (step.value === 'final') {
             rawEditedRegion.value = JSON.parse(JSON.stringify(editedRegion.value));
@@ -257,7 +257,7 @@ watch(editedRegion, () => {
         if (boundsRect) {
             boundsRect.remove();
         }
-        boundsRect = L.rectangle(editedRegion.value.bounds!, { color: "#ff7800", weight: 5, fillOpacity: 0.1 }).addTo(localMap.value!);
+        boundsRect = L.rectangle(new LatLngBounds(editedRegion.value.bounds![0], editedRegion.value.bounds![1]), { color: "#ff7800", weight: 5, fillOpacity: 0.1 }).addTo(localMap.value!);
     }
     if (editedRegion.value.center && localMap.value) {
         if (centerMarker) {
