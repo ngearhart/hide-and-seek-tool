@@ -1,6 +1,7 @@
 <template>
-  <router-view />
+  <RegionEditorMap />
 </template>
 
 <script lang="ts" setup>
+  //
 </script>

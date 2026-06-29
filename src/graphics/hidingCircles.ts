@@ -37,8 +37,9 @@ export default class HidingCirclesElement extends DrawableElement {
     }
 
     createWithMap(utils: CallbackUtils): undefined {
-        this.center = utils.latLngToLayerPoint(flipCoords(this.region.center));
-        this.points = this.region.features.filter(feat => feat.properties.Type === "station").map(feat => flipCoords(feat.geometry.coordinates))
+        this.center = utils.latLngToLayerPoint(this.region.center);
+        this.points = this.region.features.filter(feat => feat.properties.Type === "station")
+            .map(feat => flipCoords(feat.geometry.coordinates))
             .map(coords => utils.latLngToLayerPoint(coords));
     }
 
@@ -55,9 +56,9 @@ export default class HidingCirclesElement extends DrawableElement {
         this.graphics.destroy();
     }
 
-    static fromStore(state: State): HidingCirclesElement[] {
+    static fromRegion(state: State, region: Region): HidingCirclesElement[] {
         if (state.enableHidingSpotOverlay) {
-            return [new HidingCirclesElement(state.loadedRegionData!)];
+            return [new HidingCirclesElement(region)];
         }
         return [];
     }

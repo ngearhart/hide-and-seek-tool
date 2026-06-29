@@ -12,7 +12,6 @@ import { routes } from 'vue-router/auto-routes'
 // import index from '@/pages/index.vue';
 
 import { getCurrentUser } from 'vuefire'
-import { getCurrentUserMock } from '@/firebase/mock'
 
 // routes.push({
 //     path: '/:pathMatch(.*)*',
@@ -46,18 +45,19 @@ router.isReady().then(() => {
 
 router.beforeEach(async (to: any) => {
   // routes with `meta: { requiresAuth: true }` will check for the users, others won't
-  if (to.path != '/login') {
-    const currentUser = await getCurrentUserMock()
-    // if the user is not logged in, redirect to the login page
-    if (!currentUser) {
-      return {
-        path: '/login',
-        query: {
-          // we keep the current path in the query so we can redirect to it after login
-          // with `router.push(route.query.redirect || '/')`
-          redirect: to.fullPath,
-        },
-      }
+  const currentUser = await getCurrentUser()
+  if (!currentUser && to.path != '/login') {
+    return {
+      path: '/login',
+      query: {
+        // we keep the current path in the query so we can redirect to it after login
+        // with `router.push(route.query.redirect || '/')`
+        redirect: to.fullPath,
+      },
+    }
+  } else if (currentUser && to.path == '/login') {
+    return {
+      path: '/'
     }
   }
 })

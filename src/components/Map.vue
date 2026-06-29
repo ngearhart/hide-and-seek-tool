@@ -3,7 +3,25 @@
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
         @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw"
         @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon" />
-    <div id="map" style="width: 100%; height: 100%"></div>
+    <div id="map" style="width: 100%; height: 100%">
+        <!-- Elements to show the page loading -->
+        <v-container style="height: 100%;" v-if="!localMap">
+            <v-row class="align-center" style="height: 100%;">
+                <v-col class="d-flex justify-center">
+                    <v-card elevation="6" mode="out-in" rounded="pill" width="330">
+                        <div class="d-flex align-center pa-3 justify-space-between">
+                            <div class="mt-n2">
+                                <v-card-title>Loading...</v-card-title>
+                            </div>
+                            <v-progress-circular :size="100" :width="12" bg-color="surface-light" class="ma-3"
+                                color="orange-accent-2" reveal rounded indeterminate>
+                            </v-progress-circular>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
     <v-snackbar v-model="droppingPin" color="green" :close-on-content-click="false" timeout="-1">
         Tap on the map to drop a pin
         <template v-slot:actions>
@@ -98,21 +116,20 @@
 
 <script lang="ts" setup>
 import 'leaflet/dist/leaflet.css';
-import L, { type LatLngBoundsExpression } from 'leaflet';
+import L, { LatLng, type LatLngBoundsExpression, type LatLngExpression } from 'leaflet';
 
 import { onMounted } from 'vue';
 import { useStore } from '@/stores/app';
 import { distance, rotatePoint } from '@/utils';
 import { notify } from '@kyvg/vue3-notification';
-import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useDatabaseObject } from 'vuefire';
+import { getDatabase, ref as dbRef, set, get, onValue } from 'firebase/database';
+import { useCurrentUser, useDatabaseObject, useFirebaseApp } from 'vuefire';
 
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 
 import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
-import { flipCoords, loadRegion, loadRegionDescriptions, type CustomProperty } from '@/regions/regions';
+import { flipCoords, getRegionFeatures, loadRegion, loadRegionDescriptions, useRegion, type CustomProperty, type Region } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
 import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
@@ -121,16 +138,18 @@ import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
 import type { Feature, Point } from 'geojson';
+import { useUserManager } from '@/firebase/user';
 
 const store = useStore();
 const localMap = shallowRef<L.Map | null>(null);
 
-const drawnItems = reactive(new L.FeatureGroup());
-const user = useCurrentUserMock();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const userManager = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(userManager.userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + userRecordObj.value?.currentGameId));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
+
+const region = computed(() => useRegion(gamesObj.value?.region));
+const regionObj = useDatabaseObject<Region | null>(region.value.regionRef);
 
 const showCustomPinLabelEditor = shallowRef(false);
 const mostRecentlyDroppedPin = ref<L.LatLng | null>(null);
@@ -171,27 +190,29 @@ watch(gamesObj, () => updateGameObjects())
 let previousMarkers: L.Marker<any>[] = [];
 
 const updateMarkers = () => {
-    previousMarkers.forEach(m => m.remove());
-    let markers = getFeatureMarkers(getPopupFor, gamesObj);
-    previousMarkers = Object.values(markers).flat();
-    store.$state.mapMarkers.forEach(marker => {
-        markers[marker as FeatureType].forEach(m => {
-            if (marker == "stations") {
-                L.circle(m.getLatLng(), {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.2,
-                    radius: 402.336, // quarter mile in meters
-                }).addTo(localMap.value!);
-            }
-            m.addTo(localMap.value!);
+    if (gamesObj.value && regionObj.value) {
+        previousMarkers.forEach(m => m.remove());
+        let markers = getFeatureMarkers(getPopupFor, gamesObj, regionObj);
+        previousMarkers = Object.values(markers).flat();
+        store.$state.mapMarkers.forEach(marker => {
+            markers[marker as FeatureType].forEach(m => {
+                if (marker == "stations") {
+                    L.circle(m.getLatLng(), {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.2,
+                        radius: 402.336, // quarter mile in meters
+                    }).addTo(localMap.value!);
+                }
+                m.addTo(localMap.value!);
+            });
         });
-    });
+    }
 }
 
-const updateGameObjects = () => {
+const updateGameObjects = async () => {
     updateMarkers();
-    PixiManager.update(gamesObj.value!);
+    PixiManager.update(gamesObj.value!, regionObj.value!);
     localMap.value!.addLayer(PixiManager.getLayer());
 }
 
@@ -222,7 +243,7 @@ const onLocationFound = (e: any) => {
     else if (locatingClosestType.value != null) {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
-        for (let marker of store.getMarkers(locatingClosestType.value.key as FeatureType)) {
+        for (let marker of getRegionFeatures(regionObj.value!, locatingClosestType.value.key as FeatureType)) {
             let d = distance(e.latlng.lat, e.latlng.lng, marker.geometry.coordinates[1], marker.geometry.coordinates[0])
             if (d < minDistanceMiles) {
                 minDistanceMiles = d
@@ -266,7 +287,7 @@ const addThermometer = async (lat: number, long: number, angle: number, hotter: 
         hotter: hotter,
         angle: angle,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
@@ -286,7 +307,7 @@ const addRadar = async (hit: boolean, lat: number, long: number, meters: number)
         hit: hit,
         meters: meters,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown'
     });
 
     await updateGame({
@@ -303,7 +324,7 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
         long: long,
         degrees: degrees,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     await updateGame({
@@ -401,7 +422,7 @@ const startBoundaryLine = (lat: number, long: number) => {
 }
 
 const addCell = (title: string, subtitle: string) => {
-    addCellDialogMarker.value = store.getMarkers(subtitle.toLowerCase().replace('movie theater', 'theater') as FeatureType).find(feature => feature.properties.Name === title)!;
+    addCellDialogMarker.value = getRegionFeatures(regionObj.value!, subtitle.toLowerCase().replace('movie theater', 'theater') as FeatureType).find(feature => feature.properties.Name === title)!;
     if (!addCellDialogMarker.value) {
         notify({
             type: "error",
@@ -446,7 +467,7 @@ const submitCell = async (wasHit: boolean) => {
         markerType: addCellDialogMarker.value!.properties.Type,
         wasHit: wasHit,
         created: new Date().toUTCString(),
-        creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+        creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
     });
 
     // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
@@ -476,7 +497,7 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
             lat: e.latlng.lat,
             long: e.latlng.lng,
             created: new Date().toUTCString(),
-            creatorName: user.value?.providerData[0].displayName ?? 'Unknown'
+            creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown'
         });
         mostRecentlyDroppedPin.value = e.latlng;
         updateGame(
@@ -502,18 +523,22 @@ const onMapClick: L.LeafletMouseEventHandlerFn = (e) => {
     }
 }
 
-onMounted(async () => {
-    if (!store.$state.regions.length) {
-        store.$state.regions = await loadRegionDescriptions();
+const startupMapData = (region: Region) => {
+    if (localMap.value) {
+        // We only want to run this once on startup.
+        return;
     }
-    if (!store.$state.loadedRegionData || store.$state.loadedRegionData?.name != gamesObj.value?.region) {
-        // There is an odd case where the wrong region is loaded
-        await ensureRegionLoaded();
+
+    // Edge case for vite HMR - somehow it misses this element
+    if (!document.getElementById("map")) {
+        setTimeout(() => startupMapData(region), 2000);
+        return;
     }
+
     localMap.value = L.map('map', {
         // It's much nicer on mobile to have unlimited zoom granularity, but it feels worse on desktops
         zoomSnap: L.Browser.mobile ? 0 : 0.5
-    }).setView(flipCoords(store.$state.loadedRegionData?.center || [0, 0]), 13);  // Region default
+    }).setView([region.center.lat, region.center.lng], 13);  // Region default
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
@@ -529,7 +554,7 @@ onMounted(async () => {
             newEntries.push({
                 points: newPoly,
                 created: new Date().toUTCString(),
-                creatorName: user.value?.providerData[0].displayName ?? 'Unknown',
+                creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
             });
 
             updateGame(
@@ -554,6 +579,24 @@ onMounted(async () => {
     updateMarkers();
     localMap.value!.addLayer(PixiManager.getLayer());
 
+}
+
+onValue(region.value.regionRef.value, (regionRef) => {
+    if (!regionRef.exists()) {
+        console.log("[Map Startup] Region Ref does not exist - cannot intialize map");
+        return;
+    }
+    startupMapData(regionRef.val());
+})
+
+// Edge case - when the user first joins the game
+watch(toRef(userRecordObj.value?.currentGameId), () => {
+    if (userRecordObj.value?.currentGameId && !localMap.value) {
+        startupMapData(regionObj.value!);
+    }
+})
+
+onMounted(() => {
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
     (window as any)["startBoundaryLine"] = startBoundaryLine;
@@ -562,14 +605,4 @@ onMounted(async () => {
     (window as any)["deleteCustomMarker"] = deleteCustomMarker;
     (window as any)["addCell"] = addCell;
 })
-
-const ensureRegionLoaded = async() => {
-    const regionId = store.$state.regions.find(region => region.name === gamesObj.value?.region)!.path;
-    const region = await loadRegion(regionId);
-    store.$state.loadedRegionData = region;
-
-    // Used to be needed when region loaded was not synchronous with other mounted() calls
-    // localMap.value!.setView(flipCoords(store.$state.loadedRegionData!.center), 13);
-}
-
 </script>

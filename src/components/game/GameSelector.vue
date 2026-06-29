@@ -17,6 +17,11 @@
               <v-btn block color="primary" v-on:click="launchGameCreatorDialog">+ Create a new game</v-btn>
             </v-col>
           </v-row>
+          <v-row align="center" justify="center">
+            <v-col cols="12" md="12">
+              <v-btn block color="primary" v-on:click="launchRegionEditor">Launch region editor</v-btn>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
     </v-card>
@@ -26,31 +31,27 @@
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
 import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
 
 import { useNotification } from "@kyvg/vue3-notification";
-import { useStore } from '@/stores/app';
+import { useUserManager } from '@/firebase/user';
 
 const { notify }  = useNotification()
 
-// const games = ref(getDatabase(), 'games');
+const props = defineProps<{ currentTab: string }>()
+
 
 const isDialogOpen = ref(false);
 const isGameCreatorOpen = ref(false);
 const isTeamJoinerOpen = ref(false);
 const gameCodeEntered = ref('');
 
-const user = useCurrentUserMock();
-
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const userManager = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(userManager.userRecordDbRef);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
-const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 
-const store = useStore();
 
 const generateSlug = () => {
     let slug = '';
@@ -65,15 +66,19 @@ const launchGameCreatorDialog = () => {
   isGameCreatorOpen.value = true;
 }
 
+const launchRegionEditor = () => {
+  // router.push({ path: "/regionEditor" });
+  // isDialogOpen.value = false;
+  // TODO!
+  window.location.assign('/regionEditor');
+}
+
 const createNewGame = async (teams: { name: string }[], region: string) => {
   try {
     // Create game ID
     gameCodeEntered.value = generateSlug();
 
-    console.info("Current user:");
-    console.info(user);
-
-    await set(userRecordDbRef.value, {
+    await userManager.save({
       currentGameId: gameCodeEntered.value
     });
   
@@ -94,8 +99,9 @@ const createNewGame = async (teams: { name: string }[], region: string) => {
     isTeamJoinerOpen.value = true;
   } catch (e) {
     console.error(e);
-    await set(userRecordDbRef.value, {
-      currentGameId: null
+    await userManager.save({
+      currentGameId: null,
+      teamName: null
     });
   }
 }
@@ -111,14 +117,13 @@ const joinGame = async() => {
     return
   }
 
-  await set(userRecordDbRef.value, {
+  await userManager.save({
     currentGameId: gameCodeEntered.value
   });
 
   try {
     const existingGame = await get(gamesDbRef.value);
     if (existingGame.exists()) {
-      store.$state.loadedRegionData = null;
       isDialogOpen.value = false;
       notify({
         title: "Joined game",
@@ -127,8 +132,9 @@ const joinGame = async() => {
       isTeamJoinerOpen.value = true;
       return
     } else {
-      await set(userRecordDbRef.value, {
-        currentGameId: null
+      await userManager.save({
+        currentGameId: null,
+        teamName: null
       });
     }
   } catch {}
@@ -140,7 +146,7 @@ const joinGame = async() => {
 }
 
 const joinTeam = async(team: string) => {
-  await set(userRecordDbRef.value, {
+  await userManager.save({
     currentGameId: userRecordObj.value?.currentGameId,
     teamName: team
   });
@@ -152,25 +158,32 @@ const joinTeam = async(team: string) => {
   })
 }
 
-onMounted(async () => {
-  console.log('Startup - checking if user is in game')
+const checkUserInGameStatus = async() => {
+  if (props.currentTab === 'RegionEditor') {
+    console.log('[Game Selector] User is in region editor - no action required')
+    return
+  }
+  console.log('[Game Selector] Checking if user is in game')
   const userRef = await get(
-    userRecordDbRef.value
+    userManager.userRecordDbRef.value
   );
   if (!userRef.exists() || !userRef.val().currentGameId?.length) {
-    console.log('Startup - User not in game. Launching join game dialog.')
+    console.log('[Game Selector] User not in game. Launching join game dialog.')
     isDialogOpen.value = true;
     return;
   }
-  console.log('Startup - user is in game. Checking if user on team')
+  console.log('[Game Selector] User is in game. Checking if user on team')
   
   // Check for team membership, in edge case where user is in game but not on a team
   if (!userRef.val().teamName?.length) {
-    console.log('Startup - User not on a team. Launching team join dialog.')
+    console.log('[Game Selector] - User not on a team. Launching team join dialog.')
     isTeamJoinerOpen.value = true;
     return;
   }
-  console.log('Startup - user is all good to go.')
-});
+  console.log('[Game Selector] - User is all good to go.')
+}
+
+watch(() => props.currentTab, checkUserInGameStatus);
+watch(() => userManager.user, checkUserInGameStatus);
 
 </script>

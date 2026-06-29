@@ -69,7 +69,8 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    host: '127.0.0.1',
+    port: 3000
   },
   css: {
     preprocessorOptions: {
@@ -80,7 +81,7 @@ export default defineConfig({
   },
   // Uncomment to get sourcemaps to prod
   // build: {
-    // minify: false,
-    // sourcemap: true,
+  //   minify: false,
+  //   sourcemap: true,
   // },
 })

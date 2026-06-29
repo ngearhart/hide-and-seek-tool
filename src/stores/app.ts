@@ -1,8 +1,5 @@
 // Utilities
 import { defineStore } from 'pinia'
-import type { CustomProperty, Region, RegionDescriptor } from '@/regions/regions';
-import type { Feature, Point } from 'geojson';
-import type { FeatureType } from '@/regions/features';
 import type { GameRecord } from '@/utils';
 import type { MapTileLayerType } from '@/graphics/mapTiles';
 
@@ -10,8 +7,6 @@ export type State = {
   mapLayers: MapTileLayerType[]
   mapMarkers: string[],
   enableHidingSpotOverlay: boolean,
-  regions: RegionDescriptor[],
-  loadedRegionData: Region | null,
   overlayOpacity: number,
 };
 
@@ -22,15 +17,8 @@ export const useStore = defineStore('app', {
     ],
     mapMarkers: [],
     enableHidingSpotOverlay: false,
-    regions: [],
-    loadedRegionData: null,
     overlayOpacity: 0.5
   }),
-  getters: {
-    getMarkers() {
-      return (type: FeatureType): Feature<Point, CustomProperty>[] => this.loadedRegionData?.features.filter(feature => feature.properties.Type === type) ?? [];
-    },
-  },
   persist: true
 })
 

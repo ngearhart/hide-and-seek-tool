@@ -12,6 +12,7 @@
                             <v-col cols="12" md="12" v-for="team in teams" :key="team.name">
                                 <v-btn block color="primary" @click="submit(team.name)">{{ team.name }}</v-btn>
                             </v-col>
+                            <v-skeleton-loader type="table-row" v-if="!teams?.length"></v-skeleton-loader>
                         </v-row>
                     </v-container>
                 </v-card-text>
@@ -22,18 +23,17 @@
 
 <script lang="ts" setup>
 
-import { useCurrentUserMock } from '@/firebase/mock';
+import { useUserManager } from '@/firebase/user';
 import type { GameRecord, UserRecord } from '@/utils';
-import { getDatabase, ref as dbRef, push, set, get } from 'firebase/database';
-import { useCurrentUser, useDatabaseList, useDatabaseObject } from 'vuefire';
+import { getDatabase, ref as dbRef } from 'firebase/database';
+import { useDatabaseObject } from 'vuefire';
 
 const emit = defineEmits<{
   (e: 'submit', team: string): void
 }>();
 
-const user = useCurrentUserMock();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const user = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(user.userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);

@@ -18,12 +18,12 @@
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn color="primary" v-bind="props">
-            <div v-if="user" style="margin-right: 10px;" class="hidden-sm-and-down">
-              Logged in as {{ user.providerData[0].displayName }}
+            <div v-if="userManager.user.value" style="margin-right: 10px;" class="hidden-sm-and-down">
+              Logged in as {{ userManager.user.value?.providerData[0].displayName }}
             </div>
 
             <v-avatar color="grey-darken-1" size="32">
-              <v-img alt="Your avatar" :src="user?.photoURL ?? ''"></v-img>
+              <v-img alt="Your avatar" :src="userManager.user.value?.photoURL ?? ''"></v-img>
             </v-avatar>
           </v-btn>
         </template>
@@ -31,23 +31,34 @@
         <v-list>
           <v-list-item>
             <template v-slot:default>
+              Copy User ID
+            </template>
+            <template v-slot:append>
+              <v-btn icon="mdi-clipboard-multiple-outline" variant="text" @click="copyUidToClipboard"></v-btn>
+            </template>
+          </v-list-item>
+          <v-list-item v-if="userRecordObj?.currentGameId">
+            <template v-slot:default>
               Current game code: {{ userRecordObj?.currentGameId }}
             </template>
             <template v-slot:append>
               <v-btn icon="mdi-clipboard-multiple-outline" variant="text" @click="copyGameCodeToClipboard"></v-btn>
             </template>
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="userRecordObj?.teamName">
             Team: {{ userRecordObj?.teamName }}
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="gamesObj?.region">
             Region: {{ gamesObj?.region }}
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="userRecordObj?.teamName">
             <v-btn color="primary" v-on:click="switchTeam" prepend-icon="mdi-swap-horizontal" block>Change team</v-btn>
           </v-list-item>
+          <v-list-item v-if="userRecordObj?.teamName">
+            <v-btn color="yellow" v-on:click="exitGame" prepend-icon="mdi-close" block>Exit game</v-btn>
+          </v-list-item>
           <v-list-item>
-            <v-btn color="red" v-on:click="exitGame" prepend-icon="mdi-close" block>Exit game</v-btn>
+            <v-btn color="red" v-on:click="logOut" prepend-icon="mdi-logout" block>Log out</v-btn>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -55,32 +66,32 @@
     </v-app-bar>
 
     <v-main>
-      <router-view v-if="gamesObj && gamesObj.region" />
+      <router-view v-if="currentTab === 'RegionEditor' || (gamesObj && gamesObj.region)" />
       <EarthAnimation v-else>
         hi
       </EarthAnimation>
     </v-main>
     <AppFooter />
-    <GameSelector />
+    <GameSelector :current-tab="currentTab" />
     <Notifications position="bottom right" />
   </v-app>
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUserMock } from '@/firebase/mock';
 import type { GameRecord, UserRecord } from '@/utils';
 import { Notifications } from '@kyvg/vue3-notification';
 import { getDatabase, ref as dbRef, set } from 'firebase/database';
-import { useDatabaseObject } from 'vuefire';
+import { useCurrentUser, useDatabaseObject, useFirebaseAuth } from 'vuefire';
 import { useRoute, useRouter } from 'vue-router'
+import { signOut } from 'firebase/auth'
 
 import { useNotification } from "@kyvg/vue3-notification";
+import { useUserManager } from '@/firebase/user';
 
 const { notify }  = useNotification();
 
-const user = useCurrentUserMock();
-const userRecordDbRef = computed(() => dbRef(getDatabase(), 'users/' + user.value?.uid));
-const userRecordObj = useDatabaseObject<UserRecord | null>(userRecordDbRef);
+const userManager = useUserManager();
+const userRecordObj = useDatabaseObject<UserRecord | null>(userManager.userRecordDbRef);
 const gameCodeEntered = computed(() => userRecordObj.value?.currentGameId);
 const gamesDbRef = computed(() => dbRef(getDatabase(), 'games/' + gameCodeEntered.value));
 const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
@@ -88,6 +99,8 @@ const gamesObj = useDatabaseObject<GameRecord | null>(gamesDbRef);
 const route = useRoute()
 const router = useRouter()
 const currentTab = ref('');
+
+const auth = useFirebaseAuth()!;
 
 
 let links = [
@@ -98,8 +111,9 @@ let links = [
 ]
 
 const exitGame = async() => {
-  await set(userRecordDbRef.value, {
-    currentGameId: null
+  await userManager.save({
+    currentGameId: null,
+    teamName: null
   });
   notify({
     title: "Notice",
@@ -111,7 +125,7 @@ const exitGame = async() => {
 
 // This is a little bit of a hack but whatever.
 const switchTeam = async() => {
-  await set(userRecordDbRef.value, {
+  await userManager.save({
     currentGameId: userRecordObj.value?.currentGameId,
     teamName: null
   });
@@ -137,8 +151,19 @@ watch(currentTab, redirect);
 
 const copyGameCodeToClipboard = async() => {
   if (userRecordObj?.value?.currentGameId) {
-    await navigator.clipboard.writeText(userRecordObj?.value?.currentGameId);
+    await navigator.clipboard.writeText(userRecordObj.value.currentGameId);
   }
 };
+
+const copyUidToClipboard = async() => {
+  if (userManager.user.value?.uid) {
+    await navigator.clipboard.writeText(userManager.user.value.uid);
+  }
+};
+
+const logOut = async() => {
+  await signOut(auth);
+  window.location.reload();
+}
 
 </script>

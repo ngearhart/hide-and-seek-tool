@@ -9,7 +9,8 @@
           <v-container>
             <v-row align="center" justify="center">
               <v-col cols="12" md="12">
-                <v-autocomplete label="Region" v-model="region" :items="regionAutocompleteData" :rules="regionRules"></v-autocomplete>
+                <v-autocomplete label="Region" v-model="region" :items="regions.regionMap.value" item-title="name" item-value="id" :rules="regionRules"
+                  hint="The region must be shared with you to create a game in it" persistent-hint></v-autocomplete>
               </v-col>
             </v-row>
             <v-row align="center" justify="center" v-for="team in teams" :key="team.id">
@@ -47,8 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { loadRegionDescriptions } from '@/regions/regions';
-import { useStore } from '@/stores/app';
+import { useRegions } from '@/regions/regions';
 
 
 const emit = defineEmits<{
@@ -59,9 +59,8 @@ const isDialogOpen = defineModel<boolean>()
 const teams = ref([{id: 0, name: ''}, {id: 1, name: ''}]);
 const region = ref(null);
 const loading = ref(false);
-const store = useStore();
+const regions = useRegions();
 
-const regionAutocompleteData = computed(() => Array.from(store.$state.regions).map(region => region.name))
 
 const rules = [
     (value: string | null) => {
@@ -91,7 +90,6 @@ const rmTeam = (id: number) => {
 }
 
 const submit = (e: any) => {
-  store.$state.loadedRegionData = null;
   e.then((r: { valid: boolean }) => {
     if (r.valid) {
       loading.value = true;
@@ -99,9 +97,5 @@ const submit = (e: any) => {
     }
   })
 }
-
-onMounted(async () => {
-  store.$state.regions = await loadRegionDescriptions()
-})
 
 </script>

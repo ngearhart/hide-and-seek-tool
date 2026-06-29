@@ -1,7 +1,6 @@
 import L from 'leaflet';
 import { getIconFor } from './icons';
-import { useStore } from '@/stores/app';
-import { flipCoords } from './regions';
+import { flipCoords, getRegionFeatures, type Region } from './regions';
 import type { _RefDatabase, VueDatabaseDocumentData } from 'vuefire';
 import type { GameRecord } from '@/utils';
 
@@ -98,14 +97,14 @@ const getMarkerFor = (feature: Feature, latLng: L.LatLngExpression, name: string
   return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, feature.singularLabel))
 }
 
-export const getFeatureMarkers = (getPopupFor: GetPopupFunction, gamesObj: _RefDatabase<VueDatabaseDocumentData<GameRecord | null> | undefined>): { [key in FeatureType]: L.Marker<any>[] } => {
-  // Can't import this earlier due to injection dependencies
-  // https://pinia.vuejs.org/core-concepts/outside-component-usage.html
-  const store = useStore();
+export const getFeatureMarkers = (getPopupFor: GetPopupFunction,
+  gamesObj: _RefDatabase<VueDatabaseDocumentData<GameRecord | null> | undefined>,
+  regionObj: _RefDatabase<VueDatabaseDocumentData<Region | null> | undefined>,
+): { [key in FeatureType]: L.Marker<any>[] } => {
   let markers = Object.fromEntries(
     features.map(feature => [
       feature.key,
-      store.getMarkers(feature.key).map(marker => getMarkerFor(feature, flipCoords(marker.geometry.coordinates), marker.properties.Name, getPopupFor))
+      getRegionFeatures(regionObj.value!, feature.key).map(marker => getMarkerFor(feature, flipCoords(marker.geometry.coordinates), marker.properties.Name, getPopupFor))
     ])
   ) as { [key in FeatureType]: L.Marker<any>[] }
 
