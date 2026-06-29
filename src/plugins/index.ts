@@ -16,7 +16,7 @@ import VueAngle from 'vue-angle';
 // Types
 import type { App } from 'vue'
 import getFirebase from '@/firebase/index'
-import { ReCaptchaV3Provider } from 'firebase/app-check'
+import { ReCaptchaEnterpriseProvider } from 'firebase/app-check'
 
 export function registerPlugins (app: App) {
   app
@@ -30,7 +30,7 @@ export function registerPlugins (app: App) {
       modules: [
         VueFireAuth(),
         VueFireAppCheck({
-          provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_KEY),
+          provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_KEY),
           isTokenAutoRefreshEnabled: true,
           debug: !import.meta.env.PROD
         })
