@@ -18,4 +18,4 @@ jobs:
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HIDE_AND_SEEK_64012 }}
         FIREBASE_PROJECT: hide-and-seek-64012
-        FUNCTIONS_DIR: functions/lib
+        FUNCTIONS_DIR: functions
