@@ -14,7 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      # https://github.com/FirebaseExtended/action-hosting-deploy/issues/460 - pin to 0.10.0 until this is fixed
+      - uses: FirebaseExtended/action-hosting-deploy@v0.10.0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HIDE_AND_SEEK_64012 }}
