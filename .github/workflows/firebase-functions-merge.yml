@@ -12,7 +12,7 @@ jobs:
     name: Deploy to Firebase
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
     - run: cd functions && npm ci && npm run build
     - uses: jsryudev/deploy-firebase-functions@v20.0.1
       env:
