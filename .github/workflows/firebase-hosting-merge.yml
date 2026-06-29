@@ -15,10 +15,20 @@ jobs:
       deployment: true
     runs-on: ubuntu-latest
     steps:
+      # https://github.com/FirebaseExtended/action-hosting-deploy/issues/460
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Pinned exact: Node 24.17.0 has an http.Agent regression that makes
+          # node-fetch (used by firebase-tools' bundled google-auth-library) throw
+          # "Premature close" on the sts.googleapis.com token exchange, breaking
+          # WIF-authenticated deploys. Fixed in 24.18.0. A bare '24' is not enough
+          # — setup-node serves the runner-cached 24.17.0. Bump/relax once newer
+          # 24.x are uniformly safe. See nodejs/node#63989 (fix: #64004).
+          node-version: '24.18.0'
       - uses: actions/checkout@v6
       - run: npm ci && npm run build
-      # https://github.com/FirebaseExtended/action-hosting-deploy/issues/460 - pin to 0.10.0 until this is fixed
-      - uses: FirebaseExtended/action-hosting-deploy@v0.10.0
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HIDE_AND_SEEK_64012 }}
