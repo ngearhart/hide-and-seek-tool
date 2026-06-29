@@ -24,7 +24,7 @@ jobs:
           # 24.x are uniformly safe. See nodejs/node#63989 (fix: #64004).
           node-version: '24.18.0'
       - uses: actions/checkout@v6
-      - run: npm ci && npm run build
+      - run: npm ci
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
