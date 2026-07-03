@@ -88,13 +88,14 @@ export const colors: ColorDict = {
 
 export const getImagePathFor = (featureType: FeatureType): string => 'images/markers/' + featureType + '.png';
 
-export type GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle?: string, subtitle2?: string) => L.Popup;
+export type FancySubtitle = { style: string, text: string };
+export type GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle?: string, subtitle2?: string, fancySubtitle?: FancySubtitle[]) => L.Popup;
 
-const getMarkerFor = (feature: Feature, latLng: L.LatLngExpression, name: string, getPopupFor: GetPopupFunction) => {
+const getMarkerFor = (feature: Feature, latLng: L.LatLngExpression, name: string, getPopupFor: GetPopupFunction, description?: string, fancySubtitle?: FancySubtitle[]) => {
   let additionalOptions: L.MarkerOptions = {
     icon: getIconFor(feature.key)
   };
-  return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, feature.singularLabel))
+  return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, feature.singularLabel, fancySubtitle ? undefined : description, fancySubtitle))
 }
 
 export const getFeatureMarkers = (getPopupFor: GetPopupFunction,
@@ -104,7 +105,7 @@ export const getFeatureMarkers = (getPopupFor: GetPopupFunction,
   let markers = Object.fromEntries(
     features.map(feature => [
       feature.key,
-      getRegionFeatures(regionObj.value!, feature.key).map(marker => getMarkerFor(feature, flipCoords(marker.geometry.coordinates), marker.properties.Name, getPopupFor))
+      getRegionFeatures(regionObj.value!, feature.key).map(marker => getMarkerFor(feature, flipCoords(marker.geometry.coordinates), marker.properties.Name, getPopupFor, marker.properties.Description, marker.properties.FancyDescription))
     ])
   ) as { [key in FeatureType]: L.Marker<any>[] }
 

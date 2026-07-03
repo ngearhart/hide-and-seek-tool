@@ -131,7 +131,7 @@ import 'leaflet-draw';
 import '../styles/leaflet.draw.css';
 import { flipCoords, getRegionFeatures, loadRegion, loadRegionDescriptions, useRegion, type CustomProperty, type Region } from '@/regions/regions';
 import { getIconFor } from '@/regions/icons';
-import { getFeatureMarkers, type FeatureType, type GetPopupFunction } from '@/regions/features';
+import { getFeatureMarkers, type FancySubtitle, type FeatureType, type GetPopupFunction } from '@/regions/features';
 import { updateGame } from '@/game';
 import { MAP_TILE_LAYERS, updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
@@ -339,7 +339,7 @@ const addBoundaryLine = async (lat: number, long: number, degrees: number) => {
 const popupButtonClasses = "v-btn v-btn--block v-btn--elevated v-btn--spaced v-btn--spaced-start v-theme--dark v-btn--density-default v-btn--size-small v-btn--variant-elevated cursor-pointer dialog-button";
 
 // I know this is gross but this is the leaflet canonical way.
-const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "") => L.popup().setContent(measuringOtherMarkerState.value != null ? `
+const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string, subtitle: string = "", subtitle2: string = "", fancySubtitle?: FancySubtitle[]) => L.popup().setContent(measuringOtherMarkerState.value != null ? `
   <div class="popup-container">
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
@@ -352,6 +352,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     <h4 class="popup-title">${name}</h4>
     ${subtitle.length > 0 ? `<h5 style="text-align: center">${subtitle}</h5>` : ''}
     ${subtitle2.length > 0 ? `<h5 style="text-align: center">${subtitle2}</h5>` : ''}
+    ${fancySubtitle && fancySubtitle.length > 0 ? `<div style="display: flex; align-items: center; justify-content: center; gap: 0.5em;">${fancySubtitle.map(item => "<span style='" + item.style + "'>" + item.text + "</span>").join(" ")}</div>` : ''}
     <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startMeasuringOtherMarker(${latLng})">
         <span class="v-btn__prepend">
             <i class="mdi-pin mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
