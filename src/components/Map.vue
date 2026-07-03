@@ -195,15 +195,18 @@ const updateMarkers = () => {
         let markers = getFeatureMarkers(getPopupFor, gamesObj, regionObj);
         previousMarkers = Object.values(markers).flat();
         store.$state.mapMarkers.forEach(marker => {
-            markers[marker as FeatureType].forEach(m => {
-                if (marker == "stations") {
-                    L.circle(m.getLatLng(), {
-                        color: 'red',
-                        fillColor: '#f03',
-                        fillOpacity: 0.2,
-                        radius: 402.336, // quarter mile in meters
-                    }).addTo(localMap.value!);
-                }
+            markers[marker as FeatureType]
+            // optimization - only show markers within bounds of view
+            .filter(marker => localMap.value!.getBounds().contains(marker.getLatLng()))
+            .forEach(m => {
+                // if (marker == "stations") {
+                //     L.circle(m.getLatLng(), {
+                //         color: 'red',
+                //         fillColor: '#f03',
+                //         fillOpacity: 0.2,
+                //         radius: 402.336, // quarter mile in meters
+                //     }).addTo(localMap.value!);
+                // }
                 m.addTo(localMap.value!);
             });
         });
@@ -542,6 +545,7 @@ const startupMapData = (region: Region) => {
     localMap.value.on('locationfound', onLocationFound);
     localMap.value.on('locationerror', onLocationError);
     localMap.value.on('click', onMapClick);
+    localMap.value.on('moveend', updateMarkers);
     L.control.scale().addTo(localMap.value);
 
     localMap.value.on((L as any).Draw.Event.CREATED, function (e) {
