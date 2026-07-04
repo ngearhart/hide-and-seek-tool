@@ -73,6 +73,7 @@ const submit = async () => {
     emit('submit', wasHit.value, position.coords.latitude, position.coords.longitude, districtLevel.value);
     loading.value = false;
     model.value = false;
+    districtLevel.value = 1;
     notify({
       text: "Success",
       title: "District boundary submitted"

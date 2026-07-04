@@ -114,6 +114,8 @@
     <CustomPinLabelEditor v-model="showCustomPinLabelEditor" :most-recent-pin-drop="mostRecentlyDroppedPin" ,
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef"></CustomPinLabelEditor>
     <AddCell v-model="showAddCellDialog" :marker="addCellDialogMarker" @create="submitCell"></AddCell>
+    <district post-title="Pin" v-model="shouldshowDistrictBoundaryDialog" :region="regionObj"
+        @submit="addDistrictBoundary" />
 </template>
 
 <script lang="ts" setup>
@@ -139,7 +141,7 @@ import { MAP_TILE_LAYERS, updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
-import type { Feature, Point } from 'geojson';
+import type { Feature, MultiPolygon, Point } from 'geojson';
 import { useUserManager } from '@/firebase/user';
 
 const store = useStore();
@@ -169,11 +171,14 @@ const pinRadarLatLng = ref<number[] | null>(null);
 const shouldShowBoundaryLineDialog = shallowRef(false);
 const boundaryLineLatLng = ref<number[] | null>(null);
 
+const shouldshowDistrictBoundaryDialog = shallowRef(false);
+const districtBoundaryLatLng = ref<number[] | null>(null);
+
 const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({ name: "", type: "", distance: 0 })
 
 const showAddCellDialog = shallowRef(false);
-const addCellDialogMarker = shallowRef<Feature<Point, CustomProperty> | null>(null);
+const addCellDialogMarker = shallowRef<Feature<Point | MultiPolygon, CustomProperty> | null>(null);
 
 const drawingPolygon = shallowRef(false);
 
@@ -387,6 +392,14 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
             <button>Place boundary</button>
         </span>
     </div>
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="startDistrictBoundary(${latLng})">
+        <span class="v-btn__prepend">
+            <i class="mdi-hexagon-multiple mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
+        </span>
+        <span class="v-btn__content" data-no-activator="">
+            <button>Place district</button>
+        </span>
+    </div>
     ${subtitle === 'Custom Pin' ? `
     <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="deleteCustomMarker(${latLng})">
             <span class="v-btn__prepend">
@@ -402,7 +415,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
             <i class="mdi-chart-pie-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
         </span>
         <span class="v-btn__content" data-no-activator="">
-            <button>Add cell</button>
+            <button>Place cell</button>
         </span>
     </div>
     `}
@@ -427,8 +440,20 @@ const startBoundaryLine = (lat: number, long: number) => {
     shouldShowBoundaryLineDialog.value = true
 }
 
+const startDistrictBoundary = (lat: number, long: number) => {
+    districtBoundaryLatLng.value = [lat, long]
+    shouldshowDistrictBoundaryDialog.value = true
+}
+
 const addCell = (title: string, subtitle: string) => {
-    addCellDialogMarker.value = getRegionFeatures(regionObj.value!, subtitle.toLowerCase().replace('movie theater', 'theater') as FeatureType).find(feature => feature.properties.Name === title)!;
+    console.log(`Trying to open add cell dialog for title=${title} subtitle=${subtitle}`)
+    const matchingFeatures = getRegionFeatures(regionObj.value!,
+        subtitle.toLowerCase().replace('movie theater', 'theater').replace('transit station', 'station') as FeatureType)
+        .filter(feature => feature.properties.Name === title)!;
+    if (matchingFeatures.length !== 1) {
+        console.error(`${matchingFeatures.length} features found for feature title=${title} subtitle=${subtitle}`)
+    }
+    addCellDialogMarker.value = matchingFeatures[0];
     if (!addCellDialogMarker.value) {
         notify({
             type: "error",
@@ -484,9 +509,10 @@ const submitCell = async (wasHit: boolean) => {
 }
 
 const addDistrictBoundary = async(hit: boolean, lat: number, lng: number, level: number) => {
-    /// 40.75064487352762, -73.98322253934668
-    lat = 40.75064487352762
-    lng = -73.98322253934668
+    if (lat === 0 || lng === 0) {
+        lat = districtBoundaryLatLng.value![0]
+        lng = districtBoundaryLatLng.value![1]
+    }
     const intersection = await region.value.findIntersectingDistrict(new L.LatLng(lat, lng), level);
     if (intersection) {
         const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value))
@@ -639,6 +665,7 @@ onMounted(() => {
     (window as any)["mapMeasureDistanceTo"] = mapMeasureDistanceTo;
     (window as any)["startPinRadar"] = startPinRadar;
     (window as any)["startBoundaryLine"] = startBoundaryLine;
+    (window as any)["startDistrictBoundary"] = startDistrictBoundary;
     (window as any)["startMeasuringOtherMarker"] = startMeasuringOtherMarker;
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
     (window as any)["deleteCustomMarker"] = deleteCustomMarker;

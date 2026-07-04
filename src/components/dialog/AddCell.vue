@@ -29,11 +29,11 @@
 
 <script lang="ts" setup>
 import type { CustomProperty } from '@/regions/regions';
-import type { Feature, Point } from 'geojson';
+import type { Feature, MultiPolygon, Point } from 'geojson';
 
 
 const props = defineProps<{
-  marker: Feature<Point, CustomProperty> | null,
+  marker: Feature<Point | MultiPolygon, CustomProperty> | null,
 }>();
 
 const model = defineModel()
