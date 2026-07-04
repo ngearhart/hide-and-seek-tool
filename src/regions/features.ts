@@ -3,6 +3,7 @@ import { getIconFor } from './icons';
 import { flipCoords, getRegionFeatures, type Region } from './regions';
 import type { _RefDatabase, VueDatabaseDocumentData } from 'vuefire';
 import type { GameRecord } from '@/utils';
+import type { Point } from 'geojson';
 
 
 export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "graveyard" | "park" | "custom" | "district";
@@ -106,7 +107,7 @@ export const getFeatureMarkers = (getPopupFor: GetPopupFunction,
   let markers = Object.fromEntries(
     features.map(feature => [
       feature.key,
-      getRegionFeatures(regionObj.value!, feature.key).map(marker => getMarkerFor(feature, flipCoords(marker.geometry.coordinates), marker.properties.Name, getPopupFor, marker.properties.Description, marker.properties.FancyDescription))
+      getRegionFeatures(regionObj.value!, feature.key).map(marker => getMarkerFor(feature, flipCoords((marker.geometry as Point).coordinates), marker.properties.Name, getPopupFor, marker.properties.Description, marker.properties.FancyDescription))
     ])
   ) as { [key in FeatureType]: L.Marker<any>[] }
 
