@@ -1,5 +1,5 @@
-import type { FeatureCollection, GeoJsonProperties, MultiPoint, MultiPolygon, Polygon, Point, Position } from "geojson"
-import { LatLng, LatLngBounds, Polygon as LPolygon, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
+import type { FeatureCollection, GeoJsonProperties, MultiPoint, MultiPolygon, Point, Position } from "geojson"
+import { LatLng, LatLngBounds, Polygon as LPolygon, Polygon, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 import { ref } from 'vue';
@@ -91,6 +91,16 @@ const generateSlug = (length: number) => {
 
 export function getRegionFeatures(region: Region, featureType: FeatureType) {
     return region.features.filter(feat => feat.properties.Type === featureType);
+}
+
+export function getPolygonsFromDistrict(district: MultiPolygon): LatLng[][] {
+    return district.coordinates.flatMap(poly => poly.map(entry => {
+        if (entry.length > 2) {
+            return entry.map(points => new LatLng(points[1], points[0]))
+        }
+        // Else - this is not a polygon - this is just one vertex
+        return [new LatLng((entry as any)[1], (entry as any)[0])];
+    }));
 }
 
 export function useRegionSharing() {
@@ -205,12 +215,8 @@ export function useRegion(regionId: globalThis.MaybeRefOrGetter<string | undefin
         }
         const intersection = region.features.filter(feat => feat.properties.Type === "district" && feat.properties.Level === districtLevel)
             .find(feat => {
-                const multiPoint = feat.geometry as MultiPolygon;
-                return !!multiPoint.coordinates[0].find(points => {
-                    const latLngs = points.map(entry => new LatLng(entry[1], entry[0]));
-                    const polygon = new LPolygon(latLngs);
-                    return polygon.contains(point);
-                })
+                const polygons = getPolygonsFromDistrict(feat.geometry as MultiPolygon);
+                return !!polygons.map(poly => new Polygon(poly)).find(poly => poly.contains(point));
             })
         if (intersection) {
             return intersection.properties.Name;

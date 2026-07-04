@@ -3,29 +3,29 @@ import { DrawableElement, type ContainerPool } from "./base";
 import type { FeatureType } from "@/regions/features";
 
 import { Delaunay, Voronoi } from 'd3';
-import { flipCoords, generateVoronoi, getRegionFeatures, type Region } from "@/regions/regions";
+import { flipCoords, generateVoronoi, getPolygonsFromDistrict, getRegionFeatures, type Region } from "@/regions/regions";
 import type { CallbackUtils } from "./pixiOverlay";
 import type { GameRecord } from "@/utils";
 import { useStore } from "@/stores/app";
 import { LatLng, type Point } from "leaflet";
-import type { MultiPoint } from "geojson";
+import type { MultiPoint, MultiPolygon } from "geojson";
 
 const HIT_RADIUS = 10000;
 
 export default class DistrictBoundary extends DrawableElement {
 
-    districtBoundary: L.LatLng[];
+    polygons: L.LatLng[][];
     isHit: boolean;
 
     private graphics: Graphics;
-    private points: Point[];
+    private internalPolys: Point[][];
 
-    constructor(isHit: boolean, districtBoundary: L.LatLng[]) {
+    constructor(isHit: boolean, polygons: L.LatLng[][]) {
         super();
         this.graphics = new Graphics();
         this.isHit = isHit;
-        this.districtBoundary = districtBoundary;
-        this.points = [];
+        this.polygons = polygons;
+        this.internalPolys = [];
     }
 
     setupContainer(containers: ContainerPool): undefined {
@@ -33,16 +33,21 @@ export default class DistrictBoundary extends DrawableElement {
     }
 
     createWithMap(utils: CallbackUtils): undefined {
-        this.points = this.districtBoundary.map(point => utils.latLngToLayerPoint(point));
+        this.internalPolys = this.polygons.map(poly => poly.map(point => utils.latLngToLayerPoint(point)));
     }
 
     draw(utils: CallbackUtils): undefined {
         if (this.isHit) {
             this.graphics.clear()
-                .circle(this.points[0].x, this.points[0].y, HIT_RADIUS).fill(0x00000)
-                .poly(this.points.flat()).cut();
+                .circle(this.internalPolys[0][0].x, this.internalPolys[0][0].y, HIT_RADIUS).fill(0x00000);
+            this.internalPolys.forEach(poly => {
+                this.graphics.poly(poly.flat()).cut();
+            });
         } else {
-            this.graphics.clear().poly(this.points.flat()).fill(0x000000);
+            this.graphics.clear();
+                        this.internalPolys.forEach(poly => {
+                this.graphics.poly(poly.flat()).fill(0x000000);
+            });
         }
     }
     
@@ -51,12 +56,16 @@ export default class DistrictBoundary extends DrawableElement {
     }
     
     static fromGame(game: GameRecord, region: Region): DistrictBoundary[] {
+        // debugger
+        // const feat = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Level === 1)!;
+        // const polygons = getPolygonsFromDistrict(feat.geometry as MultiPolygon);
+        // return [new DistrictBoundary(false, polygons)];
         return game.districtBoundaries?.map(entry => {
-            const polygon = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Name === entry.name);
-            if (!polygon) {
+            const district = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Name === entry.name);
+            if (!district) {
                 throw 'Game has district boundary entered that cannot be found in region data - ' + entry.name;
             }
-            return new DistrictBoundary(entry.wasHit, (polygon.geometry as MultiPoint).coordinates.flatMap(entry => new LatLng(entry[1], entry[0])));
+            return new DistrictBoundary(entry.wasHit, getPolygonsFromDistrict(district.geometry as MultiPolygon));
         }) ?? [];
     }
 }
