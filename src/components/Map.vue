@@ -2,7 +2,9 @@
     <MapActionButton @locate="locate" @radar="(hit, lat, long, meters) => addRadar(hit, lat, long, meters)"
         :games-db-obj="gamesObj" :games-db-ref="gamesDbRef" @thermometer="addThermometer"
         @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw"
-        @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon" />
+        @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon"
+        @district="addDistrictBoundary"
+        :region-db-obj="regionObj" />
     <div id="map" style="width: 100%; height: 100%">
         <!-- Elements to show the page loading -->
         <v-container style="height: 100%;" v-if="!localMap">
@@ -196,19 +198,19 @@ const updateMarkers = () => {
         previousMarkers = Object.values(markers).flat();
         store.$state.mapMarkers.forEach(marker => {
             markers[marker as FeatureType]
-            // optimization - only show markers within bounds of view
-            .filter(marker => localMap.value!.getBounds().contains(marker.getLatLng()))
-            .forEach(m => {
-                // if (marker == "stations") {
-                //     L.circle(m.getLatLng(), {
-                //         color: 'red',
-                //         fillColor: '#f03',
-                //         fillOpacity: 0.2,
-                //         radius: 402.336, // quarter mile in meters
-                //     }).addTo(localMap.value!);
-                // }
-                m.addTo(localMap.value!);
-            });
+                // optimization - only show markers within bounds of view
+                .filter(marker => localMap.value!.getBounds().contains(marker.getLatLng()))
+                .forEach(m => {
+                    // if (marker == "stations") {
+                    //     L.circle(m.getLatLng(), {
+                    //         color: 'red',
+                    //         fillColor: '#f03',
+                    //         fillOpacity: 0.2,
+                    //         radius: 402.336, // quarter mile in meters
+                    //     }).addTo(localMap.value!);
+                    // }
+                    m.addTo(localMap.value!);
+                });
         });
     }
 }
@@ -481,7 +483,39 @@ const submitCell = async (wasHit: boolean) => {
     } as GameRecord, oldGameObj, gamesDbRef.value);
 }
 
+const addDistrictBoundary = async(hit: boolean, lat: number, lng: number, level: number) => {
+    /// 40.75064487352762, -73.98322253934668
+    lat = 40.75064487352762
+    lng = -73.98322253934668
+    const intersection = await region.value.findIntersectingDistrict(new L.LatLng(lat, lng), level);
+    if (intersection) {
+        const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value))
+        const newEntries = gamesObj.value?.districtBoundaries ?? [];
+        newEntries.push({
+            name: intersection,
+            wasHit: hit,
+            created: new Date().toUTCString(),
+            creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',
+        });
 
+        // This is not redundant - Vue compiler will optimize this away if we just use gamesObj.value
+        await updateGame({
+            districtBoundaries: newEntries,
+            ...gamesObj.value
+        } as GameRecord, oldGameObj, gamesDbRef.value);
+        notify({
+            type: 'success',
+            title: "Success",
+            text: "Added district boundary"
+        })
+    } else {
+        notify({
+            type: 'error',
+            title: "Error",
+            text: "Could not add boundary - point might not be within any district"
+        })
+    }
+}
 
 const findClosest = (key: string, type: string) => {
     locatingClosestType.value = { key: key, type: type }

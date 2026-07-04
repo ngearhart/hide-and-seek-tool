@@ -5,7 +5,7 @@ import type { _RefDatabase, VueDatabaseDocumentData } from 'vuefire';
 import type { GameRecord } from '@/utils';
 
 
-export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "graveyard" | "park" | "custom";
+export type FeatureType = "station" | "airport" | "museum" | "theater" | "hospital" | "library" | "zoo" | "aquarium" | "graveyard" | "park" | "custom" | "district";
 
 type Feature = {
   singularLabel: string,
@@ -84,6 +84,7 @@ export const colors: ColorDict = {
   "park": "#84A98C",
   "graveyard": "#03071E",
   "custom": "#C2095A",
+  "district": "",
 }
 
 export const getImagePathFor = (featureType: FeatureType): string => 'images/markers/' + featureType + '.png';

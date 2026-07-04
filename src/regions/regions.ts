@@ -1,5 +1,5 @@
-import type { FeatureCollection, GeoJsonProperties, Point, Position } from "geojson"
-import { LatLngBounds, type LatLng, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
+import type { FeatureCollection, GeoJsonProperties, MultiPoint, MultiPolygon, Polygon, Point, Position } from "geojson"
+import { LatLng, LatLngBounds, Polygon as LPolygon, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 import { ref } from 'vue';
@@ -7,14 +7,16 @@ import { getDatabase, ref as dbRef, set, get, push } from 'firebase/database';
 import { useCurrentUser, useDatabaseObject, useDatabaseList } from "vuefire";
 import { notify } from "@kyvg/vue3-notification";
 import { computedAsync } from '@vueuse/core'
+import './pointInPolygon.extensions';
 
 export type CustomProperty = GeoJsonProperties & {
     Name: string
     Type: FeatureType
     Description: string
+    Level?: number
 }
 
-export type Region = FeatureCollection<Point, CustomProperty> & {
+export type Region = FeatureCollection<Point | MultiPolygon, CustomProperty> & {
     id: string
     name: string
     size: string
@@ -23,7 +25,7 @@ export type Region = FeatureCollection<Point, CustomProperty> & {
     hidingRadiusMiles: number
 }
 
-export type NullableRegion = FeatureCollection<Point, CustomProperty> & {
+export type NullableRegion = FeatureCollection<Point | MultiPolygon, CustomProperty> & {
     id?: string
     name?: string
     size?: string
@@ -196,6 +198,25 @@ export function useRegion(regionId: globalThis.MaybeRefOrGetter<string | undefin
         return regionWithWeirdList as Region;
     }
 
+    const findIntersectingDistrict = async(point: LatLng, districtLevel: number): Promise<string | null> => {
+        const region = await getWithListConvertion();
+        if (!region) {
+            return null;
+        }
+        const intersection = region.features.filter(feat => feat.properties.Type === "district" && feat.properties.Level === districtLevel)
+            .find(feat => {
+                const multiPoint = feat.geometry as MultiPolygon;
+                return !!multiPoint.coordinates[0].find(points => {
+                    const latLngs = points.map(entry => new LatLng(entry[1], entry[0]));
+                    const polygon = new LPolygon(latLngs);
+                    return polygon.contains(point);
+                })
+            })
+        if (intersection) {
+            return intersection.properties.Name;
+        }
+        return null;
+    }
 
-    return { regionRef, save, getWithListConvertion };
+    return { regionRef, save, getWithListConvertion, findIntersectingDistrict };
 }

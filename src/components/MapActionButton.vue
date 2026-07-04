@@ -1,50 +1,53 @@
 <template>
   <div class="fab-container">
-    <v-fab :color="open ? '' : 'primary'" size="large" extended
-      :prepend-icon="open ? 'mdi-close' : 'mdi-pencil'" width="12em">
-      Edit Map
+    <v-fab :color="open ? '' : 'primary'" size="large" extended :prepend-icon="open ? 'mdi-close' : 'mdi-toolbox'"
+      width="12em">
+      Toolbox
       <v-speed-dial v-model="open" location="top center" transition="slide-y-reverse-transition" activator="parent">
-  
-        <v-btn key="4" prepend-icon="mdi-refresh" @click="$emit('reset')"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-refresh" @click="$emit('reset')" spaced="start">
           Reset
         </v-btn>
 
         <v-btn key="4" prepend-icon="mdi-history" @click="historyIsOpen = true" spaced="start" width="14em">
           Edit History
         </v-btn>
-  
-        <v-btn key="4" prepend-icon="mdi-near-me" @click="$emit('locate')"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-near-me" @click="$emit('locate')" spaced="start">
           Locate
         </v-btn>
-  
-        <v-btn key="4" prepend-icon="mdi-radar" @click="radarIsOpen = true"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-radar" @click="radarIsOpen = true" spaced="start">
           Place Radar
         </v-btn>
-  
+
+        <v-btn key="4" prepend-icon="mdi-hexagon-multiple" @click="districtIsOpen = true" spaced="start">
+          Place District
+        </v-btn>
         <!-- <v-btn key="4" color="success" prepend-icon="mdi-thermometer" @click="thermometerIsOpen = true">
           Thermometer
         </v-btn> -->
-  
-        <v-btn key="4" prepend-icon="mdi-radius" @click="findClosestIsOpen = true"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-radius" @click="findClosestIsOpen = true" spaced="start">
           Find Closest
         </v-btn>
-    
-        <v-btn key="4" prepend-icon="mdi-draw" @click="$emit('draw')"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-draw" @click="$emit('draw')" spaced="start">
           Draw
         </v-btn>
-    
-        <v-btn key="4" prepend-icon="mdi-pin" @click="$emit('showPinDrop')"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-pin" @click="$emit('showPinDrop')" spaced="start">
           Drop Pin
         </v-btn>
-  
-        <v-btn key="4" prepend-icon="mdi-information-outline" @click="markerEditorIsOpen = true"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-information-outline" @click="markerEditorIsOpen = true" spaced="start">
           Edit Markers
         </v-btn>
-  
-        <v-btn key="4" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true"  spaced="start">
+
+        <v-btn key="4" prepend-icon="mdi-view-dashboard-edit-outline" @click="layerEditorIsOpen = true" spaced="start">
           Edit Layers
         </v-btn>
-  
+
       </v-speed-dial>
       <marker-editor v-model="markerEditorIsOpen" />
       <layer-editor v-model="layerEditorIsOpen" />
@@ -56,10 +59,14 @@
       <history :games-db-ref="gamesDbRef" :games-db-obj="gamesDbObj" v-model="historyIsOpen" />
       <thermometer v-model="thermometerIsOpen"
         @submit="(lat: number, long: number, angle: number, hotter: boolean) => $emit('thermometer', lat, long, angle, hotter)" />
+      <district post-title="Your Current Location" v-model="districtIsOpen" :region="props.regionDbObj"
+        @submit="(hit: boolean, lat: number, long: number, level: number) => $emit('district', hit, lat, long, level)" />
     </v-fab>
-    
-    <v-fab color="deep-orange-darken-4" size="small" icon :disabled="!canUndo" @click="undoGame($props.gamesDbRef)"><v-icon>mdi-undo-variant</v-icon></v-fab>
-    <v-fab color="deep-orange-darken-4" size="small" icon :disabled="!canRedo" @click="redoGame($props.gamesDbRef)"><v-icon>mdi-redo-variant</v-icon></v-fab>
+
+    <v-fab color="deep-orange-darken-4" size="small" icon :disabled="!canUndo"
+      @click="undoGame($props.gamesDbRef)"><v-icon>mdi-undo-variant</v-icon></v-fab>
+    <v-fab color="deep-orange-darken-4" size="small" icon :disabled="!canRedo"
+      @click="redoGame($props.gamesDbRef)"><v-icon>mdi-redo-variant</v-icon></v-fab>
   </div>
 </template>
 <script lang="ts" setup>
@@ -68,16 +75,19 @@ import type { DatabaseReference } from 'firebase/database';
 import type { VueDatabaseDocumentData } from 'vuefire';
 import { undoGame, redoGame } from '@/game';
 
+import { shallowRef } from 'vue'
+import { useUndoRedoStore } from '@/stores/app';
+import type { Region } from '@/regions/regions';
+
 const props = defineProps<{
   gamesDbRef: DatabaseReference,
-  gamesDbObj: VueDatabaseDocumentData<GameRecord | null> | undefined
+  gamesDbObj: VueDatabaseDocumentData<GameRecord | null> | undefined,
+  regionDbObj: VueDatabaseDocumentData<Region | null> | undefined
 }>();
-
-import { shallowRef } from 'vue'
-import { useStore, useUndoRedoStore } from '@/stores/app';
 
 defineEmits<{
   (e: 'radar', hit: boolean, lat: number, long: number, meters: number): void
+  (e: 'district', hit: boolean, lat: number, long: number, level: number): void
   (e: 'thermometer', lat: number, long: number, angle: number, hotter: boolean): void
   (e: 'locate'): void
   (e: 'showPinDrop'): void
@@ -92,6 +102,7 @@ const radarIsOpen = shallowRef(false)
 const historyIsOpen = shallowRef(false)
 const thermometerIsOpen = shallowRef(false)
 const findClosestIsOpen = shallowRef(false)
+const districtIsOpen = shallowRef(false)
 
 const store = useUndoRedoStore();
 
