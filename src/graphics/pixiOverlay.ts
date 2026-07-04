@@ -194,8 +194,12 @@ export class PixiOverlay extends Layer {
   }
 
   override onRemove(): this {
-    this.renderer.destroy();
-    this.auxRenderer?.destroy();
+    if (this.renderer) {
+      this.renderer.destroy();
+    }
+    if (this.auxRenderer) {
+      this.auxRenderer.destroy();
+    }
     DomUtil.remove(this.container);
     return this;
   }
