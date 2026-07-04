@@ -58,3 +58,6 @@ img/
 firebase-debug.log
 
 local/database_export
+
+nyc/
+pgh/

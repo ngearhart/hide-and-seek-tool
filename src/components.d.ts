@@ -12,6 +12,7 @@ declare module 'vue' {
     BoundaryLine: typeof import('./components/BoundaryLine.vue')['default']
     ConfirmDelete: typeof import('./components/ConfirmDelete.vue')['default']
     CustomPinLabelEditor: typeof import('./components/dialog/CustomPinLabelEditor.vue')['default']
+    District: typeof import('./components/District.vue')['default']
     EarthAnimation: typeof import('./components/misc/EarthAnimation.vue')['default']
     FindClosest: typeof import('./components/FindClosest.vue')['default']
     GameCreator: typeof import('./components/game/GameCreator.vue')['default']

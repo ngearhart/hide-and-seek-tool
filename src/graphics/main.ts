@@ -4,12 +4,14 @@ import Radar from './radar';
 import type { DrawableElement } from './base';
 import Boundary from './boundary';
 import { useStore } from '@/stores/app';
-import { AlphaFilter, Container } from 'pixi.js';
+import { AlphaFilter, Assets, Container } from 'pixi.js';
 import { PixiOverlay, type CallbackUtils } from './pixiOverlay';
 import Polygon from './polygon';
 import VoronoiShape from './voronoi';
 import HidingCirclesElement from './hidingCircles';
 import type { Region } from '@/regions/regions';
+import DistrictBoundary from './district';
+import DistrictOutline from './districtOutline';
 
 class _PixiManager {
     private rootContainer: Container;
@@ -36,6 +38,8 @@ class _PixiManager {
         this.overlay = new PixiOverlay(this.rootContainer, { padding: 0.5, resolution: 1 });
         this.overlay.afterDrawCallback((utils) => this.setup(utils));
         this.firstDraw = true;
+
+        Assets.load("assets/roboto.fnt");
     }
 
     /**
@@ -86,7 +90,9 @@ class _PixiManager {
             ...Boundary.fromGame(game),
             ...Polygon.fromGame(game),
             ...VoronoiShape.fromGame(game, region),
-            ...HidingCirclesElement.fromRegion(store.$state, region)
+            ...DistrictBoundary.fromGame(game, region),
+            ...HidingCirclesElement.fromRegion(store.$state, region),
+            ...DistrictOutline.fromRegion(store.$state, region),
         ];
         this.elements.forEach(element => element.setupContainer({
             root: this.rootContainer,

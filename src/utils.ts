@@ -54,13 +54,19 @@ type PinEntry = {
 }
 
 type CellEntry = {
-    markerName: string,
-    markerType: FeatureType,
+    marketLat: number,
+    marketLng: number,
     wasHit: boolean,
     created: string,
     creatorName: string,
 }
 
+type DistrictBoundary = {
+    wasHit: boolean,
+    name: string,
+    created: string,
+    creatorName: string,
+}
 
 type Team = {
     name: string
@@ -75,6 +81,7 @@ export type GameRecord = {
     polygonEntries: PolygonDrawingEntry[]
     customPins: PinEntry[]
     cellEntries: CellEntry[]
+    districtBoundaries: DistrictBoundary[]
     teams: Team[]
     region: string
 };

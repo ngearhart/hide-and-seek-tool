@@ -7,6 +7,7 @@ export type State = {
   mapLayers: MapTileLayerType[]
   mapMarkers: string[],
   enableHidingSpotOverlay: boolean,
+  enableDistrictOverlays: boolean[],
   overlayOpacity: number,
 };
 
@@ -17,7 +18,8 @@ export const useStore = defineStore('app', {
     ],
     mapMarkers: [],
     enableHidingSpotOverlay: false,
-    overlayOpacity: 0.5
+    overlayOpacity: 0.5,
+    enableDistrictOverlays: [false, false, false, false, false]
   }),
   persist: true
 })
