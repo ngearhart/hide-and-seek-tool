@@ -46,18 +46,21 @@ export default class VoronoiShape extends DrawableElement {
             this.graphics.clear().poly(this.points.flat()).fill(0x000000);
         }
     }
-    
+
     destroy(): undefined {
         this.graphics.destroy();
     }
-    
+
     static fromGame(game: GameRecord, region: Region): VoronoiShape[] {
         const store = useStore();
         const voronoiGenerator = generateVoronoi(region);
-        return game.cellEntries?.map(cell => new VoronoiShape(
-            voronoiGenerator[cell.markerType]!,
-            getRegionFeatures(region, cell.markerType).findIndex(marker => marker.properties.Name === cell.markerName),
-            cell.wasHit
-        )) ?? [];
+        return game.cellEntries?.map(cell => {
+            const marker = region.features.find(f => f.geometry.coordinates[1] == cell.marketLat && f.geometry.coordinates[0] == cell.marketLng)!;
+            return new VoronoiShape(
+                voronoiGenerator[marker.properties.Type]!,
+                getRegionFeatures(region, marker.properties.Type).findIndex(m => m === marker),
+                cell.wasHit
+            )
+        }) ?? [];
     }
 }

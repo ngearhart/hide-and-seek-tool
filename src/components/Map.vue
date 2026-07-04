@@ -142,7 +142,7 @@ import { MAP_TILE_LAYERS, updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
-import type { Feature, MultiPolygon, Point, Polygon } from 'geojson';
+import type { Feature, MultiPolygon, Point, Polygon, Point as GPoint } from 'geojson';
 import { useUserManager } from '@/firebase/user';
 
 const store = useStore();
@@ -411,7 +411,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
         </span>
     </div>
     ` : `
-    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="addCell('${name}', '${subtitle}')">
+    <div style="margin-top: 1em;" class="${popupButtonClasses}" onclick="addCell(${latLng})">
         <span class="v-btn__prepend">
             <i class="mdi-chart-pie-outline mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i>
         </span>
@@ -446,13 +446,11 @@ const startDistrictBoundary = (lat: number, long: number) => {
     shouldshowDistrictBoundaryDialog.value = true
 }
 
-const addCell = (title: string, subtitle: string) => {
-    console.log(`Trying to open add cell dialog for title=${title} subtitle=${subtitle}`)
-    const matchingFeatures = getRegionFeatures(regionObj.value!,
-        subtitle.toLowerCase().replace('movie theater', 'theater').replace('transit station', 'station') as FeatureType)
-        .filter(feature => feature.properties.Name === title)!;
+const addCell = (lat: number, long: number) => {
+    console.log(`Trying to open add cell dialog for lat=${lat} lng=${long}`)
+    const matchingFeatures = regionObj.value?.features.filter(feature => feature.geometry.coordinates[0] === long && feature.geometry.coordinates[1] === lat)!;
     if (matchingFeatures.length !== 1) {
-        console.error(`${matchingFeatures.length} features found for feature title=${title} subtitle=${subtitle}`)
+        console.error(`${matchingFeatures.length} features found for feature for lat=${lat} lng=${long}`)
     }
     addCellDialogMarker.value = matchingFeatures[0];
     if (!addCellDialogMarker.value) {
@@ -495,8 +493,8 @@ const submitCell = async (wasHit: boolean) => {
     const oldGameObj = JSON.parse(JSON.stringify(gamesObj.value))
     const newEntries = gamesObj.value?.cellEntries ?? [];
     newEntries.push({
-        markerName: addCellDialogMarker.value!.properties.Name,
-        markerType: addCellDialogMarker.value!.properties.Type,
+        marketLat: (addCellDialogMarker.value!.geometry as GPoint).coordinates[1],
+        marketLng: (addCellDialogMarker.value!.geometry as GPoint).coordinates[0],
         wasHit: wasHit,
         created: new Date().toUTCString(),
         creatorName: userManager.user.value?.providerData[0].displayName ?? 'Unknown',

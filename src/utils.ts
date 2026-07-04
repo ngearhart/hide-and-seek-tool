@@ -54,8 +54,8 @@ type PinEntry = {
 }
 
 type CellEntry = {
-    markerName: string,
-    markerType: FeatureType,
+    marketLat: number,
+    marketLng: number,
     wasHit: boolean,
     created: string,
     creatorName: string,
