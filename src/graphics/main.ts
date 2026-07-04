@@ -4,7 +4,7 @@ import Radar from './radar';
 import type { DrawableElement } from './base';
 import Boundary from './boundary';
 import { useStore } from '@/stores/app';
-import { AlphaFilter, Container } from 'pixi.js';
+import { AlphaFilter, Assets, Container } from 'pixi.js';
 import { PixiOverlay, type CallbackUtils } from './pixiOverlay';
 import Polygon from './polygon';
 import VoronoiShape from './voronoi';
@@ -38,6 +38,8 @@ class _PixiManager {
         this.overlay = new PixiOverlay(this.rootContainer, { padding: 0.5, resolution: 1 });
         this.overlay.afterDrawCallback((utils) => this.setup(utils));
         this.firstDraw = true;
+
+        Assets.load("assets/roboto.fnt");
     }
 
     /**

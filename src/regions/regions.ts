@@ -1,5 +1,5 @@
-import type { FeatureCollection, GeoJsonProperties, MultiPoint, MultiPolygon, Point, Position } from "geojson"
-import { LatLng, LatLngBounds, Polygon as LPolygon, Polygon, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
+import type { FeatureCollection, GeoJsonProperties, MultiPoint, MultiPolygon, Point, Polygon, Position } from "geojson"
+import L, { LatLng, LatLngBounds, Polygon as LPolygon, type LatLngBoundsExpression, type LatLngBoundsLiteral, type LatLngTuple } from "leaflet";
 import { colors, type FeatureType } from "./features";
 import { Delaunay, type Voronoi } from "d3";
 import { ref } from 'vue';
@@ -8,6 +8,7 @@ import { useCurrentUser, useDatabaseObject, useDatabaseList } from "vuefire";
 import { notify } from "@kyvg/vue3-notification";
 import { computedAsync } from '@vueuse/core'
 import './pointInPolygon.extensions';
+import 'leaflet-draw';
 
 export type CustomProperty = GeoJsonProperties & {
     Name: string
@@ -16,7 +17,7 @@ export type CustomProperty = GeoJsonProperties & {
     Level?: number
 }
 
-export type Region = FeatureCollection<Point | MultiPolygon, CustomProperty> & {
+export type Region = FeatureCollection<Point | MultiPolygon | Polygon, CustomProperty> & {
     id: string
     name: string
     size: string
@@ -25,7 +26,7 @@ export type Region = FeatureCollection<Point | MultiPolygon, CustomProperty> & {
     hidingRadiusMiles: number
 }
 
-export type NullableRegion = FeatureCollection<Point | MultiPolygon, CustomProperty> & {
+export type NullableRegion = FeatureCollection<Point | MultiPolygon | Polygon, CustomProperty> & {
     id?: string
     name?: string
     size?: string
@@ -93,14 +94,43 @@ export function getRegionFeatures(region: Region, featureType: FeatureType) {
     return region.features.filter(feat => feat.properties.Type === featureType);
 }
 
-export function getPolygonsFromDistrict(district: MultiPolygon): LatLng[][] {
-    return district.coordinates.flatMap(poly => poly.map(entry => {
-        if (entry.length > 2) {
-            return entry.map(points => new LatLng(points[1], points[0]))
-        }
-        // Else - this is not a polygon - this is just one vertex
-        return [new LatLng((entry as any)[1], (entry as any)[0])];
-    }));
+function getArrayDepth(value: any[]): number {
+  return Array.isArray(value) ? 
+    1 + Math.max(0, ...value.map(getArrayDepth)) :
+    0;
+}
+
+export function getPolygonsFromDistrict(district: MultiPolygon | Polygon): LatLng[][] {
+    const arrayDepth = getArrayDepth(district.coordinates);
+    if (arrayDepth === 4) {
+        // We know the district is a MultiPolygon
+        return (district as MultiPolygon).coordinates.flatMap(poly => poly.map(entry => {
+            if (entry.length > 2) {
+                return entry.map(points => new LatLng(points[1], points[0]))
+            }
+            throw 'getPolygonsFromDistrict called with unusual data - MultiPolygon object might be a polygon instead'
+            // Else - this is not a polygon - this is just one vertex
+            // return [new LatLng((entry as any)[1], (entry as any)[0])];
+        }));
+    } else if (arrayDepth === 3) {
+        // We know the district is a Polygon
+        return [(district as Polygon).coordinates.flatMap(poly => poly.map(points => new LatLng(points[1], points[0])))];
+    }
+    throw 'getPolygonsFromDistrict called with non-Polygon or MultiPolygon - depth=' + arrayDepth;
+}
+
+export function getLargestPolygon(polys: LatLng[][]): LatLng[] {
+    return polys.map(poly => ({
+        p: poly,
+        area: (L as any).GeometryUtil.geodesicArea(poly)
+    })).reduce((prev, current) => (prev && prev.area > current.area) ? prev : current).p
+}
+
+export function getCentroid(poly: LatLng[]): LatLng {
+    return new LPolygon(poly).getBounds().getCenter();
+    // const lats = districtGeometry.flatMap(poly => poly.flatMap(point => point.lat));
+    // const lngs = districtGeometry.flatMap(poly => poly.flatMap(point => point.lng));
+    // return new LatLng(lats.reduce((sum, val) => sum + val, 0) / lats.length, lngs.reduce((sum, val) => sum + val, 0) / lngs.length);
 }
 
 export function useRegionSharing() {
@@ -216,7 +246,7 @@ export function useRegion(regionId: globalThis.MaybeRefOrGetter<string | undefin
         const intersection = region.features.filter(feat => feat.properties.Type === "district" && feat.properties.Level === districtLevel)
             .find(feat => {
                 const polygons = getPolygonsFromDistrict(feat.geometry as MultiPolygon);
-                return !!polygons.map(poly => new Polygon(poly)).find(poly => poly.contains(point));
+                return !!polygons.map(poly => new LPolygon(poly)).find(poly => poly.contains(point));
             })
         if (intersection) {
             return intersection.properties.Name;
