@@ -191,8 +191,12 @@ export function useRegions() {
     const regionMap: globalThis.Ref<Region[] | undefined> = computedAsync(async() => {
         const regionIdList = sharing.regionIdList.value! ?? [];
         const regions = await get(regionsDbRef);
-        return Object.values((regions.val() ?? {}) as { [key: string]: Region })
-        .filter(region => regionIdList.includes(region.id));
+        const regionsVal = regions.val();
+        return Object.entries((regionsVal ?? {}) as { [key: string]: Region })
+        .filter(region => regionIdList.includes(region[0])).map(r => ({
+            ...r[1],
+            id: r[0]
+        }));
     })
 
     return { regionMap };
