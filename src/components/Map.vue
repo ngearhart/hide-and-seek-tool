@@ -142,7 +142,7 @@ import { MAP_TILE_LAYERS, updateTileLayers } from '@/graphics/mapTiles';
 import { storeToRefs } from 'pinia';
 import { PixiManager } from '@/graphics/main';
 import AddCell from './dialog/AddCell.vue';
-import type { Feature, MultiPolygon, Point } from 'geojson';
+import type { Feature, MultiPolygon, Point, Polygon } from 'geojson';
 import { useUserManager } from '@/firebase/user';
 
 const store = useStore();
@@ -179,7 +179,7 @@ const findClosestDialog = shallowRef(false);
 const findClosestResult = ref({ name: "", type: "", distance: 0 })
 
 const showAddCellDialog = shallowRef(false);
-const addCellDialogMarker = shallowRef<Feature<Point | MultiPolygon, CustomProperty> | null>(null);
+const addCellDialogMarker = shallowRef<Feature<Point | MultiPolygon | Polygon, CustomProperty> | null>(null);
 
 const drawingPolygon = shallowRef(false);
 
