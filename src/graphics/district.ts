@@ -56,10 +56,6 @@ export default class DistrictBoundary extends DrawableElement {
     }
     
     static fromGame(game: GameRecord, region: Region): DistrictBoundary[] {
-        // debugger
-        // const feat = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Level === 1)!;
-        // const polygons = getPolygonsFromDistrict(feat.geometry as MultiPolygon);
-        // return [new DistrictBoundary(false, polygons)];
         return game.districtBoundaries?.map(entry => {
             const district = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Name === entry.name);
             if (!district) {

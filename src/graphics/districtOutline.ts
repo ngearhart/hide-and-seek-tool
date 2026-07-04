@@ -6,7 +6,7 @@ import { Delaunay, Voronoi } from 'd3';
 import { flipCoords, generateVoronoi, getPolygonsFromDistrict, getRegionFeatures, type Region } from "@/regions/regions";
 import type { CallbackUtils } from "./pixiOverlay";
 import type { GameRecord } from "@/utils";
-import { useStore } from "@/stores/app";
+import { useStore, type State } from "@/stores/app";
 import { LatLng, type Point } from "leaflet";
 import type { MultiPoint, MultiPolygon } from "geojson";
 
@@ -15,21 +15,19 @@ const HIT_RADIUS = 10000;
 export default class DistrictOutline extends DrawableElement {
 
     polygons: L.LatLng[][];
-    isHit: boolean;
 
     private graphics: Graphics;
     private internalPolys: Point[][];
 
-    constructor(isHit: boolean, polygons: L.LatLng[][]) {
+    constructor(polygons: L.LatLng[][]) {
         super();
         this.graphics = new Graphics();
-        this.isHit = isHit;
         this.polygons = polygons;
         this.internalPolys = [];
     }
 
     setupContainer(containers: ContainerPool): undefined {
-        containers.excludedArea.addChild(this.graphics);
+        containers.root.addChild(this.graphics);
     }
 
     createWithMap(utils: CallbackUtils): undefined {
@@ -37,35 +35,26 @@ export default class DistrictOutline extends DrawableElement {
     }
 
     draw(utils: CallbackUtils): undefined {
-        if (this.isHit) {
-            this.graphics.clear()
-                .circle(this.internalPolys[0][0].x, this.internalPolys[0][0].y, HIT_RADIUS).fill(0x00000);
-            this.internalPolys.forEach(poly => {
-                this.graphics.poly(poly.flat()).cut();
-            });
-        } else {
-            this.graphics.clear();
-                        this.internalPolys.forEach(poly => {
-                this.graphics.poly(poly.flat()).fill(0x000000);
-            });
-        }
+        this.graphics.clear();
+        this.internalPolys.forEach(poly => {
+            this.graphics.poly(poly.flat()).stroke({ width: 3 / utils.getScale(), color: 0x000000 });
+        });
     }
-    
+
     destroy(): undefined {
         this.graphics.destroy();
     }
-    
-    // static fromGame(game: GameRecord, region: Region): DistrictBoundary[] {
-    //     // debugger
-    //     // const feat = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Level === 1)!;
-    //     // const polygons = getPolygonsFromDistrict(feat.geometry as MultiPolygon);
-    //     // return [new DistrictBoundary(false, polygons)];
-    //     return game.districtBoundaries?.map(entry => {
-    //         const district = region.features.find(feat => feat.properties.Type === "district" && feat.properties.Name === entry.name);
-    //         if (!district) {
-    //             throw 'Game has district boundary entered that cannot be found in region data - ' + entry.name;
-    //         }
-    //         return new DistrictBoundary(entry.wasHit, getPolygonsFromDistrict(district.geometry as MultiPolygon));
-    //     }) ?? [];
-    // }
+
+    static fromRegion(state: State, region: Region): DistrictOutline[] {
+        return state.enableDistrictOverlays.map((enabled, level) => {
+            if (!enabled) {
+                return null;
+            }
+            const district = region.features.filter(feat => feat.properties.Type === "district" && feat.properties.Level === level);
+            if (!district) {
+                throw 'Game has district outline entered that cannot be found in region data - level=' + level;
+            }
+            return district.map(item => new DistrictOutline(getPolygonsFromDistrict(item.geometry as MultiPolygon)));
+        }).filter(item => !!item).flat();
+    }
 }

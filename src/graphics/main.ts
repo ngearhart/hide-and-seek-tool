@@ -11,6 +11,7 @@ import VoronoiShape from './voronoi';
 import HidingCirclesElement from './hidingCircles';
 import type { Region } from '@/regions/regions';
 import DistrictBoundary from './district';
+import DistrictOutline from './districtOutline';
 
 class _PixiManager {
     private rootContainer: Container;
@@ -89,6 +90,7 @@ class _PixiManager {
             ...VoronoiShape.fromGame(game, region),
             ...DistrictBoundary.fromGame(game, region),
             ...HidingCirclesElement.fromRegion(store.$state, region),
+            ...DistrictOutline.fromRegion(store.$state, region),
         ];
         this.elements.forEach(element => element.setupContainer({
             root: this.rootContainer,

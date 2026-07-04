@@ -50,7 +50,7 @@
 
       </v-speed-dial>
       <marker-editor v-model="markerEditorIsOpen" />
-      <layer-editor v-model="layerEditorIsOpen" />
+      <layer-editor v-model="layerEditorIsOpen" :region="regionDbObj" @update-districts="$emit('updateDistricts')" />
       <find-closest v-model="findClosestIsOpen"
         @find-closest="(key: string, type: string) => { findClosestIsOpen = false; $emit('findClosest', key, type) }" />
       <radar v-model="radarIsOpen" post-title="Your Current Location"
@@ -94,6 +94,7 @@ defineEmits<{
   (e: 'findClosest', key: string, type: string): void
   (e: 'draw'): void
   (e: 'reset'): void
+  (e: 'updateDistricts'): void
 }>();
 const open = shallowRef(false)
 const layerEditorIsOpen = shallowRef(false)

@@ -4,6 +4,7 @@
         @show-pin-drop="droppingPin = true" @find-closest="findClosest" @draw="draw"
         @reset="shouldConfirmDeleteDialogShow = true" v-if="!droppingPin && !locating && !drawingPolygon"
         @district="addDistrictBoundary"
+        @update-districts="updateGameObjects"
         :region-db-obj="regionObj" />
     <div id="map" style="width: 100%; height: 100%">
         <!-- Elements to show the page loading -->
