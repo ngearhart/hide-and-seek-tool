@@ -164,6 +164,7 @@ import { notify } from '@kyvg/vue3-notification';
 import JsonEditorVue from 'json-editor-vue';
 import { Mode } from 'vanilla-jsoneditor';
 import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
+import type { Point } from 'geojson';
 
 const router = useRouter();
 const localMap = shallowRef<L.Map | null>(null);
@@ -275,7 +276,7 @@ watch(editedRegion, () => {
 const refreshFeatureMarkers = () => {
     featureMarkers.forEach(marker => marker.remove());
     featureMarkers = editedRegion.value.features.filter(f => f.properties.Type === featureToEdit.value).map(feature => {
-        return L.marker(flipCoords(feature.geometry.coordinates)).addTo(localMap.value!)
+        return L.marker(flipCoords((feature.geometry as Point).coordinates)).addTo(localMap.value!)
             .bindPopup(feature.properties.Name);
     })
 }

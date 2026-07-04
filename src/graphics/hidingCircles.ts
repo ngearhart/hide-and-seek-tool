@@ -5,6 +5,7 @@ import { LatLng } from "leaflet";
 import type { CallbackUtils } from "./pixiOverlay";
 import { flipCoords, type Region } from "@/regions/regions";
 import type { State } from "@/stores/app";
+import type { Point } from "geojson";
 
 const OUTLINE_COLOR = 0xFF0000;
 
@@ -39,7 +40,7 @@ export default class HidingCirclesElement extends DrawableElement {
     createWithMap(utils: CallbackUtils): undefined {
         this.center = utils.latLngToLayerPoint(this.region.center);
         this.points = this.region.features.filter(feat => feat.properties.Type === "station")
-            .map(feat => flipCoords(feat.geometry.coordinates))
+            .map(feat => flipCoords((feat.geometry as Point).coordinates))
             .map(coords => utils.latLngToLayerPoint(coords));
     }
 

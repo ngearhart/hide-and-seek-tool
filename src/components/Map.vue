@@ -254,7 +254,7 @@ const onLocationFound = (e: any) => {
         let minDistanceMiles = 100000;
         let minDistanceName = "";
         for (let marker of getRegionFeatures(regionObj.value!, locatingClosestType.value.key as FeatureType)) {
-            let d = distance(e.latlng.lat, e.latlng.lng, marker.geometry.coordinates[1], marker.geometry.coordinates[0])
+            let d = distance(e.latlng.lat, e.latlng.lng, (marker.geometry as Point).coordinates[1], (marker.geometry as Point).coordinates[0])
             if (d < minDistanceMiles) {
                 minDistanceMiles = d
                 minDistanceName = marker.properties.Name
