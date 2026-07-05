@@ -66,7 +66,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view v-if="currentTab === 'RegionEditor' || (gamesObj && gamesObj.region)" />
+      <router-view v-if="!userManager.user.value || (currentTab === 'RegionEditor' || (gamesObj && gamesObj.region))" />
       <EarthAnimation v-else>
         hi
       </EarthAnimation>
