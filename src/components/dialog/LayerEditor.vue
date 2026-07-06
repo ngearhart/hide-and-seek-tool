@@ -16,6 +16,8 @@
           persistent-hint hint="Show outlines of this administrative district level"></v-checkbox>
         <v-checkbox label="Hiding Spot Overlay" v-model="enableHidingSpotOverlay" v-on:update:model-value="updateMap"
           persistent-hint hint="Add circles outlining allowable hiding spots"></v-checkbox>
+        <v-checkbox label="Show Marker Names When Zoomed In" v-model="enableTooltips" v-on:update:model-value="updateMap"
+          persistent-hint hint="Permanently show names attached to markers when zoomed in sufficiently"></v-checkbox>
       </v-card-text>
       <v-card-actions>
         <v-container>
@@ -51,6 +53,7 @@ const model = defineModel();
 const mapStyle = shallowRef("dark");
 const enableRailroadOverlay = shallowRef(false);
 const enableHidingSpotOverlay = shallowRef(false);
+const enableTooltips = shallowRef(false);
 
 const enableDistrictOverlays = ref<boolean[]>([false, false, false, false, false]);
 
@@ -81,6 +84,8 @@ const updateMap = async() => {
   store.$state.enableHidingSpotOverlay = enableHidingSpotOverlay.value;
 
   store.$state.enableDistrictOverlays = enableDistrictOverlays.value;
+
+  store.$state.enableTooltips = enableTooltips.value;
 };
 
 // Refresh on every view - store could be edited elsewhere.
@@ -101,6 +106,8 @@ watch(model, () => {
     enableDistrictOverlays.value = store.$state.enableDistrictOverlays;
 
     enableHidingSpotOverlay.value = store.$state.enableHidingSpotOverlay;
+
+    enableTooltips.value = store.$state.enableTooltips;
   }
 })
 

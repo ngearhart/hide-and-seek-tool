@@ -9,6 +9,7 @@ export type State = {
   enableHidingSpotOverlay: boolean,
   enableDistrictOverlays: boolean[],
   overlayOpacity: number,
+  enableTooltips: boolean,
 };
 
 export const useStore = defineStore('app', {
@@ -19,7 +20,8 @@ export const useStore = defineStore('app', {
     mapMarkers: [],
     enableHidingSpotOverlay: false,
     overlayOpacity: 0.5,
-    enableDistrictOverlays: [false, false, false, false, false]
+    enableDistrictOverlays: [false, false, false, false, false],
+    enableTooltips: true,
   }),
   persist: true
 })

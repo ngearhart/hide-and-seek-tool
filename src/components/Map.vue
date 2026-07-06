@@ -197,6 +197,8 @@ watch(gamesObj, () => updateGameObjects())
 
 let previousMarkers: L.Marker<any>[] = [];
 
+const ZOOM_SCALE_TO_SHOW_TOOLTIPS = 16;
+
 const updateMarkers = () => {
     if (gamesObj.value && regionObj.value) {
         previousMarkers.forEach(m => m.remove());
@@ -207,14 +209,11 @@ const updateMarkers = () => {
                 // optimization - only show markers within bounds of view
                 .filter(marker => localMap.value!.getBounds().contains(marker.getLatLng()))
                 .forEach(m => {
-                    // if (marker == "stations") {
-                    //     L.circle(m.getLatLng(), {
-                    //         color: 'red',
-                    //         fillColor: '#f03',
-                    //         fillOpacity: 0.2,
-                    //         radius: 402.336, // quarter mile in meters
-                    //     }).addTo(localMap.value!);
-                    // }
+                    // Permanently show tooltips when zoomed in enough
+                    if (store.$state.enableTooltips && localMap.value!.getZoom() >= ZOOM_SCALE_TO_SHOW_TOOLTIPS) {
+                        const toolTip = m.getTooltip();
+                        m.unbindTooltip().bindTooltip(toolTip, { permanent: true });
+                    }
                     m.addTo(localMap.value!);
                 });
         });
