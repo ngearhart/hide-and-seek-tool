@@ -97,7 +97,9 @@ const getMarkerFor = (feature: Feature, latLng: L.LatLngExpression, name: string
   let additionalOptions: L.MarkerOptions = {
     icon: getIconFor(feature.key)
   };
-  return L.marker(latLng, additionalOptions).bindPopup(getPopupFor(latLng, name, feature.singularLabel, fancySubtitle ? undefined : description, fancySubtitle))
+  return L.marker(latLng, additionalOptions)
+    .bindPopup(getPopupFor(latLng, name, feature.singularLabel, fancySubtitle ? undefined : description, fancySubtitle))
+    .bindTooltip(name);
 }
 
 export const getFeatureMarkers = (getPopupFor: GetPopupFunction,

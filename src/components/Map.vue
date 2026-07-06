@@ -197,6 +197,8 @@ watch(gamesObj, () => updateGameObjects())
 
 let previousMarkers: L.Marker<any>[] = [];
 
+const ZOOM_SCALE_TO_SHOW_TOOLTIPS = 16;
+
 const updateMarkers = () => {
     if (gamesObj.value && regionObj.value) {
         previousMarkers.forEach(m => m.remove());
@@ -207,14 +209,11 @@ const updateMarkers = () => {
                 // optimization - only show markers within bounds of view
                 .filter(marker => localMap.value!.getBounds().contains(marker.getLatLng()))
                 .forEach(m => {
-                    // if (marker == "stations") {
-                    //     L.circle(m.getLatLng(), {
-                    //         color: 'red',
-                    //         fillColor: '#f03',
-                    //         fillOpacity: 0.2,
-                    //         radius: 402.336, // quarter mile in meters
-                    //     }).addTo(localMap.value!);
-                    // }
+                    // Permanently show tooltips when zoomed in enough
+                    if (store.$state.enableTooltips && localMap.value!.getZoom() >= ZOOM_SCALE_TO_SHOW_TOOLTIPS) {
+                        const toolTip = m.getTooltip();
+                        m.unbindTooltip().bindTooltip(toolTip, { permanent: true });
+                    }
                     m.addTo(localMap.value!);
                 });
         });
@@ -593,8 +592,9 @@ const startupMapData = (region: Region) => {
     }
 
     // Edge case for vite HMR - somehow it misses this element
+    // Might not be needed any more - fixed by calling map.remove() on unmount
     if (!document.getElementById("map")) {
-        setTimeout(() => startupMapData(region), 2000);
+        setTimeout(() => startupMapData(region), 1000);
         return;
     }
 
@@ -642,7 +642,6 @@ const startupMapData = (region: Region) => {
     updateGameObjects();
     updateMarkers();
     localMap.value!.addLayer(PixiManager.getLayer());
-
 }
 
 onValue(region.value.regionRef.value, (regionRef) => {
@@ -650,7 +649,7 @@ onValue(region.value.regionRef.value, (regionRef) => {
         console.log("[Map Startup] Region Ref does not exist - cannot intialize map");
         return;
     }
-    startupMapData(regionRef.val());
+    nextTick(() => startupMapData(regionRef.val()));
 })
 
 // Edge case - when the user first joins the game
@@ -669,5 +668,11 @@ onMounted(() => {
     (window as any)["finishMeasuringOtherMarker"] = finishMeasuringOtherMarker;
     (window as any)["deleteCustomMarker"] = deleteCustomMarker;
     (window as any)["addCell"] = addCell;
+})
+
+onUnmounted(() => {
+    if (localMap.value) {
+        localMap.value.remove();
+    }
 })
 </script>
