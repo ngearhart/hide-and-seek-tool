@@ -70,3 +70,9 @@ $darkFeatures: (
     text-indent: 0.0892857143em;
     font-size: var(--v-btn-size);
 }
+
+@media screen and (max-width: 500px) {
+    .leaflet-control-attribution {
+        font-size: 0.55rem;
+    }
+}

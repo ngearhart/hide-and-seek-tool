@@ -1,5 +1,5 @@
 <template>
-  <v-footer height="40" app>
+  <v-footer height="40" app v-if="height > 700">
     <a
       href="/"
       title="Homepage"
@@ -43,6 +43,9 @@
 </template>
 
 <script setup lang="ts">
+  import { useWindowSize } from '@vueuse/core';
+  const { height } = useWindowSize({ type: 'outer' })
+
   const items = [
     {
       title: 'HideSeek.Live GitHub',
