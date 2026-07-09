@@ -201,7 +201,13 @@ const ZOOM_SCALE_TO_SHOW_TOOLTIPS = 16;
 
 const updateMarkers = () => {
     if (gamesObj.value && regionObj.value) {
-        previousMarkers.forEach(m => m.remove());
+        let openPopupMarkerLatLng: L.LatLng | null = null;
+        previousMarkers.forEach(m => {
+            if (m.isPopupOpen()) {
+                openPopupMarkerLatLng = m.getLatLng();
+            }
+            m.remove();
+        });
         let markers = getFeatureMarkers(getPopupFor, gamesObj, regionObj);
         previousMarkers = Object.values(markers).flat();
         store.$state.mapMarkers.forEach(marker => {
@@ -215,6 +221,10 @@ const updateMarkers = () => {
                         m.unbindTooltip().bindTooltip(toolTip, { permanent: true });
                     }
                     m.addTo(localMap.value!);
+
+                    if (openPopupMarkerLatLng && m.getLatLng().lat === openPopupMarkerLatLng.lat && m.getLatLng().lng === openPopupMarkerLatLng.lng) {
+                        m.openPopup();
+                    }
                 });
         });
     }
@@ -420,7 +430,7 @@ const getPopupFor: GetPopupFunction = (latLng: L.LatLngExpression, name: string,
     </div>
     `}
   </div>
-`)
+`);
 
 const mapMeasureDistanceTo = (lat: number, long: number, name: string) => {
     locatingPinToMeasureLatLng.value = [
