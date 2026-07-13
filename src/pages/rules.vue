@@ -28,17 +28,29 @@
 <script lang="ts" setup>
 
 const rules = [
-  "We are playing a Small game. Always use the effects specified with an \"S\" for medium on the cards or rulebook.",
-  "\"Public transportation\" is PRT \"T\", PRT buses, and the Inclines. However, T stations and Incline stations are zones.",
+  "We are playing a Medium game. Always use the effects specified with an \"M\" for medium on the cards or rulebook.",
+  "The hiding period is 45 minutes instead of an hour.",
+  "\"Public transportation\" is defined as subways, commuter trains, buses, gondola, and ferries. However, ONLY MTA Subway stations are zones (as defined on this site). Amtrak is not permitted (although it would not be useful).",
   "The hider must be off of a train before their hiding period is done. However, if they are on a bus, they must make a best-effort to get to the nearest station.",
-  "Due to the high headways of the T, it may be too easy to figure out where the hiders go during a hiding period by watching arrivals at the given station. Therefore, live tracking of the T is not permitted during the hiding period.",
   "It's likely things will come up that aren't clear in the rules. When in doubt, do your best according to the \"spirit of the game.\"",
-  "No Administrative Divisions are useful. Do not use these questions.",
+  "First Administrative Division is NYC Boroughs.",
+  "Second Administrative Division is NYC Council districts - please use the \"Districts\" feature on this site to confirm.",
+  "No Third or Fourth Administrative Divisions exist. Do not use these questions.",
+  "Do not ask distance from closest mountain.",
+  "Do not ask distance from nearest international border.",
+  "The Acela (via Northeast Corridor) does count as high speed rail for the high speed rail line question.",
+  "The game will officially end no later than 4pm.",
+  "Both teams should track initial hide time (45 minutes) and total hiding period.",
+  "!NEW! The hiders are responsible for tracking the time until the last time the seekers start the endgame (best effort) as a contingency if we have to shorten turns.",
+  "As the hiders have a lot more \"chill time\" than the seekers, the hiders should be generally responsible for knowing where the seekers are located to answer questions. However, especially while on the subway, it might be advisable for seekers to ensure that the tracker has updated.",
+  "The final hiding spot must be publicly accessible and open from 7am-4pm.",
   "HAVE FUN!",
 ]
 
 const checklist = [
-  "Ask if everyone feels alright despite the cold",
+  "Make sure Life360, Ferry app, and MTA TrainTime apps are downloaded",
+  "Ask if everyone feels alright despite the heat",
+  "Apply sunscreen",
   "Hand over tracker notepad",
   "Hand over hider deck",
   "Switch over Life360",

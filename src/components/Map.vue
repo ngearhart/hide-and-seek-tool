@@ -218,7 +218,7 @@ const updateMarkers = () => {
                     // Permanently show tooltips when zoomed in enough
                     if (store.$state.enableTooltips && localMap.value!.getZoom() >= ZOOM_SCALE_TO_SHOW_TOOLTIPS) {
                         const toolTip = m.getTooltip();
-                        m.unbindTooltip().bindTooltip(toolTip, { permanent: true });
+                        m.unbindTooltip().bindTooltip(toolTip as any, { permanent: true });
                     }
                     m.addTo(localMap.value!);
 
