@@ -29,22 +29,28 @@
 const curses = [
   {
     title: "Curse A",
-    subtitle: "Curse of Pittsburgh Stairs",
-    description: "Seekers must find nearby stairs and climb them continuously for 5 minutes before asking another question. Breaks for landings are permitted. Stairs may only be descended if they will be re-ascended.",
+    subtitle: "Curse of Buses are Awesome, Too",
+    description: "The next transit trip the seekers make must be by bus.",
     cost: "Discard 2 cards."
   },
   {
     title: "Curse B",
-    subtitle: "Curse of Yinz",
-    description: "Seekers find a word of Pittsburghese printed on a piece of media, take a photo of it, and send it to the hiders before asking another question. It does not need to be used in the \"correct\" context. See the list here: http://www.pittsburghese.com/",
-    cost: "Send the seekers an equivalent photo. The photo may be censored to prevent location discovery."
+    subtitle: "Curse of Robert Moses",
+    description: "With only 1 attempt, set a 5-minute timer and count how many vehicle honks occur nearby (in a 1-block radius). The seekers are then prohibited from asking any more questions until they count at least as many nearby vehicle honks.",
+    cost: "Seekers must not be on transit."
   },
   {
     title: "Curse C",
-    subtitle: "Curse of Funk Function",
-    description: "Seekers must visit any station with the word Junction in the name and send a video with them singing \"Conjunction Junction\" for 5 seconds to the hiders before asking another question.",
-    cost: "Seekers must be on a different line than any line that services your current home station."
+    subtitle: "Curse of Fuhgeddaboudit",
+    description: "For the next 20 minutes, the seekers must say \"I'm walkin' here!\" every time they cross the street.",
+    cost: "None."
   },
+  {
+    title: "Curse D",
+    subtitle: "Curse of Jimmy Kimmel",
+    description: "NYC is infamous for performers solititing cash throughout the city in transit stations and public spaces, also called busking. The seekers must find someone busking and listen or watch them for 5 minutes before asking another question (expires after 30 minutes).",
+    cost: "The hiders must also listen or watch to someone busking in their hiding zone for 5 minutes."
+  }
 ]
 
 </script>
